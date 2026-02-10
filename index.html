@@ -3,7 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Soldier Data — Precision-Engineered Technology Solutions</title>
+<title>Soldier Data — SQL Development, Dynamics 365, GEO & SaaS Solutions</title>
+<meta name="description" content="Soldier Data delivers enterprise SQL architecture, Dynamics 365 implementation, generative engine optimization (GEO), SOP automation, CRM cleanup, and proposal generation SaaS. Trusted by organizations that demand precision at scale.">
+<meta name="keywords" content="SQL development, Dynamics 365, D365 implementation, generative engine optimization, GEO, SOP automation, CRM cleanup, proposal generation, enterprise technology consulting, data architecture">
+<meta name="author" content="Soldier Data">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://soldierdata.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Soldier Data — Precision-Engineered Technology Solutions">
+<meta property="og:description" content="Enterprise SQL architecture, Dynamics 365, generative engine optimization, and SaaS platforms built for organizations that demand reliability at scale.">
+<meta property="og:url" content="https://soldierdata.com/">
+<meta property="og:site_name" content="Soldier Data">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Soldier Data — Precision-Engineered Technology Solutions">
+<meta name="twitter:description" content="Enterprise SQL architecture, Dynamics 365, generative engine optimization, and SaaS platforms built for organizations that demand reliability at scale.">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Soldier Data",
+  "description": "Soldier Data is a technology consulting firm specializing in SQL development, Dynamics 365 implementation, generative engine optimization (GEO), SOP automation, CRM data cleanup, and proposal generation SaaS solutions.",
+  "url": "https://soldierdata.com",
+  "email": "contact@soldierdata.com",
+  "areaServed": "US",
+  "serviceType": ["SQL Development", "Dynamics 365 Consulting", "Generative Engine Optimization", "SaaS Development", "CRM Data Cleanup", "SOP Automation", "Proposal Generation"],
+  "knowsAbout": ["SQL Server", "T-SQL", "SSIS", "SSRS", "ETL", "Dynamics 365 Finance", "Dynamics 365 Supply Chain", "Power Platform", "Generative Engine Optimization", "AI Search Optimization", "Standard Operating Procedures", "CRM Data Management", "Proposal Automation"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Technology Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "SQL Development & Architecture",
+          "description": "High-performance database design, query optimization, ETL pipelines, data warehousing, and SQL Server administration for enterprise environments."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Dynamics 365 Implementation",
+          "description": "End-to-end D365 Finance, Supply Chain, and CRM implementation, customization, data migration, and Power Platform integration."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Generative Engine Optimization",
+          "description": "AI search visibility platform that monitors and optimizes brand presence across ChatGPT, Perplexity, Gemini, and other generative AI engines."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "SOP Automation SaaS",
+          "description": "Automated standard operating procedure generation, version control, and team distribution platform for operational consistency."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "CRM Cleanup SaaS",
+          "description": "Intelligent CRM data deduplication, enrichment, and hygiene platform that maintains data quality at scale."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Proposal Generation SaaS",
+          "description": "AI-assisted proposal drafting platform with templates, approval workflows, and analytics for faster deal cycles."
+        }
+      }
+    ]
+  }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -433,7 +520,7 @@
   .section-desc {
     color: var(--text-secondary);
     font-size: 1.05rem;
-    max-width: 540px;
+    max-width: 600px;
     line-height: 1.7;
     margin-bottom: 56px;
   }
@@ -455,6 +542,8 @@
     overflow: hidden;
     transition: all 0.4s;
     cursor: default;
+    text-decoration: none;
+    color: inherit;
   }
 
   .service-card::before {
@@ -531,6 +620,175 @@
     color: var(--accent);
   }
 
+  .coming-soon-badge {
+    font-size: 0.6rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    vertical-align: middle;
+    border: 1px solid var(--border-accent);
+    padding: 2px 8px;
+    margin-left: 8px;
+  }
+
+  /* ── METHODOLOGY ── */
+  #methodology {
+    background: var(--bg-primary);
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--border);
+  }
+
+  .method-step {
+    background: var(--bg-card);
+    padding: 40px 28px;
+    position: relative;
+    transition: all 0.4s;
+  }
+
+  .method-step:hover {
+    background: var(--bg-card-hover);
+  }
+
+  .method-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    color: var(--accent-dim);
+    line-height: 1;
+    margin-bottom: 16px;
+    transition: color 0.4s;
+  }
+
+  .method-step:hover .method-number {
+    color: var(--accent-mid);
+  }
+
+  .method-step h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .method-step p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  /* ── SaaS PRODUCTS ── */
+  #products { background: var(--bg-secondary); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .product-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .product-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .product-card:hover::before { opacity: 1; }
+
+  .product-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 1px solid var(--border-accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+    margin-bottom: 24px;
+  }
+
+  .product-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .product-card > p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .product-features {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .product-features li {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .product-features li:last-child { border-bottom: none; }
+
+  .product-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .product-cta {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .product-cta:hover {
+    letter-spacing: 4px;
+  }
+
   /* ── ABOUT ── */
   #about {
     display: flex;
@@ -584,7 +842,7 @@
   }
 
   .flow-node::after {
-    content: '↓';
+    content: '|';
     position: absolute;
     bottom: -22px;
     left: 50%;
@@ -640,6 +898,41 @@
     font-size: 0.65rem;
     color: var(--accent);
     flex-shrink: 0;
+  }
+
+  /* ── FAQ ── */
+  #faq { background: var(--bg-primary); }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 960px;
+  }
+
+  .faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    transition: all 0.3s;
+  }
+
+  .faq-item:hover {
+    border-color: var(--border-accent);
+  }
+
+  .faq-item h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+  }
+
+  .faq-item p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.7;
   }
 
   /* ── CONTACT ── */
@@ -799,6 +1092,9 @@
     .about-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-visual { height: 300px; }
     .contact-grid { grid-template-columns: 1fr; }
+    .method-grid { grid-template-columns: 1fr 1fr; }
+    .products-grid { grid-template-columns: 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 768px) {
@@ -809,6 +1105,7 @@
     .form-row { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 16px; text-align: center; }
     .services-grid { grid-template-columns: 1fr; }
+    .method-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -822,31 +1119,33 @@
   </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#methodology">Process</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Get Started →</a>
+  <a href="#contact" class="nav-cta">Get Started</a>
 </nav>
 
 <!-- ── HERO ── -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="hero-glow"></div>
 
   <div class="hero-content">
     <div class="hero-tag">
       <span class="pulse"></span>
-      Mission-Critical Technology
+      Enterprise Technology Partner
     </div>
     <h1>
-      Data Strategy.<br>
-      <span class="highlight">Precision Deployed.</span>
+      Your Data.<br>
+      <span class="highlight">Engineered to Perform.</span>
     </h1>
     <p>
-      Soldier Data engineers robust SQL architectures, Dynamics 365 ecosystems, generative engine optimization strategies, and custom application frameworks — built for organizations that demand reliability at scale.
+      We build the systems that run your business. From SQL Server architecture and Dynamics 365 ecosystems to AI-powered SaaS platforms, Soldier Data delivers technology that scales with your mission.
     </p>
     <div class="hero-actions">
-      <a href="#contact" class="btn-primary">Request Briefing →</a>
-      <a href="#services" class="btn-secondary">View Capabilities</a>
+      <a href="#contact" class="btn-primary">Schedule a Consultation</a>
+      <a href="#services" class="btn-secondary">Explore Services</a>
     </div>
     <div class="hero-stats">
       <div class="stat-item">
@@ -858,8 +1157,8 @@
         <div class="stat-label">Uptime Delivered</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">24<span>/7</span></div>
-        <div class="stat-label">Support Operations</div>
+        <div class="stat-number">6<span>+</span></div>
+        <div class="stat-label">Service Verticals</div>
       </div>
     </div>
   </div>
@@ -870,139 +1169,287 @@
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-title">soldier-data — deploy.sql</span>
+      <span class="terminal-title">soldier-data — operations.sql</span>
     </div>
     <div class="terminal-body">
-      <span class="comment">-- Initialize data pipeline</span><br>
-      <span class="keyword">CREATE</span> <span class="fn">SCHEMA</span> ops_core;<br>
-      <br>
+      <span class="comment">-- Deploy enterprise stack</span><br>
       <span class="keyword">EXEC</span> <span class="fn">sp_deploy</span><br>
-      &nbsp;&nbsp;<span class="op">@</span>module <span class="op">=</span> <span class="string">'D365_Integration'</span>,<br>
-      &nbsp;&nbsp;<span class="op">@</span>env <span class="op">=</span> <span class="string">'production'</span>,<br>
-      &nbsp;&nbsp;<span class="op">@</span>status <span class="op">=</span> <span class="string">'active'</span>;<br>
+      &nbsp;&nbsp;<span class="op">@</span>module <span class="op">=</span> <span class="string">'D365_Finance'</span>,<br>
+      &nbsp;&nbsp;<span class="op">@</span>status <span class="op">=</span> <span class="string">'production'</span>;<br>
       <br>
-      <span class="comment">-- GEO engine online</span><br>
-      <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> geo.optimization_index<br>
-      <span class="keyword">WHERE</span> status <span class="op">=</span> <span class="string">'optimized'</span>;<br>
+      <span class="comment">-- GEO visibility scan</span><br>
+      <span class="keyword">SELECT</span> brand_citations, ai_rank<br>
+      <span class="keyword">FROM</span> geo.visibility_index<br>
+      <span class="keyword">WHERE</span> engine <span class="op">IN</span> (<span class="string">'chatgpt'</span>,<br>
+      &nbsp;&nbsp;<span class="string">'perplexity'</span>, <span class="string">'gemini'</span>);<br>
       <br>
-      <span class="prompt">▸ Deploy complete.</span> <span class="cursor-blink"></span>
+      <span class="prompt">&#9654; All systems operational.</span> <span class="cursor-blink"></span>
     </div>
   </div>
 </section>
 
 <!-- ── SERVICES ── -->
 <section id="services">
-  <div class="section-label">Capabilities</div>
-  <h2 class="section-title reveal">What We Deploy</h2>
-  <p class="section-desc reveal">End-to-end technology solutions engineered for performance, scalability, and mission success.</p>
+  <div class="section-label">Core Capabilities</div>
+  <h2 class="section-title reveal">Technology Services Built for Enterprise</h2>
+  <p class="section-desc reveal">Six specialized service lines covering database architecture, ERP implementation, AI search optimization, and custom software development.</p>
 
   <div class="services-grid">
     <div class="service-card reveal">
       <div class="service-icon">SQL</div>
-      <h3>SQL Development & Architecture</h3>
-      <p>High-performance database design, optimization, and management. We architect SQL solutions that handle complex queries at scale — from data warehousing to real-time analytics pipelines.</p>
+      <h3>SQL Development &amp; Architecture</h3>
+      <p>We design, optimize, and manage high-performance SQL Server environments. Our database architects build solutions that handle complex analytical queries, large-scale ETL operations, and mission-critical transaction processing.</p>
       <div class="service-tags">
         <span class="service-tag">T-SQL</span>
         <span class="service-tag">SSIS</span>
         <span class="service-tag">SSRS</span>
-        <span class="service-tag">Optimization</span>
-        <span class="service-tag">ETL</span>
+        <span class="service-tag">Query Optimization</span>
+        <span class="service-tag">ETL Pipelines</span>
+        <span class="service-tag">Data Warehousing</span>
       </div>
     </div>
 
     <div class="service-card reveal">
       <div class="service-icon">D365</div>
-      <h3>Dynamics 365 Solutions</h3>
-      <p>Full-spectrum D365 implementation, customization, and integration. We connect your business processes to a unified platform that drives efficiency across sales, operations, and finance.</p>
+      <h3>Dynamics 365 Implementation</h3>
+      <p>End-to-end Dynamics 365 deployment across Finance, Supply Chain Management, and Customer Engagement. We handle data migration, custom module development, Power Platform integration, and post-launch optimization.</p>
       <div class="service-tags">
-        <span class="service-tag">Finance</span>
+        <span class="service-tag">D365 Finance</span>
         <span class="service-tag">Supply Chain</span>
         <span class="service-tag">CRM</span>
-        <span class="service-tag">Power Platform</span>
+        <span class="service-tag">Power Automate</span>
+        <span class="service-tag">Data Migration</span>
       </div>
     </div>
 
-    <a href="/geo.html" class="service-card reveal" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <a href="/geo.html" class="service-card reveal" style="cursor:pointer;">
       <div class="service-icon">GEO</div>
-      <h3>Generative Engine Optimization <span style="font-size:0.7rem;color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;vertical-align:middle;">COMING SOON</span></h3>
-      <p>Next-generation visibility strategies for AI-powered search engines. We optimize your digital presence to rank in AI-generated answers, ensuring your brand surfaces when it matters most.</p>
+      <h3>Generative Engine Optimization <span class="coming-soon-badge">COMING SOON</span></h3>
+      <p>The next frontier of digital visibility. Our GEO platform monitors and optimizes how your brand appears in AI-generated search results across ChatGPT, Perplexity, Gemini, and other generative engines.</p>
       <div class="service-tags">
         <span class="service-tag">AI Search</span>
         <span class="service-tag">LLM Visibility</span>
+        <span class="service-tag">Citation Tracking</span>
         <span class="service-tag">Content Strategy</span>
-        <span class="service-tag">Analytics</span>
       </div>
     </a>
 
     <div class="service-card reveal">
-      <div class="service-icon">&lt;/&gt;</div>
-      <h3>Custom Frameworks & Applications</h3>
-      <p>Bespoke software development tailored to your operational requirements. We build frameworks, APIs, and full-stack applications from the ground up — no off-the-shelf compromises.</p>
+      <div class="service-icon">SOP</div>
+      <h3>SOP Automation</h3>
+      <p>Transform scattered institutional knowledge into structured, version-controlled standard operating procedures. Our platform automates SOP generation, distribution, and compliance tracking across your entire organization.</p>
       <div class="service-tags">
-        <span class="service-tag">APIs</span>
-        <span class="service-tag">Full-Stack</span>
-        <span class="service-tag">Cloud</span>
-        <span class="service-tag">DevOps</span>
+        <span class="service-tag">Process Mapping</span>
+        <span class="service-tag">Version Control</span>
+        <span class="service-tag">Compliance</span>
+        <span class="service-tag">Team Distribution</span>
       </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon">CRM</div>
+      <h3>CRM Data Cleanup</h3>
+      <p>Dirty CRM data costs organizations millions in lost productivity and bad decisions. We provide intelligent deduplication, field standardization, enrichment, and ongoing hygiene automation to keep your pipeline accurate.</p>
+      <div class="service-tags">
+        <span class="service-tag">Deduplication</span>
+        <span class="service-tag">Data Enrichment</span>
+        <span class="service-tag">Field Mapping</span>
+        <span class="service-tag">Hygiene Automation</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon">PRO</div>
+      <h3>Proposal Generation</h3>
+      <p>Accelerate your sales cycle with AI-assisted proposal drafting. Our platform pulls from your service catalog, pricing models, and past wins to generate polished, on-brand proposals in minutes instead of hours.</p>
+      <div class="service-tags">
+        <span class="service-tag">AI Drafting</span>
+        <span class="service-tag">Template Engine</span>
+        <span class="service-tag">Approval Workflows</span>
+        <span class="service-tag">Analytics</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SaaS PRODUCTS ── -->
+<section id="products">
+  <div class="section-label">SaaS Platforms</div>
+  <h2 class="section-title reveal">Software That Runs While You Sleep</h2>
+  <p class="section-desc reveal">Three purpose-built SaaS products designed to eliminate manual bottlenecks in operations, sales, and data management.</p>
+
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-badge">Operations</div>
+      <h3>SOPForge</h3>
+      <p>Automated standard operating procedure management for teams that can't afford ambiguity.</p>
+      <ul class="product-features">
+        <li>AI-assisted SOP generation from process descriptions</li>
+        <li>Version history with diff tracking and rollback</li>
+        <li>Role-based distribution and read receipts</li>
+        <li>Compliance audit trails and expiration alerts</li>
+        <li>Integrates with Slack, Teams, and Confluence</li>
+      </ul>
+      <a href="#contact" class="product-cta">Request Early Access &rarr;</a>
+    </div>
+
+    <div class="product-card reveal">
+      <div class="product-badge">Data Quality</div>
+      <h3>CRMClean</h3>
+      <p>Intelligent CRM data hygiene that keeps your pipeline trustworthy and your reporting accurate.</p>
+      <ul class="product-features">
+        <li>Fuzzy matching deduplication across contacts and accounts</li>
+        <li>Automated field standardization and formatting</li>
+        <li>Third-party enrichment from public business data</li>
+        <li>Scheduled hygiene scans with anomaly detection</li>
+        <li>Native connectors for Salesforce, HubSpot, and D365</li>
+      </ul>
+      <a href="#contact" class="product-cta">Request Early Access &rarr;</a>
+    </div>
+
+    <div class="product-card reveal">
+      <div class="product-badge">Revenue</div>
+      <h3>ProposalEngine</h3>
+      <p>From blank page to polished proposal in minutes. Built for teams that win on speed and precision.</p>
+      <ul class="product-features">
+        <li>AI drafts from your service catalog and pricing</li>
+        <li>Branded templates with dynamic content blocks</li>
+        <li>Multi-stage approval workflows with notifications</li>
+        <li>Win/loss analytics and proposal performance tracking</li>
+        <li>E-signature integration and client portal delivery</li>
+      </ul>
+      <a href="#contact" class="product-cta">Request Early Access &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── METHODOLOGY ── -->
+<section id="methodology">
+  <div class="section-label">Our Process</div>
+  <h2 class="section-title reveal">How We Deliver</h2>
+  <p class="section-desc reveal">Every engagement follows a disciplined four-phase methodology designed to reduce risk, maintain transparency, and deliver measurable outcomes.</p>
+
+  <div class="method-grid reveal">
+    <div class="method-step">
+      <div class="method-number">01</div>
+      <h3>Discovery &amp; Assessment</h3>
+      <p>We audit your current systems, map data flows, identify bottlenecks, and define success metrics before writing a single line of code.</p>
+    </div>
+    <div class="method-step">
+      <div class="method-number">02</div>
+      <h3>Architecture &amp; Planning</h3>
+      <p>Technical blueprints, migration strategies, and project timelines are built collaboratively. You approve every decision before we move forward.</p>
+    </div>
+    <div class="method-step">
+      <div class="method-number">03</div>
+      <h3>Development &amp; Testing</h3>
+      <p>Iterative sprints with continuous integration. Every module is load-tested, security-reviewed, and validated against your acceptance criteria.</p>
+    </div>
+    <div class="method-step">
+      <div class="method-number">04</div>
+      <h3>Deployment &amp; Support</h3>
+      <p>Zero-downtime deployments with rollback capability. Post-launch monitoring, documentation handoff, and ongoing support keep your systems running.</p>
     </div>
   </div>
 </section>
 
 <!-- ── ABOUT ── -->
 <section id="about">
-  <div class="section-label">About Us</div>
-  <h2 class="section-title reveal">Built for the Mission</h2>
-  <p class="section-desc reveal">Soldier Data was founded on a simple principle — technology should be a force multiplier, not a bottleneck.</p>
+  <div class="section-label">About Soldier Data</div>
+  <h2 class="section-title reveal">Built for Organizations That Can't Afford Downtime</h2>
+  <p class="section-desc reveal">We exist because too many technology projects fail due to poor planning, weak architecture, or vendors who disappear after launch.</p>
 
   <div class="about-grid reveal">
     <div class="about-visual">
       <div class="data-flow">
-        <div class="flow-node active">Discovery</div>
-        <div class="flow-node">Architecture</div>
-        <div class="flow-node">Development</div>
-        <div class="flow-node">Testing</div>
-        <div class="flow-node active">Deployment</div>
+        <div class="flow-node active">Assess</div>
+        <div class="flow-node">Architect</div>
+        <div class="flow-node">Build</div>
+        <div class="flow-node">Test</div>
+        <div class="flow-node active">Deploy</div>
       </div>
     </div>
 
     <div class="about-text">
-      <h3>Disciplined Engineering. Real Results.</h3>
-      <p>We combine deep technical expertise with a methodical, mission-first approach. Whether you need a single database optimized or an entire enterprise platform built from scratch, our team operates with the precision and accountability your project demands.</p>
-      <p>From SQL Server architecture to Dynamics 365 ecosystems, generative engine optimization to custom application frameworks — we don't just write code. We engineer solutions that endure.</p>
+      <h3>Engineering Discipline. Measurable Results.</h3>
+      <p>Soldier Data was founded on the principle that technology should be a force multiplier, not a liability. We bring deep expertise in SQL Server, Dynamics 365, and modern SaaS architecture to every engagement, combined with the operational discipline that comes from building systems where failure is not an option.</p>
+      <p>Our team has delivered database migrations handling millions of records, D365 implementations across multi-entity organizations, and custom platforms that serve as the operational backbone for growing businesses. We measure success by uptime, adoption rates, and the problems that never happen because the architecture was right from the start.</p>
 
       <div class="about-values">
         <div class="value-item">
-          <span class="check">✓</span>
+          <span class="check">&#10003;</span>
           Scalable Architecture
         </div>
         <div class="value-item">
-          <span class="check">✓</span>
+          <span class="check">&#10003;</span>
           Security-First Design
         </div>
         <div class="value-item">
-          <span class="check">✓</span>
-          Agile Delivery
+          <span class="check">&#10003;</span>
+          Transparent Communication
         </div>
         <div class="value-item">
-          <span class="check">✓</span>
+          <span class="check">&#10003;</span>
           Long-Term Partnership
+        </div>
+        <div class="value-item">
+          <span class="check">&#10003;</span>
+          Data-Driven Decisions
+        </div>
+        <div class="value-item">
+          <span class="check">&#10003;</span>
+          Post-Launch Accountability
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ── FAQ ── -->
+<section id="faq">
+  <div class="section-label">Frequently Asked Questions</div>
+  <h2 class="section-title reveal">Common Questions</h2>
+  <p class="section-desc reveal">Answers to the questions we hear most from prospective clients.</p>
+
+  <div class="faq-grid reveal">
+    <div class="faq-item">
+      <h3>What industries do you serve?</h3>
+      <p>We work across government, tribal organizations, finance, healthcare, manufacturing, and professional services. Our solutions are industry-agnostic by design but configured to meet sector-specific compliance and operational requirements.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How does generative engine optimization differ from traditional SEO?</h3>
+      <p>Traditional SEO optimizes for link-based search rankings. GEO focuses on how AI models like ChatGPT and Perplexity reference and cite your brand in their generated responses. It requires different content structures, authority signals, and monitoring tooling.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Can you work with our existing Dynamics 365 environment?</h3>
+      <p>Absolutely. We regularly step into existing D365 deployments to troubleshoot performance issues, build custom modules, migrate data from legacy systems, and optimize configurations that were rushed during initial implementation.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What size projects do you take on?</h3>
+      <p>From single-database optimization engagements to multi-year enterprise platform builds. We scope every project individually and provide transparent estimates based on actual requirements, not billable-hour targets.</p>
+    </div>
+    <div class="faq-item">
+      <h3>When will the SaaS products launch?</h3>
+      <p>SOPForge, CRMClean, and ProposalEngine are currently in development with early access programs opening soon. Contact us to join the waitlist and get priority access when each platform goes live.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Do you provide ongoing support after deployment?</h3>
+      <p>Yes. Every project includes a post-launch support window, and we offer long-term managed services agreements for organizations that want continuous monitoring, optimization, and feature development.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ── CONTACT ── -->
 <section id="contact">
-  <div class="section-label">Contact</div>
-  <h2 class="section-title reveal">Start Your Mission</h2>
-  <p class="section-desc reveal">Ready to deploy better technology? Tell us about your project and we'll provide a strategic assessment.</p>
+  <div class="section-label">Get in Touch</div>
+  <h2 class="section-title reveal">Start a Conversation</h2>
+  <p class="section-desc reveal">Tell us about your project and we'll respond within 24 hours with an initial assessment and recommended next steps.</p>
 
   <div class="contact-grid reveal">
     <div>
       <div class="contact-info-block">
         <h3>Headquarters</h3>
-        <p>Soldier Data HQ<br>United States</p>
+        <p>Soldier Data<br>United States</p>
       </div>
       <div class="contact-info-block">
         <h3>Email</h3>
@@ -1010,53 +1457,63 @@
       </div>
       <div class="contact-info-block">
         <h3>Response Time</h3>
-        <p>We respond to all inquiries within 24 hours. For urgent matters, mark your subject line with <strong style="color: var(--accent);">[PRIORITY]</strong>.</p>
+        <p>All inquiries receive a response within 24 hours. For time-sensitive matters, include <strong style="color: var(--accent);">[PRIORITY]</strong> in your subject line.</p>
+      </div>
+      <div class="contact-info-block">
+        <h3>What to Expect</h3>
+        <p>After submitting your inquiry, a member of our team will review your requirements and schedule a 30-minute discovery call to discuss scope, timeline, and fit.</p>
       </div>
     </div>
 
-    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message received — we\'ll be in touch within 24 hours.');">
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message received. We\'ll be in touch within 24 hours.');">
       <div class="form-row">
         <div class="form-group">
           <label>Full Name</label>
-          <input type="text" placeholder="John Doe" required>
+          <input type="text" placeholder="Your name" required>
         </div>
         <div class="form-group">
           <label>Organization</label>
-          <input type="text" placeholder="Company Inc.">
+          <input type="text" placeholder="Company name">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Email</label>
-          <input type="email" placeholder="john@company.com" required>
+          <input type="email" placeholder="you@company.com" required>
         </div>
         <div class="form-group">
           <label>Service Interest</label>
           <select>
-            <option>SQL Development</option>
-            <option>Dynamics 365</option>
+            <option value="">Select a service</option>
+            <option>SQL Development &amp; Architecture</option>
+            <option>Dynamics 365 Implementation</option>
             <option>Generative Engine Optimization</option>
-            <option>Custom Applications</option>
-            <option>Multiple / Not Sure</option>
+            <option>SOP Automation (SOPForge)</option>
+            <option>CRM Cleanup (CRMClean)</option>
+            <option>Proposal Generation (ProposalEngine)</option>
+            <option>Custom Application Development</option>
+            <option>Multiple Services</option>
           </select>
         </div>
       </div>
       <div class="form-group">
         <label>Project Details</label>
-        <textarea placeholder="Describe your project requirements, timeline, and objectives..."></textarea>
+        <textarea placeholder="Describe your project requirements, current challenges, and timeline expectations..."></textarea>
       </div>
-      <button type="submit" class="form-submit">Submit Briefing →</button>
+      <button type="submit" class="form-submit">Submit Inquiry</button>
     </form>
   </div>
 </section>
 
 <!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-left">© 2026 Soldier Data. All rights reserved.</div>
+  <div class="footer-left">&copy; 2026 Soldier Data. All rights reserved.</div>
   <div class="footer-links">
     <a href="#services">Services</a>
+    <a href="#products">Products</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
+    <a href="/geo.html">GEO Platform</a>
   </div>
 </footer>
 
