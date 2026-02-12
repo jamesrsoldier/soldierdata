@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProposalEngine — AI-Powered Proposal Generation SaaS | Soldier Data</title>
+<meta name="description" content="ProposalEngine by Soldier Data — go from blank page to polished proposal in minutes. AI-powered drafting from your service catalog and pricing models, branded templates, approval workflows, and win/loss analytics.">
+<meta name="keywords" content="proposal generation, AI proposal software, proposal automation, sales proposals, proposal templates, e-signature, proposal analytics, win rate optimization, Soldier Data">
+<meta name="author" content="Soldier Data">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://soldierdata.com/proposalengine.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ProposalEngine — AI-Powered Proposal Generation SaaS">
+<meta property="og:description" content="Go from blank page to polished proposal in minutes. AI-powered drafting, branded templates, approval workflows, and win/loss analytics.">
+<meta property="og:url" content="https://soldierdata.com/proposalengine.html">
+<meta property="og:site_name" content="Soldier Data">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ProposalEngine — AI-Powered Proposal Generation SaaS">
+<meta name="twitter:description" content="Go from blank page to polished proposal in minutes. AI-powered drafting, branded templates, approval workflows, and win/loss analytics.">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ProposalEngine",
+  "description": "AI-powered proposal generation SaaS platform that drafts polished proposals from your service catalog and pricing models in minutes. Features branded templates, multi-stage approval workflows, e-signature integration, and win/loss analytics.",
+  "url": "https://soldierdata.com/proposalengine.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "availability": "https://schema.org/PreOrder",
+    "description": "Coming Soon — Join the waitlist for early access"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "Soldier Data",
+    "url": "https://soldierdata.com"
+  },
+  "featureList": [
+    "AI-Powered Proposal Drafting",
+    "Branded Template Engine",
+    "Multi-Stage Approval Workflows",
+    "Win/Loss Analytics",
+    "E-Signature Integration",
+    "Client Portal Delivery"
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #10131a;
+    --bg-card: #141821;
+    --bg-card-hover: #1a1f2e;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a022;
+    --accent-mid: #00e5a066;
+    --accent-bright: #00ffb3;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8a90a0;
+    --text-muted: #555b6e;
+    --border: #1e2333;
+    --border-accent: #00e5a033;
+    --grid-line: rgba(0, 229, 160, 0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(180deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo .logo-icon {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--accent-dim);
+  }
+
+  .nav-logo .logo-icon::after {
+    content: 'SD';
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .nav-back {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-back:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(100px);
+    animation: glowPulse 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.15); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 740px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding: 8px 20px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    animation: fadeSlideUp 0.8s ease-out;
+  }
+
+  .badge .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-mid); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 8px transparent; }
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 5.5vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    animation: fadeSlideUp 0.8s ease-out 0.1s both;
+  }
+
+  .hero h1 .highlight { color: var(--accent); }
+
+  .hero .subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    color: var(--text-secondary);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s ease-out 0.15s both;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.8;
+    animation: fadeSlideUp 0.8s ease-out 0.2s both;
+  }
+
+  /* ── EMAIL FORM ── */
+  .signup-form {
+    display: flex;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto 20px;
+    animation: fadeSlideUp 0.8s ease-out 0.3s both;
+  }
+
+  .signup-form input {
+    flex: 1;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .signup-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .signup-form input::placeholder { color: var(--text-muted); }
+
+  .signup-form button {
+    padding: 16px 28px;
+    background: var(--accent);
+    color: var(--bg-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .signup-form button:hover {
+    box-shadow: 0 0 40px var(--accent-dim), 0 8px 24px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  .form-note {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    animation: fadeSlideUp 0.8s ease-out 0.35s both;
+  }
+
+  .success-msg {
+    display: none;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 16px 24px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .section-label::before,
+  .section-label::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problems {
+    padding: 100px 48px 120px;
+    background: var(--bg-secondary);
+  }
+
+  .problems-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .problems-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .problems-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .problem-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .problem-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .problem-card:hover::before { opacity: 1; }
+
+  .problem-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .problem-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .problem-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── FEATURES ── */
+  .features {
+    padding: 100px 48px 120px;
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .features-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .features-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .feature-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-it-works {
+    padding: 100px 48px 120px;
+    background: var(--bg-secondary);
+  }
+
+  .how-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .how-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .how-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    left: 16%;
+    right: 16%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-accent), var(--accent-mid), var(--border-accent), transparent);
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+  }
+
+  .step-number {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--accent);
+    background: var(--bg-secondary);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .step p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+
+  /* ── ROI SECTION ── */
+  .roi {
+    padding: 100px 48px 120px;
+  }
+
+  .roi-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .roi-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .roi-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .roi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .roi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .roi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .roi-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .roi-card:hover::before { opacity: 1; }
+
+  .roi-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 3.2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .roi-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .roi-card p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  /* ── CTA BOTTOM ── */
+  .cta-bottom {
+    padding: 80px 48px;
+    background: var(--bg-secondary);
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-bottom h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+  }
+
+  .cta-bottom p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 440px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .cta-bottom .signup-form {
+    animation: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease-out;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .roi-grid { grid-template-columns: repeat(2, 1fr); }
+    .problems-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .hero, .problems, .features, .how-it-works, .roi, .cta-bottom { padding-left: 24px; padding-right: 24px; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; }
+    .steps { grid-template-columns: 1fr; gap: 48px; }
+    .steps::before { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .problems-grid { grid-template-columns: 1fr; }
+    .roi-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-icon"></div>
+    Soldier Data
+  </a>
+  <a href="/" class="nav-back">&larr; Back to Home</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="badge">
+      <span class="pulse"></span>
+      Coming Soon
+    </div>
+    <h1>
+      <span class="highlight">Proposal</span>Engine
+    </h1>
+    <p class="subtitle">AI-Powered Proposal Generation</p>
+    <p>
+      Go from blank page to polished proposal in minutes. ProposalEngine uses AI to draft from your service catalog, pricing models, and past wins &mdash; so your team spends less time writing and more time closing.
+    </p>
+
+    <form class="signup-form" id="waitlistForm" onsubmit="event.preventDefault(); document.getElementById('waitlistForm').style.display='none'; document.getElementById('successMsg').style.display='block';">
+      <input type="email" placeholder="Enter your email for early access" required>
+      <button type="submit">Join Waitlist &rarr;</button>
+    </form>
+    <div class="success-msg" id="successMsg">
+      &#10003; You're on the list. We'll be in touch soon.
+    </div>
+    <p class="form-note">Be first in line when we launch. No spam, ever.</p>
+  </div>
+</section>
+
+<!-- ── PROBLEM SECTION ── -->
+<section class="problems">
+  <div class="problems-header reveal">
+    <div class="section-label">The Problem</div>
+    <h2>Proposals Shouldn't Take Days</h2>
+    <p>Your sales team is stuck in a cycle of manual work, inconsistent output, and zero visibility into what happens after a proposal leaves the inbox.</p>
+  </div>
+
+  <div class="problems-grid">
+    <div class="problem-card reveal">
+      <span class="problem-icon">&#9000;</span>
+      <h3>Manual Drafting</h3>
+      <p>Hours spent copying from old proposals, reformatting content, and hoping nothing is outdated. Every proposal becomes a time sink that pulls reps away from selling.</p>
+    </div>
+
+    <div class="problem-card reveal">
+      <span class="problem-icon">&#9878;</span>
+      <h3>Inconsistent Branding</h3>
+      <p>Every rep has their own style &mdash; no two proposals look the same, undermining credibility with prospects and making your organization look disorganized.</p>
+    </div>
+
+    <div class="problem-card reveal">
+      <span class="problem-icon">&#9676;</span>
+      <h3>No Visibility</h3>
+      <p>Proposals go out and disappear &mdash; no tracking on opens, no analytics on what wins, no way to improve. You're flying blind on the most critical sales asset.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="features">
+  <div class="features-header reveal">
+    <div class="section-label">Platform Capabilities</div>
+    <h2>Everything You Need to Win Faster</h2>
+    <p>A complete proposal lifecycle platform &mdash; from AI-assisted first draft to signed deal and performance analytics.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">AI</div>
+      <h3>AI-Powered Drafting</h3>
+      <p>Pull from your service catalog, case studies, and pricing to generate complete proposal drafts in minutes. AI handles the heavy lifting while you refine the strategy.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">TPL</div>
+      <h3>Branded Template Engine</h3>
+      <p>Dynamic content blocks snap into professionally designed templates &mdash; consistent brand presentation every time, regardless of who builds the proposal.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">WFL</div>
+      <h3>Multi-Stage Approval Workflows</h3>
+      <p>Route proposals through stakeholders with role-based approvals, inline comments, and version tracking. Nothing goes out without the right sign-offs.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">WIN</div>
+      <h3>Win/Loss Analytics</h3>
+      <p>Track which proposals close, which sections get read, and what language correlates with higher win rates. Turn every deal into a data point that makes the next one better.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">SIG</div>
+      <h3>E-Signature Integration</h3>
+      <p>Built-in e-signature capture so clients can approve without leaving the document. Reduce friction between proposal delivery and deal closed.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">PRT</div>
+      <h3>Client Portal Delivery</h3>
+      <p>Send proposals through a branded portal with real-time open tracking and engagement analytics. Know exactly when and how prospects interact with your proposal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-it-works">
+  <div class="how-header reveal">
+    <div class="section-label">How It Works</div>
+    <h2>From Catalog to Closed Deal</h2>
+    <p>Three steps to transform how your team builds and delivers proposals.</p>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-number">01</div>
+      <h3>Configure</h3>
+      <p>Import your service catalog, pricing tiers, and brand assets. Set up templates and approval chains once, use them forever.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">02</div>
+      <h3>Draft</h3>
+      <p>Select a client, choose services, and let AI generate a tailored proposal. Review, refine, and route for approval in minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">03</div>
+      <h3>Send &amp; Track</h3>
+      <p>Deliver through the client portal, capture e-signatures, and monitor engagement in real time. Close faster with full visibility.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── ROI SECTION ── -->
+<section class="roi">
+  <div class="roi-header reveal">
+    <div class="section-label">The Impact</div>
+    <h2>Built for Revenue Teams That Move Fast</h2>
+    <p>ProposalEngine doesn't just save time &mdash; it drives measurable improvements across your entire proposal pipeline.</p>
+  </div>
+
+  <div class="roi-grid">
+    <div class="roi-card reveal">
+      <div class="roi-number">5x</div>
+      <h3>Faster Turnaround</h3>
+      <p>Cut proposal creation from days to minutes with AI-assisted drafting and reusable templates.</p>
+    </div>
+
+    <div class="roi-card reveal">
+      <div class="roi-number">40%</div>
+      <h3>Higher Win Rates</h3>
+      <p>Consistent branding and data-driven content optimization improve close rates across the board.</p>
+    </div>
+
+    <div class="roi-card reveal">
+      <div class="roi-number">Zero</div>
+      <h3>Hours on Formatting</h3>
+      <p>Eliminate manual copy-paste, reformatting, and version confusion. Templates handle the design.</p>
+    </div>
+
+    <div class="roi-card reveal">
+      <div class="roi-number">100%</div>
+      <h3>Proposal Visibility</h3>
+      <p>Real-time tracking on opens, reads, and engagement. Know exactly where every proposal stands.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BOTTOM ── -->
+<section class="cta-bottom">
+  <h2 class="reveal">Close Deals Faster</h2>
+  <p class="reveal">Join the waitlist and be among the first to transform how your team builds and delivers proposals.</p>
+
+  <form class="signup-form reveal" id="waitlistForm2" onsubmit="event.preventDefault(); document.getElementById('waitlistForm2').style.display='none'; document.getElementById('successMsg2').style.display='block';">
+    <input type="email" placeholder="Enter your email for early access" required>
+    <button type="submit">Join Waitlist &rarr;</button>
+  </form>
+  <div class="success-msg" id="successMsg2">
+    &#10003; You're on the list. We'll be in touch soon.
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">&copy; 2026 Soldier Data. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#products">Products</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- ── SCROLL REVEAL ── -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

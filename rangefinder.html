@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rangefinder — AI Visibility Analytics &amp; Generative Engine Optimization | Soldier Data</title>
+<meta name="description" content="Rangefinder by Soldier Data is an AI visibility analytics platform that tracks how your brand is cited across ChatGPT, Perplexity, Google AI Overview, Bing Copilot, and Claude. Monitor citations, measure share of voice, and optimize for generative search.">
+<meta name="keywords" content="generative engine optimization, GEO, AI visibility, AI search analytics, ChatGPT brand monitoring, Perplexity citations, Google AI Overview tracking, AI share of voice, brand mention detection, citation analytics">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://soldierdata.com/rangefinder.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rangefinder — AI Visibility Analytics Platform">
+<meta property="og:description" content="Track how your brand appears in AI-generated search results. Monitor citations across ChatGPT, Perplexity, Google AI Overview, Bing Copilot, and Claude.">
+<meta property="og:url" content="https://soldierdata.com/rangefinder.html">
+<meta property="og:site_name" content="Soldier Data">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rangefinder — AI Visibility Analytics Platform">
+<meta name="twitter:description" content="Track how your brand appears in AI-generated search results. Monitor citations across 5 major AI engines.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Rangefinder",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Rangefinder is an AI visibility analytics SaaS platform that tracks how brands are cited and mentioned across AI answer engines including Perplexity, Google AI Overview, ChatGPT, Bing Copilot, and Claude. It provides citation extraction, brand mention detection, visibility scoring, share of voice analysis, competitor benchmarking, and GA4/Search Console integration.",
+  "url": "https://soldierdata.com/rangefinder.html",
+  "author": {
+    "@type": "Organization",
+    "name": "Soldier Data",
+    "url": "https://soldierdata.com"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free",
+        "description": "10 keywords, 1 project, 1 competitor, Perplexity engine"
+      },
+      {
+        "@type": "Offer",
+        "name": "Starter",
+        "description": "100 keywords, 2 projects, 3 competitors, 3 AI engines"
+      },
+      {
+        "@type": "Offer",
+        "name": "Growth",
+        "description": "500 keywords, 5 projects, 10 competitors, all 5 AI engines"
+      }
+    ]
+  },
+  "featureList": [
+    "AI visibility monitoring across 5 engines",
+    "Citation extraction and brand mention detection",
+    "Visibility scoring with position-weighted algorithms",
+    "Share of voice analysis",
+    "Competitor citation benchmarking",
+    "Google Analytics 4 integration",
+    "Google Search Console integration",
+    "Automated keyword monitoring",
+    "Alert system for visibility changes",
+    "Multi-project and multi-organization support"
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #10131a;
+    --bg-card: #141821;
+    --bg-card-hover: #1a1f2e;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a022;
+    --accent-mid: #00e5a066;
+    --accent-bright: #00ffb3;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8a90a0;
+    --text-muted: #555b6e;
+    --border: #1e2333;
+    --border-accent: #00e5a033;
+    --grid-line: rgba(0, 229, 160, 0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(180deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 48px; height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.5rem;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary);
+    text-decoration: none; display: flex; align-items: center; gap: 10px;
+  }
+
+  .nav-logo .logo-icon {
+    width: 34px; height: 34px; border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--accent-dim);
+  }
+
+  .nav-logo .logo-icon::after {
+    content: 'SD'; font-size: 0.65rem; font-weight: 700;
+    color: var(--accent); letter-spacing: 1px;
+  }
+
+  .nav-back {
+    color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: color 0.3s; display: flex; align-items: center; gap: 8px;
+  }
+
+  .nav-back:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 120px 48px 80px; overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute; width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    filter: blur(100px); animation: glowPulse 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.15); }
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 32px; padding: 8px 20px;
+    border: 1px solid var(--border-accent); background: var(--accent-dim);
+    animation: fadeSlideUp 0.8s ease-out;
+  }
+
+  .badge .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-mid); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 8px transparent; }
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(2.8rem, 5.5vw, 5rem); line-height: 1.05;
+    letter-spacing: -1px; margin-bottom: 10px;
+    animation: fadeSlideUp 0.8s ease-out 0.1s both;
+  }
+
+  .hero h1 .highlight { color: var(--accent); }
+
+  .hero .subtitle {
+    font-family: 'Rajdhani', sans-serif; font-weight: 500;
+    font-size: clamp(1.1rem, 2vw, 1.5rem); color: var(--text-secondary);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s ease-out 0.15s both;
+  }
+
+  .hero p {
+    font-size: 1.1rem; color: var(--text-secondary); max-width: 540px;
+    margin: 0 auto 48px; line-height: 1.8;
+    animation: fadeSlideUp 0.8s ease-out 0.2s both;
+  }
+
+  .signup-form {
+    display: flex; gap: 12px; max-width: 480px; margin: 0 auto 20px;
+    animation: fadeSlideUp 0.8s ease-out 0.3s both;
+  }
+
+  .signup-form input {
+    flex: 1; padding: 16px 20px; background: var(--bg-card);
+    border: 1px solid var(--border); color: var(--text-primary);
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .signup-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .signup-form input::placeholder { color: var(--text-muted); }
+
+  .signup-form button {
+    padding: 16px 28px; background: var(--accent); color: var(--bg-primary);
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 2px; text-transform: uppercase; border: none;
+    cursor: pointer; transition: all 0.3s; white-space: nowrap;
+  }
+
+  .signup-form button:hover {
+    box-shadow: 0 0 40px var(--accent-dim), 0 8px 24px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  .form-note {
+    font-size: 0.78rem; color: var(--text-muted);
+    animation: fadeSlideUp 0.8s ease-out 0.35s both;
+  }
+
+  .success-msg {
+    display: none; color: var(--accent);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    letter-spacing: 1px; padding: 16px 24px;
+    border: 1px solid var(--border-accent); background: var(--accent-dim);
+    max-width: 480px; margin: 0 auto 20px;
+  }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 1; padding: 100px 48px 120px; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.15; margin-bottom: 16px;
+  }
+
+  .section-desc {
+    color: var(--text-secondary); font-size: 1.05rem; max-width: 540px;
+    line-height: 1.7; margin-bottom: 56px;
+  }
+
+  .section-label-center {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+
+  .section-label-center::before, .section-label-center::after {
+    content: ''; width: 24px; height: 1px; background: var(--accent);
+  }
+
+  /* ── ENGINES ── */
+  .engines-section { background: var(--bg-secondary); }
+
+  .engines-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    max-width: 800px; margin: 0 auto 64px;
+  }
+
+  .engine-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 28px 16px; text-align: center; transition: all 0.4s;
+  }
+
+  .engine-card:hover {
+    border-color: var(--border-accent); transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .engine-card .engine-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 4px;
+  }
+
+  .engine-card .engine-type {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+    color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── FEATURES ── */
+  .features-section { background: var(--bg-primary); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 1100px;
+  }
+
+  .feature-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 36px 28px; position: relative; overflow: hidden; transition: all 0.4s;
+  }
+
+  .feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    background: var(--bg-card-hover); border-color: var(--border-accent);
+    transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px; border: 1px solid var(--border-accent);
+    background: var(--accent-dim); display: flex; align-items: center;
+    justify-content: center; margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    color: var(--accent); letter-spacing: 1px;
+  }
+
+  .feature-card h3 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 1.25rem; margin-bottom: 10px; letter-spacing: 0.5px;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { background: var(--bg-secondary); }
+
+  .pipeline {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    background: var(--border); max-width: 1000px;
+  }
+
+  .pipeline-step {
+    background: var(--bg-card); padding: 36px 24px; text-align: center;
+    transition: all 0.4s;
+  }
+
+  .pipeline-step:hover { background: var(--bg-card-hover); }
+
+  .pipeline-number {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 2rem; color: var(--accent-dim); line-height: 1;
+    margin-bottom: 16px; transition: color 0.4s;
+  }
+
+  .pipeline-step:hover .pipeline-number { color: var(--accent-mid); }
+
+  .pipeline-step h3 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 1.1rem; margin-bottom: 10px;
+  }
+
+  .pipeline-step p {
+    color: var(--text-secondary); font-size: 0.82rem; line-height: 1.7;
+  }
+
+  /* ── SCORING ── */
+  .scoring-section { background: var(--bg-primary); }
+
+  .scoring-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    max-width: 960px;
+  }
+
+  .score-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 32px 24px; text-align: center; transition: all 0.3s;
+  }
+
+  .score-card:hover { border-color: var(--border-accent); }
+
+  .score-value {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 2.4rem; color: var(--accent); line-height: 1; margin-bottom: 8px;
+  }
+
+  .score-label {
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    font-size: 1rem; margin-bottom: 8px;
+  }
+
+  .score-desc {
+    font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;
+  }
+
+  /* ── PLANS ── */
+  .plans-section { background: var(--bg-secondary); }
+
+  .plans-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 960px;
+  }
+
+  .plan-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 40px 28px; position: relative; transition: all 0.4s;
+  }
+
+  .plan-card.featured { border-color: var(--accent); }
+
+  .plan-card.featured::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+  }
+
+  .plan-card:hover {
+    transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .plan-tier {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .plan-card h3 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 1.8rem; margin-bottom: 20px;
+  }
+
+  .plan-features {
+    list-style: none; margin-bottom: 28px;
+  }
+
+  .plan-features li {
+    color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;
+    padding: 8px 0; padding-left: 20px; position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-features li:last-child { border-bottom: none; }
+
+  .plan-features li::before {
+    content: '>'; position: absolute; left: 0;
+    color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  }
+
+  .plan-cta {
+    display: block; text-align: center; padding: 14px 24px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none; transition: all 0.3s;
+  }
+
+  .plan-cta-primary {
+    background: var(--accent); color: var(--bg-primary);
+  }
+
+  .plan-cta-primary:hover {
+    box-shadow: 0 0 30px var(--accent-dim); transform: translateY(-2px);
+  }
+
+  .plan-cta-secondary {
+    border: 1px solid var(--border); color: var(--text-secondary);
+  }
+
+  .plan-cta-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── INTEGRATIONS ── */
+  .integrations-section { background: var(--bg-primary); }
+
+  .integrations-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; max-width: 860px;
+  }
+
+  .integration-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 24px 20px; display: flex; align-items: center; gap: 14px;
+    transition: all 0.3s;
+  }
+
+  .integration-item:hover { border-color: var(--border-accent); }
+
+  .integration-icon {
+    width: 40px; height: 40px; border: 1px solid var(--border-accent);
+    background: var(--accent-dim); display: flex; align-items: center;
+    justify-content: center; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; color: var(--accent); flex-shrink: 0;
+  }
+
+  .integration-item h4 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 2px;
+  }
+
+  .integration-item p {
+    font-size: 0.75rem; color: var(--text-muted);
+  }
+
+  /* ── CTA ── */
+  .cta-bottom {
+    position: relative; z-index: 1; padding: 80px 48px;
+    background: var(--bg-secondary); text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-bottom h2 {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(1.8rem, 3vw, 2.4rem); margin-bottom: 16px;
+  }
+
+  .cta-bottom p {
+    color: var(--text-secondary); font-size: 1rem; max-width: 440px;
+    margin: 0 auto 32px; line-height: 1.7;
+  }
+
+  .cta-bottom .signup-form { animation: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1; padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    color: var(--text-muted); letter-spacing: 1px;
+  }
+
+  .footer-links { display: flex; gap: 24px; }
+
+  .footer-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.82rem; transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px); transition: all 0.7s ease-out;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .engines-grid { grid-template-columns: repeat(3, 1fr); }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .scoring-grid { grid-template-columns: 1fr 1fr; }
+    .plans-grid { grid-template-columns: 1fr; max-width: 400px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    section, .hero, .cta-bottom { padding-left: 24px; padding-right: 24px; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; }
+    .engines-grid { grid-template-columns: 1fr 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: 1fr; }
+    .scoring-grid { grid-template-columns: 1fr; }
+    .integrations-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-icon"></div>
+    Soldier Data
+  </a>
+  <a href="/" class="nav-back">&larr; Back to Home</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="badge">
+      <span class="pulse"></span>
+      AI Visibility Platform
+    </div>
+    <h1><span class="highlight">Rangefinder</span></h1>
+    <p class="subtitle">Generative Engine Optimization Analytics</p>
+    <p>
+      Track exactly how your brand is cited, mentioned, and ranked across every major AI search engine. Rangefinder gives you the data to understand and optimize your visibility in the age of AI-generated answers.
+    </p>
+
+    <form class="signup-form" id="waitlistForm" onsubmit="event.preventDefault(); document.getElementById('waitlistForm').style.display='none'; document.getElementById('successMsg').style.display='block';">
+      <input type="email" placeholder="Enter your email for early access" required>
+      <button type="submit">Join Waitlist</button>
+    </form>
+    <div class="success-msg" id="successMsg">
+      &#10003; You're on the list. We'll notify you when Rangefinder launches.
+    </div>
+    <p class="form-note">Free tier available at launch. No credit card required.</p>
+  </div>
+</section>
+
+<!-- ── ENGINES MONITORED ── -->
+<section class="engines-section">
+  <div class="section-label-center reveal">Engines We Monitor</div>
+  <h2 class="section-title reveal" style="text-align:center;">Five AI Engines. One Dashboard.</h2>
+  <p class="section-desc reveal" style="text-align:center; margin-left:auto; margin-right:auto;">
+    Rangefinder tracks your brand across every AI platform that generates search answers.
+  </p>
+
+  <div class="engines-grid reveal">
+    <div class="engine-card">
+      <div class="engine-name">Perplexity</div>
+      <div class="engine-type">AI Search</div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-name">Google AI</div>
+      <div class="engine-type">AI Overview</div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-name">ChatGPT</div>
+      <div class="engine-type">Search + Browse</div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-name">Bing Copilot</div>
+      <div class="engine-type">AI Answers</div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-name">Claude</div>
+      <div class="engine-type">AI Search</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="features-section">
+  <div class="section-label reveal">Platform Capabilities</div>
+  <h2 class="section-title reveal">Everything You Need to Win AI Search</h2>
+  <p class="section-desc reveal">From real-time monitoring to competitor benchmarking, Rangefinder provides the complete GEO analytics stack.</p>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">MON</div>
+      <h3>Real-Time Visibility Monitoring</h3>
+      <p>Automated daily scans query each AI engine with your tracked keywords and measure whether your brand appears in the generated response. Know exactly where you stand, every day.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">CIT</div>
+      <h3>Citation Extraction &amp; Classification</h3>
+      <p>Our extraction pipeline identifies every URL cited in AI responses, then classifies each as a brand citation, competitor citation, or neutral source. Four-stage detection covers direct links, brand names, domain mentions, and fuzzy matches.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">SOV</div>
+      <h3>Share of Voice Analysis</h3>
+      <p>Measure your brand's citation share relative to competitors across each AI engine and keyword category. Track share of voice trends over time and identify where competitors are gaining ground.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">SCR</div>
+      <h3>Visibility Scoring</h3>
+      <p>Position-weighted scoring algorithms calculate your visibility across engines. First-position citations score highest, with engine-specific weighting that reflects where your audience actually searches.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">CMP</div>
+      <h3>Competitor Benchmarking</h3>
+      <p>Track up to 10 competitors per project. See which competitors get cited for your keywords, where they outrank you, and how their visibility trends compare to yours over time.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">ALR</div>
+      <h3>Smart Alerts</h3>
+      <p>Configure alerts for visibility drops, new citations gained, lost citations, competitor changes, and negative sentiment detection. Get notified via email or in-app before small changes become big problems.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">KWD</div>
+      <h3>Keyword Management</h3>
+      <p>Organize tracked keywords by category, toggle monitoring on and off, and analyze performance at the keyword level. See which queries consistently surface your brand and which need optimization.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">GA4</div>
+      <h3>GA4 &amp; Search Console Integration</h3>
+      <p>Connect Google Analytics 4 and Search Console to correlate AI visibility with actual traffic and search performance. Understand how AI citations translate into real visits and conversions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-section">
+  <div class="section-label reveal">The Monitoring Pipeline</div>
+  <h2 class="section-title reveal">How Rangefinder Works</h2>
+  <p class="section-desc reveal">An automated four-stage pipeline that runs daily to keep your visibility data current.</p>
+
+  <div class="pipeline reveal">
+    <div class="pipeline-step">
+      <div class="pipeline-number">01</div>
+      <h3>Keyword Scan</h3>
+      <p>Each morning, Rangefinder queries all five AI engines with your tracked keywords — exactly as a real user would search.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-number">02</div>
+      <h3>Citation Extraction</h3>
+      <p>Raw AI responses are parsed to extract every cited URL and brand mention using a multi-stage detection pipeline.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-number">03</div>
+      <h3>Scoring &amp; Classification</h3>
+      <p>Citations are classified as brand, competitor, or neutral. Visibility scores, prominence, and share of voice are calculated.</p>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-number">04</div>
+      <h3>Alerts &amp; Reporting</h3>
+      <p>Alert conditions are evaluated against your thresholds. Dashboard metrics update. Trends become visible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCORING METRICS ── -->
+<section class="scoring-section">
+  <div class="section-label reveal">Analytics Framework</div>
+  <h2 class="section-title reveal">Metrics That Matter for GEO</h2>
+  <p class="section-desc reveal">Rangefinder calculates four core metrics that give you a complete picture of your AI search presence.</p>
+
+  <div class="scoring-grid reveal">
+    <div class="score-card">
+      <div class="score-value">VS</div>
+      <div class="score-label">Visibility Score</div>
+      <div class="score-desc">Weighted average across all engines. Google AI Overview carries 1.5x weight to reflect search volume.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-value">CC</div>
+      <div class="score-label">Citation Confidence</div>
+      <div class="score-desc">Percentage of query runs that contain at least one brand citation. Measures consistency of presence.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-value">PS</div>
+      <div class="score-label">Prominence Score</div>
+      <div class="score-desc">Position-based scoring. First citation = 1.0, second = 0.8, third = 0.6. Higher is better.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-value">SoV</div>
+      <div class="score-label">Share of Voice</div>
+      <div class="score-desc">Your brand citations divided by total citations, expressed as a percentage. Benchmark against competitors.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PLANS ── -->
+<section class="plans-section">
+  <div class="section-label reveal">Plans</div>
+  <h2 class="section-title reveal">Start Free. Scale When Ready.</h2>
+  <p class="section-desc reveal">Every plan includes the full monitoring pipeline. Upgrade as your keyword and project needs grow.</p>
+
+  <div class="plans-grid reveal">
+    <div class="plan-card">
+      <div class="plan-tier">Free</div>
+      <h3>Starter</h3>
+      <ul class="plan-features">
+        <li>10 tracked keywords</li>
+        <li>1 project</li>
+        <li>1 competitor</li>
+        <li>Perplexity engine</li>
+        <li>Daily monitoring</li>
+        <li>In-app alerts</li>
+      </ul>
+      <a href="#" class="plan-cta plan-cta-secondary">Join Waitlist</a>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="plan-tier">Most Popular</div>
+      <h3>Starter</h3>
+      <ul class="plan-features">
+        <li>100 tracked keywords</li>
+        <li>2 projects</li>
+        <li>3 competitors</li>
+        <li>3 AI engines</li>
+        <li>Daily monitoring</li>
+        <li>Email + in-app alerts</li>
+        <li>GA4 integration</li>
+      </ul>
+      <a href="#" class="plan-cta plan-cta-primary">Join Waitlist</a>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-tier">Scale</div>
+      <h3>Growth</h3>
+      <ul class="plan-features">
+        <li>500 tracked keywords</li>
+        <li>5 projects</li>
+        <li>10 competitors</li>
+        <li>All 5 AI engines</li>
+        <li>Daily monitoring</li>
+        <li>Email + in-app alerts</li>
+        <li>GA4 + Search Console</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="#" class="plan-cta plan-cta-secondary">Join Waitlist</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── INTEGRATIONS ── -->
+<section class="integrations-section">
+  <div class="section-label reveal">Integrations</div>
+  <h2 class="section-title reveal">Connects to Your Existing Stack</h2>
+  <p class="section-desc reveal">Rangefinder pulls data from the platforms you already use and delivers insights where your team works.</p>
+
+  <div class="integrations-grid reveal">
+    <div class="integration-item">
+      <div class="integration-icon">GA4</div>
+      <div>
+        <h4>Google Analytics 4</h4>
+        <p>Traffic correlation</p>
+      </div>
+    </div>
+    <div class="integration-item">
+      <div class="integration-icon">GSC</div>
+      <div>
+        <h4>Search Console</h4>
+        <p>Search performance</p>
+      </div>
+    </div>
+    <div class="integration-item">
+      <div class="integration-icon">STR</div>
+      <div>
+        <h4>Stripe Billing</h4>
+        <p>Subscription management</p>
+      </div>
+    </div>
+    <div class="integration-item">
+      <div class="integration-icon">API</div>
+      <div>
+        <h4>REST API</h4>
+        <p>Custom integrations</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BOTTOM ── -->
+<section class="cta-bottom">
+  <h2 class="reveal">Your Brand Is Being Talked About by AI. Are You Listening?</h2>
+  <p class="reveal">Join the waitlist and be first to monitor your AI visibility when Rangefinder launches.</p>
+
+  <form class="signup-form reveal" id="waitlistForm2" onsubmit="event.preventDefault(); document.getElementById('waitlistForm2').style.display='none'; document.getElementById('successMsg2').style.display='block';">
+    <input type="email" placeholder="Enter your email for early access" required>
+    <button type="submit">Join Waitlist</button>
+  </form>
+  <div class="success-msg" id="successMsg2">
+    &#10003; You're on the list. We'll notify you when Rangefinder launches.
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">&copy; 2026 Soldier Data. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#products">Products</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- ── SCROLL REVEAL ── -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

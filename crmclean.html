@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRMClean — CRM Data Hygiene Platform | Soldier Data</title>
+<meta name="description" content="CRMClean by Soldier Data — intelligent CRM deduplication, enrichment, and data hygiene platform. Eliminate dirty data, fix duplicates, and keep your pipeline accurate at scale.">
+<meta name="keywords" content="CRM cleanup, CRM deduplication, data hygiene, CRM enrichment, Salesforce cleanup, HubSpot data quality, Dynamics 365 CRM, data standardization, CRM data management">
+<meta name="author" content="Soldier Data">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://soldierdata.com/crmclean.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="CRMClean — CRM Data Hygiene Platform | Soldier Data">
+<meta property="og:description" content="Intelligent CRM deduplication, enrichment, and data hygiene. Eliminate dirty data and keep your pipeline accurate at scale.">
+<meta property="og:url" content="https://soldierdata.com/crmclean.html">
+<meta property="og:site_name" content="Soldier Data">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CRMClean — CRM Data Hygiene Platform | Soldier Data">
+<meta name="twitter:description" content="Intelligent CRM deduplication, enrichment, and data hygiene. Eliminate dirty data and keep your pipeline accurate at scale.">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CRMClean",
+  "description": "CRMClean is an intelligent CRM data hygiene platform by Soldier Data that provides deduplication, enrichment, field standardization, and automated hygiene scans for Salesforce, HubSpot, Dynamics 365, and Zoho CRM.",
+  "url": "https://soldierdata.com/crmclean.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "availability": "https://schema.org/PreOrder",
+    "description": "Coming Soon — Join the waitlist for early access"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "Soldier Data",
+    "url": "https://soldierdata.com"
+  },
+  "featureList": [
+    "Fuzzy Match Deduplication",
+    "Automated Field Standardization",
+    "Third-Party Data Enrichment",
+    "Scheduled Hygiene Scans",
+    "Anomaly Detection",
+    "Native CRM Connectors for Salesforce, HubSpot, Dynamics 365, and Zoho"
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #10131a;
+    --bg-card: #141821;
+    --bg-card-hover: #1a1f2e;
+    --accent: #00e5a0;
+    --accent-dim: #00e5a022;
+    --accent-mid: #00e5a066;
+    --accent-bright: #00ffb3;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8a90a0;
+    --text-muted: #555b6e;
+    --border: #1e2333;
+    --border-accent: #00e5a033;
+    --danger: #ff4757;
+    --warning: #ffa726;
+    --grid-line: rgba(0, 229, 160, 0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(180deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo .logo-icon {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--accent-dim);
+  }
+
+  .nav-logo .logo-icon::after {
+    content: 'SD';
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .nav-back {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-back:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(100px);
+    animation: glowPulse 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.15); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 740px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding: 8px 20px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    animation: fadeSlideUp 0.8s ease-out;
+  }
+
+  .badge .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-mid); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 8px transparent; }
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 5.5vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    animation: fadeSlideUp 0.8s ease-out 0.1s both;
+  }
+
+  .hero h1 .highlight { color: var(--accent); }
+
+  .hero .subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    color: var(--text-secondary);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s ease-out 0.15s both;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.8;
+    animation: fadeSlideUp 0.8s ease-out 0.2s both;
+  }
+
+  /* ── EMAIL FORM ── */
+  .signup-form {
+    display: flex;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto 20px;
+    animation: fadeSlideUp 0.8s ease-out 0.3s both;
+  }
+
+  .signup-form input {
+    flex: 1;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .signup-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .signup-form input::placeholder { color: var(--text-muted); }
+
+  .signup-form button {
+    padding: 16px 28px;
+    background: var(--accent);
+    color: var(--bg-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .signup-form button:hover {
+    box-shadow: 0 0 40px var(--accent-dim), 0 8px 24px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  .form-note {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    animation: fadeSlideUp 0.8s ease-out 0.35s both;
+  }
+
+  .success-msg {
+    display: none;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 16px 24px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── SECTIONS COMMON ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .section-label::before,
+  .section-label::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problems {
+    padding: 100px 48px 120px;
+    background: var(--bg-secondary);
+  }
+
+  .problems-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .problems-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .problems-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .problem-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--danger), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .problem-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .problem-card:hover::before { opacity: 1; }
+
+  .problem-icon {
+    width: 56px;
+    height: 56px;
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    background: rgba(255, 71, 87, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 1.4rem;
+  }
+
+  .problem-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .problem-card p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  /* ── FEATURES ── */
+  .features {
+    padding: 100px 48px 120px;
+    background: var(--bg-primary);
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .features-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .features-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .feature-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .feature-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-it-works {
+    padding: 100px 48px 120px;
+    background: var(--bg-secondary);
+  }
+
+  .how-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .how-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .how-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    left: 16%;
+    right: 16%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-accent), var(--accent-mid), var(--border-accent), transparent);
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+  }
+
+  .step-number {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--accent);
+    background: var(--bg-secondary);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .step p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+
+  /* ── IMPACT STATS ── */
+  .impact {
+    padding: 100px 48px 120px;
+    background: var(--bg-primary);
+  }
+
+  .impact-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .impact-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .impact-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .stat-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-number {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 3.2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .stat-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  /* ── CTA BOTTOM ── */
+  .cta-bottom {
+    padding: 80px 48px;
+    background: var(--bg-secondary);
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-bottom h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+  }
+
+  .cta-bottom p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 440px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .cta-bottom .signup-form {
+    animation: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease-out;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .problems-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .hero,
+    .problems,
+    .features,
+    .how-it-works,
+    .impact,
+    .cta-bottom { padding-left: 24px; padding-right: 24px; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; }
+    .steps { grid-template-columns: 1fr; gap: 48px; }
+    .steps::before { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-icon"></div>
+    Soldier Data
+  </a>
+  <a href="/" class="nav-back">&larr; Back to Home</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="badge">
+      <span class="pulse"></span>
+      Coming Soon
+    </div>
+    <h1>
+      <span class="highlight">CRM</span>Clean
+    </h1>
+    <p class="subtitle">CRM Data Hygiene Platform</p>
+    <p>
+      Intelligent deduplication, enrichment, and automated hygiene for your CRM. Stop wasting pipeline on dirty data and start making decisions you can trust.
+    </p>
+
+    <form class="signup-form" id="waitlistForm" onsubmit="event.preventDefault(); document.getElementById('waitlistForm').style.display='none'; document.getElementById('successMsg').style.display='block';">
+      <input type="email" placeholder="Enter your email for early access" required>
+      <button type="submit">Join Waitlist &rarr;</button>
+    </form>
+    <div class="success-msg" id="successMsg">
+      &#10003; You're on the list. We'll be in touch soon.
+    </div>
+    <p class="form-note">Be first in line when we launch. No spam, ever.</p>
+  </div>
+</section>
+
+<!-- ── PROBLEM SECTION ── -->
+<section class="problems">
+  <div class="problems-header reveal">
+    <div class="section-label">The Problem</div>
+    <h2>Dirty Data Is Expensive</h2>
+    <p>Bad CRM data doesn't just clutter your database. It corrupts your pipeline, wastes your team's time, and costs real revenue.</p>
+  </div>
+
+  <div class="problems-grid">
+    <div class="problem-card reveal">
+      <div class="problem-icon">&#x29C9;</div>
+      <h3>Duplicate Records</h3>
+      <p>The same contact stored five different ways. Wasted outreach, confused reps, and an inflated pipeline that hides the truth about your funnel.</p>
+    </div>
+
+    <div class="problem-card reveal">
+      <div class="problem-icon">&#x29D6;</div>
+      <h3>Decayed Data</h3>
+      <p>Contacts change jobs, companies merge, and fields go stale. Industry research shows 30% of CRM data decays annually, eroding trust in every report you pull.</p>
+    </div>
+
+    <div class="problem-card reveal">
+      <div class="problem-icon">&#x2A2F;</div>
+      <h3>Inconsistent Formatting</h3>
+      <p>Free-text fields, mixed conventions, and no enforced standards. When every rep enters data differently, your reports become unreliable and segmentation breaks down.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="features">
+  <div class="features-header reveal">
+    <div class="section-label">Platform Capabilities</div>
+    <h2>Clean Data, Automatically</h2>
+    <p>Six core capabilities that detect, fix, and prevent data quality issues across your entire CRM.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x2261;</div>
+      <h3>Fuzzy Match Deduplication</h3>
+      <p>Intelligent matching across contacts, accounts, and leads. Catches duplicates even with typos, abbreviations, and formatting variations that rule-based systems miss.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x2630;</div>
+      <h3>Automated Field Standardization</h3>
+      <p>Phone formats, addresses, job titles, and company names normalized automatically. Consistent data across every record without manual cleanup.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x2B06;</div>
+      <h3>Third-Party Enrichment</h3>
+      <p>Enrich records with firmographic data, email verification, and social profiles. Fill in the gaps your reps leave behind and keep contact details current.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x21BB;</div>
+      <h3>Scheduled Hygiene Scans</h3>
+      <p>Set it and forget it. Automated scans run on your schedule to flag anomalies, detect decay, and surface issues before they spread through your pipeline.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x26A0;</div>
+      <h3>Anomaly Detection</h3>
+      <p>AI spots unusual patterns like bulk imports gone wrong, mass field changes, and data quality regressions. Get alerted before bad data becomes embedded.</p>
+    </div>
+
+    <div class="feature-card reveal">
+      <div class="feature-icon">&#x2B0C;</div>
+      <h3>Native CRM Connectors</h3>
+      <p>Plug-and-play integrations with Salesforce, HubSpot, Dynamics 365, and Zoho. Connect in minutes with secure, read-write API access to your CRM.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-it-works">
+  <div class="how-header reveal">
+    <div class="section-label">How It Works</div>
+    <h2>Three Steps to Clean Data</h2>
+    <p>From connection to continuous hygiene in minutes, not months.</p>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-number">01</div>
+      <h3>Connect</h3>
+      <p>Link your CRM in minutes with native connectors. Salesforce, HubSpot, Dynamics 365, and Zoho supported out of the box.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">02</div>
+      <h3>Scan</h3>
+      <p>Our engine analyzes every record for duplicates, data decay, and formatting issues. Get a full health report on your CRM data.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">03</div>
+      <h3>Clean</h3>
+      <p>Review recommendations, approve changes in bulk, and schedule ongoing hygiene scans to keep your data clean permanently.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── IMPACT STATS ── -->
+<section class="impact">
+  <div class="impact-header reveal">
+    <div class="section-label">The Cost of Inaction</div>
+    <h2>Dirty Data by the Numbers</h2>
+    <p>The business impact of poor CRM data quality is measurable, significant, and avoidable.</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card reveal">
+      <div class="stat-number">30%</div>
+      <div class="stat-label">Annual Decay Rate</div>
+      <p class="stat-desc">CRM data decays by roughly 30% per year as contacts change roles, companies merge, and records go stale.</p>
+    </div>
+
+    <div class="stat-card reveal">
+      <div class="stat-number">$100+</div>
+      <div class="stat-label">Per Dirty Record</div>
+      <p class="stat-desc">Each bad record costs over $100 in lost productivity, wasted outreach, and misallocated resources across your sales org.</p>
+    </div>
+
+    <div class="stat-card reveal">
+      <div class="stat-number">70%</div>
+      <div class="stat-label">CRM Failure Rate</div>
+      <p class="stat-desc">The majority of CRM implementations fail to deliver expected ROI, and bad data is cited as the leading cause.</p>
+    </div>
+
+    <div class="stat-card reveal">
+      <div class="stat-number">3x</div>
+      <div class="stat-label">Pipeline Accuracy</div>
+      <p class="stat-desc">Organizations that invest in data hygiene see up to 3x improvement in pipeline accuracy and forecast reliability.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BOTTOM ── -->
+<section class="cta-bottom">
+  <h2 class="reveal">Your Pipeline Deserves Better Data</h2>
+  <p class="reveal">Stop losing deals to dirty records. Join the waitlist and be among the first to clean your CRM with CRMClean.</p>
+
+  <form class="signup-form reveal" id="waitlistForm2" onsubmit="event.preventDefault(); document.getElementById('waitlistForm2').style.display='none'; document.getElementById('successMsg2').style.display='block';">
+    <input type="email" placeholder="Enter your email for early access" required>
+    <button type="submit">Join Waitlist &rarr;</button>
+  </form>
+  <div class="success-msg" id="successMsg2">
+    &#10003; You're on the list. We'll be in touch soon.
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">&copy; 2026 Soldier Data. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#products">Products</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- ── SCROLL REVEAL ── -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
