@@ -69,6 +69,131 @@ nav{
   transition:color .2s;
 }
 .nav-links a:hover{color:var(--accent)}
+.nav-cta{
+  background:var(--accent);color:#0a0c10 !important;
+  padding:8px 18px;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:.8rem;letter-spacing:1.5px;
+  text-transform:uppercase;transition:background .2s;
+}
+.nav-cta:hover{background:var(--accent-hover);color:#0a0c10 !important}
+
+/* Rangefinder Banner */
+.rf-banner{
+  max-width:1200px;margin:0 auto 48px;padding:0 40px;
+}
+.rf-banner-inner{
+  background:linear-gradient(135deg,#0f1218 0%,#141821 50%,#0f1218 100%);
+  border:1px solid var(--border-accent);
+  padding:40px 48px;display:flex;align-items:center;gap:40px;
+  position:relative;overflow:hidden;
+}
+.rf-banner-inner::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
+.rf-banner-inner::after{
+  content:'';position:absolute;top:0;right:0;width:300px;height:100%;
+  background:radial-gradient(ellipse at right,rgba(0,229,160,.06),transparent 70%);
+  pointer-events:none;
+}
+.rf-badge{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;
+  color:#0a0c10;background:var(--accent);padding:4px 10px;
+  letter-spacing:2px;text-transform:uppercase;display:inline-block;
+  margin-bottom:12px;
+}
+.rf-banner-content{flex:1}
+.rf-banner-content h2{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(1.3rem,3vw,1.7rem);
+  font-weight:700;margin-bottom:8px;line-height:1.2;
+}
+.rf-banner-content h2 span{color:var(--accent)}
+.rf-banner-content p{
+  color:var(--text-muted);font-size:.9rem;max-width:520px;line-height:1.6;
+}
+.rf-banner-actions{display:flex;flex-direction:column;gap:12px;align-items:flex-start;flex-shrink:0}
+.rf-banner-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 28px;background:var(--accent);color:#0a0c10;
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:700;
+  text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .2s;white-space:nowrap;
+}
+.rf-banner-btn:hover{background:var(--accent-hover)}
+.rf-banner-sub{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);letter-spacing:.5px;
+}
+.rf-engines{
+  display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;
+}
+.rf-engine{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:var(--text-muted);letter-spacing:.5px;
+  display:flex;align-items:center;gap:5px;
+}
+.rf-engine-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--accent);
+  display:inline-block;
+}
+
+/* Break Card (inline Rangefinder card in grid) */
+.break-card{
+  background:linear-gradient(135deg,rgba(0,229,160,.04),rgba(0,229,160,.01));
+  border:1px solid var(--border-accent);
+  padding:32px;display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.break-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+}
+.break-card .break-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:var(--accent);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.break-card h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;
+  margin-bottom:10px;line-height:1.2;
+}
+.break-card h3 span{color:var(--accent)}
+.break-card p{
+  color:var(--text-muted);font-size:.88rem;line-height:1.65;
+  margin-bottom:20px;
+}
+.break-card-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;background:var(--accent);color:#0a0c10;
+  font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;
+  text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .2s;align-self:flex-start;
+}
+.break-card-btn:hover{background:var(--accent-hover)}
+
+/* Bottom CTA with email */
+.cta-form{
+  display:flex;gap:0;max-width:460px;margin:0 auto 16px;
+}
+.cta-input{
+  flex:1;padding:14px 18px;
+  background:var(--bg);border:1px solid var(--border);border-right:none;
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.cta-input::placeholder{color:var(--text-dim)}
+.cta-input:focus{border-color:var(--accent)}
+.cta-submit{
+  padding:14px 24px;background:var(--accent);color:#0a0c10;
+  font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:background .2s;white-space:nowrap;
+}
+.cta-submit:hover{background:var(--accent-hover)}
+.cta-note{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);letter-spacing:.3px;
+}
 
 /* Hero */
 .hero{
@@ -192,11 +317,20 @@ footer{
 
 @media(max-width:768px){
   .nav-inner{padding:0 20px}
-  .nav-links{gap:20px}
+  .nav-links{gap:14px}
+  .nav-cta{padding:6px 12px;font-size:.7rem}
   .hero{padding:120px 20px 40px}
+  .rf-banner{padding:0 20px;margin-bottom:32px}
+  .rf-banner-inner{flex-direction:column;padding:28px 24px;gap:24px;text-align:center}
+  .rf-banner-actions{align-items:center}
+  .rf-engines{justify-content:center}
   .tools-section{padding:0 20px 60px}
   .tools-grid{grid-template-columns:1fr}
+  .break-card{text-align:center}
+  .break-card-btn{align-self:center}
   .cta-section{padding:0 20px 60px}
+  .cta-form{flex-direction:column}
+  .cta-input{border-right:1px solid var(--border);border-bottom:none}
   footer{padding:30px 20px}
 }
 </style>
@@ -208,8 +342,8 @@ footer{
     <a href="/" class="nav-logo">SOLDIER<span>DATA</span></a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="https://rangefinder.soldierdata.com">Rangefinder</a>
       <a href="/#contact">Contact</a>
+      <a href="https://rangefinder.soldierdata.com" class="nav-cta">Try Rangefinder</a>
     </div>
   </div>
 </nav>
@@ -218,6 +352,27 @@ footer{
   <div class="section-label">GEO Tools</div>
   <h1>Free AI Visibility <span>Analyzers</span></h1>
   <p>Diagnostic tools that reveal how AI systems interpret, cite, and surface your content. Run them against your pages and see exactly where you stand.</p>
+</section>
+
+<section class="rf-banner">
+  <div class="rf-banner-inner">
+    <div class="rf-banner-content">
+      <div class="rf-badge">Full Platform</div>
+      <h2>These tools are samples.<br><span>Rangefinder</span> runs them all — automatically.</h2>
+      <p>Track your brand's visibility across every major AI engine. Get daily citation scores, competitor benchmarks, and alerts when your rankings shift.</p>
+      <div class="rf-engines">
+        <span class="rf-engine"><span class="rf-engine-dot"></span> Perplexity</span>
+        <span class="rf-engine"><span class="rf-engine-dot"></span> Google AI</span>
+        <span class="rf-engine"><span class="rf-engine-dot"></span> ChatGPT</span>
+        <span class="rf-engine"><span class="rf-engine-dot"></span> Bing Copilot</span>
+        <span class="rf-engine"><span class="rf-engine-dot"></span> Claude</span>
+      </div>
+    </div>
+    <div class="rf-banner-actions">
+      <a href="https://rangefinder.soldierdata.com" class="rf-banner-btn">Get Early Access</a>
+      <span class="rf-banner-sub">Free tier available &mdash; no credit card</span>
+    </div>
+  </div>
 </section>
 
 <section class="tools-section">
@@ -271,6 +426,13 @@ footer{
       <a href="skepticism-score-calculator.html" class="tool-link">Launch Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
 
+    <div class="break-card">
+      <div class="break-eyebrow">Rangefinder</div>
+      <h3>Like what you see?<br><span>Automate all of it.</span></h3>
+      <p>Rangefinder monitors your AI visibility across 5 engines daily. Every analysis on this page — running continuously, with alerts and competitor tracking built in.</p>
+      <a href="https://rangefinder.soldierdata.com" class="break-card-btn">Start Free</a>
+    </div>
+
     <div class="tool-card">
       <div class="tool-icon">📊</div>
       <h3>Formatting Paradox Gap Analyzer</h3>
@@ -312,9 +474,13 @@ footer{
 
 <section class="cta-section">
   <div class="cta-box">
-    <h2>Need Continuous <span>Monitoring?</span></h2>
-    <p>These tools give you a snapshot. Rangefinder gives you real-time AI visibility tracking across 5 engines, every day.</p>
-    <a href="https://rangefinder.soldierdata.com" class="cta-btn">Explore Rangefinder</a>
+    <h2>Stop checking manually.<br><span>Get your visibility score daily.</span></h2>
+    <p>Join the waitlist for Rangefinder and be first to track your brand across every AI engine — automatically.</p>
+    <form class="cta-form" action="https://rangefinder.soldierdata.com" method="get">
+      <input type="email" class="cta-input" placeholder="Enter your email" required>
+      <button type="submit" class="cta-submit">Join Waitlist</button>
+    </form>
+    <p class="cta-note">Free tier available. No credit card required.</p>
   </div>
 </section>
 
