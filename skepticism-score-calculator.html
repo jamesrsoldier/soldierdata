@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Skepticism Score Calculator</title>
+<meta name="description" content="Find out how much AI systems distrust your product recommendation content. Score your content against the skepticism filter that AI applies to SEO-optimized pages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'——';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:640px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Overall skepticism score hero */
+.skepticism-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.skepticism-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.skepticism-hero.green::before{background:var(--green)}
+.skepticism-hero.yellow::before{background:var(--yellow)}
+.skepticism-hero.orange::before{background:var(--orange)}
+.skepticism-hero.red::before{background:var(--red)}
+.skepticism-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.skepticism-number.green{color:var(--green)}
+.skepticism-number.yellow{color:var(--yellow)}
+.skepticism-number.orange{color:var(--orange)}
+.skepticism-number.red{color:var(--red)}
+.skepticism-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:10px 0 8px;letter-spacing:1px;text-transform:uppercase;
+}
+.skepticism-desc{font-size:.9rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.6}
+
+/* Summary bar */
+.summary-bar{
+  display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);margin-bottom:24px;
+  font-size:.82rem;font-family:'JetBrains Mono',monospace;
+}
+.summary-bar span{color:var(--text-dim);letter-spacing:0.5px}
+.summary-bar strong{color:var(--text);margin-left:4px}
+
+/* Factor breakdown grid */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:640px){.factor-grid{grid-template-columns:1fr}}
+.factor-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+.factor-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.factor-card.green::before{background:var(--green)}
+.factor-card.yellow::before{background:var(--yellow)}
+.factor-card.orange::before{background:var(--orange)}
+.factor-card.red::before{background:var(--red)}
+.factor-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.factor-name{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;
+}
+.factor-points{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;line-height:1}
+.factor-points.green{color:var(--green)}
+.factor-points.yellow{color:var(--yellow)}
+.factor-points.orange{color:var(--orange)}
+.factor-points.red{color:var(--red)}
+.factor-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:4px;
+}
+.factor-desc{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.factor-max{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);margin-top:8px;letter-spacing:0.5px;
+}
+
+/* Findings list (accordion) */
+.findings-section{margin-bottom:24px}
+.findings-section .card{padding:0;overflow:hidden}
+.findings-cat-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-cat-header:hover{background:rgba(30,35,51,.8)}
+.findings-cat-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.findings-cat-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:3px 10px;border-radius:2px;
+}
+.findings-cat-count.red{background:rgba(255,77,77,.12);color:var(--red)}
+.findings-cat-count.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.findings-cat-count.yellow{background:rgba(240,180,41,.1);color:var(--yellow)}
+.findings-cat-count.green{background:rgba(0,229,160,.1);color:var(--green)}
+.toggle-arrow{
+  font-size:.8rem;color:var(--text-dim);transition:transform .2s;
+}
+.toggle-arrow.open{transform:rotate(180deg)}
+.findings-body{display:none;padding:0}
+.findings-body.open{display:block}
+
+.finding-item{
+  padding:14px 24px;border-bottom:1px solid var(--border);
+}
+.finding-item:last-child{border-bottom:none}
+.finding-severity{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-right:8px;flex-shrink:0;
+}
+.finding-severity.red{background:var(--red)}
+.finding-severity.orange{background:var(--orange)}
+.finding-severity.yellow{background:var(--yellow)}
+.finding-text{
+  font-size:.88rem;color:var(--text);margin-bottom:6px;
+  display:flex;align-items:flex-start;gap:0;
+}
+.finding-text .matched{
+  background:rgba(255,77,77,.15);color:var(--red);
+  padding:1px 4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;
+}
+.finding-text .matched.orange-match{
+  background:rgba(240,140,41,.15);color:var(--orange);
+}
+.finding-text .matched.yellow-match{
+  background:rgba(240,180,41,.12);color:var(--yellow);
+}
+.finding-explain{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;
+  padding-left:16px;margin-top:2px;
+}
+.finding-fix{
+  font-size:.78rem;color:var(--accent);line-height:1.5;
+  padding-left:16px;margin-top:4px;font-style:italic;
+}
+
+/* Badges */
+.badge{
+  display:inline-block;padding:3px 10px;font-size:.65rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  font-family:'JetBrains Mono',monospace;
+}
+.badge-red{background:rgba(255,77,77,.12);color:var(--red);border:1px solid rgba(255,77,77,.25)}
+.badge-orange{background:rgba(240,140,41,.12);color:var(--orange);border:1px solid rgba(240,140,41,.25)}
+.badge-yellow{background:rgba(240,180,41,.1);color:var(--yellow);border:1px solid rgba(240,180,41,.25)}
+.badge-green{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Soft gate overlay */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px;
+}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Skepticism Score Calculator</div>
+    <h1>Does AI <span>Distrust</span><br>Your Content?</h1>
+    <p class="subtitle">AI systems are programmed to be skeptical of SEO-optimized product recommendations. Score your content against the skepticism filter to see how much distrust it triggers.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="content-input" id="contentInput" contenteditable="true" data-placeholder="Paste your product recommendation, comparison, or review content here — raw text, HTML, or markdown all work..." role="textbox" aria-multiline="true"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runScan()">
+        <span id="scanText">Calculate Skepticism Score</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Skepticism Score -->
+    <div class="skepticism-hero" id="skepticismHero">
+      <div class="skepticism-number" id="skepticismScore">&mdash;</div>
+      <div class="skepticism-label">AI Skepticism Score</div>
+      <div class="skepticism-desc" id="skepticismDesc"></div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <!-- Factor breakdown -->
+    <div class="factor-grid" id="factorGrid"></div>
+
+    <!-- Detailed findings per factor -->
+    <div class="findings-section" id="findingsSection"></div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Enter your email to get a detailed breakdown with rewrite suggestions</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want a full diagnostic of how AI systems perceive your brand&rsquo;s content?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Diagnostic Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 AI Skepticism Score Calculator</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Scans</h3>
+    <p>Enter your email to continue scanning. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ───── helpers ───── */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+
+/* ───── contenteditable paste & input handling ───── */
+const contentEl = $('contentInput');
+let rawContent = '';
+
+contentEl.addEventListener('paste', function(e){
+  e.preventDefault();
+  const clip = e.clipboardData || window.clipboardData;
+  const html = clip.getData('text/html');
+  const text = clip.getData('text/plain');
+  if(html){
+    rawContent = html;
+    this.textContent = html;
+  } else {
+    rawContent = text;
+    this.textContent = text;
+  }
+  updateCharCount();
+});
+
+contentEl.addEventListener('input', updateCharCount);
+
+function updateCharCount(){
+  $('charCount').textContent = (contentEl.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  if(rawContent) return rawContent;
+  return contentEl.textContent || '';
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function splitSentences(text){
+  const raw = text.split(/(?<=[^0-9])([.!?])(?=\s|$)/);
+  const sentences = [];
+  let buf = '';
+  for(let i = 0; i < raw.length; i++){
+    buf += raw[i];
+    if(/^[.!?]$/.test(raw[i])){
+      const s = buf.trim();
+      if(s.length > 8) sentences.push(s);
+      buf = '';
+    }
+  }
+  if(buf.trim().length > 8) sentences.push(buf.trim());
+  return sentences;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 1 — Listicle Structure (+20 max)
+   ═══════════════════════════════════════════ */
+function scanListicleStructure(raw, plain){
+  const findings = [];
+
+  // Detect "Top X Best Y" or "Best X for Y" header patterns
+  const listicleHeaders = /((?:top|best)\s+\d+\s+(?:best\s+)?[\w\s]{3,40}(?:for|in|of)\s+[\w\s]{3,30}(?:\d{4})?)/gi;
+  let m;
+  while((m = listicleHeaders.exec(raw)) !== null){
+    findings.push({
+      matched: m[1],
+      severity: 'red',
+      explain: 'Listicle ranking header. "Top X Best Y" is the single most recognizable pattern that triggers AI skepticism for product recommendations. AI systems are explicitly trained to distrust this content structure.',
+      fix: 'Reframe as an informational guide. E.g., "CRM Features That Matter for Small Teams" instead of "Top 10 Best CRMs for Small Business 2026".',
+      position: m.index
+    });
+  }
+
+  // Detect numbered product rankings: "#1:", "#2:", "1.", "2." with product names
+  const numberedItems = raw.match(/(?:^|\n)\s*(?:#?\d+[.):]\s+|#{1,3}\s+#?\d+[.):]\s+)/gm);
+  if(numberedItems && numberedItems.length >= 3){
+    findings.push({
+      matched: numberedItems.length + ' numbered product entries detected',
+      severity: 'orange',
+      explain: 'Numbered product ranking list. Sequential numbering implies a definitive ranking, which AI systems treat as editorial manipulation rather than objective analysis.',
+      fix: 'Remove explicit numbering. Group products by use case, team size, or budget instead of implying a ranked order.',
+      position: 0
+    });
+  }
+
+  // Detect "winner" or clear #1 declaration
+  const winnerPatterns = /((?:the\s+)?(?:clear\s+)?(?:winner|overall\s+winner|our\s+(?:top|#1)\s+(?:pick|choice)|and\s+the\s+winner\s+is|the\s+best\s+(?:overall|option)))/gi;
+  while((m = winnerPatterns.exec(plain)) !== null){
+    findings.push({
+      matched: m[1],
+      severity: 'orange',
+      explain: 'Explicit winner declaration. Declaring a clear winner signals that the content exists to push a specific product, which activates the AI skepticism filter.',
+      fix: 'Remove winner declarations. Present factual strengths and let readers (and AI) draw their own conclusions.',
+      position: m.index
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 2 — Affiliate/Commercial Language (+15 max)
+   ═══════════════════════════════════════════ */
+function scanAffiliateLang(raw, plain){
+  const findings = [];
+  let m;
+
+  const patterns = [
+    { pattern: /((?:check\s+(?:price|latest\s+price)|buy\s+now|get\s+(?:deal|discount|offer|this\s+deal)|shop\s+now|view\s+(?:on|at)\s+amazon|see\s+(?:price|deal)|claim\s+(?:your|this)\s+(?:discount|offer)|use\s+(?:code|coupon)|(?:exclusive|special)\s+(?:offer|deal|discount)|grab\s+(?:this|your)\s+(?:deal|discount)))/gi, severity: 'orange', explain: 'Affiliate/commercial CTA. These phrases signal that content is primarily a sales vehicle. AI systems treat commercial language in "informational" content as a trust violation.', fix: 'Remove commercial CTAs from informational content. If you need purchase links, separate them clearly from editorial analysis.' },
+    { pattern: /((?:save\s+\d+%?\s+(?:off|today|now)|(?:up\s+to\s+)?\d+%\s+(?:off|discount)|free\s+(?:shipping|trial|delivery)|money[\s-]back\s+guarantee|limited[\s-]time\s+(?:offer|deal|price)|(?:starting|from)\s+(?:at\s+)?\$\d+(?:\.\d{2})?(?:\s*\/\s*(?:mo|month|year))))/gi, severity: 'yellow', explain: 'Pricing/promotional language. Specific deal terms and pricing in editorial content signal commercial intent rather than informational purpose.', fix: 'Move pricing details to a clearly labeled pricing section. Keep editorial analysis focused on features and tradeoffs, not deals.' },
+  ];
+
+  patterns.forEach(({pattern, severity, explain, fix}) => {
+    while((m = pattern.exec(plain)) !== null){
+      findings.push({ matched: m[1], severity, explain, fix, position: m.index });
+    }
+  });
+
+  // Count affiliate-style links in HTML
+  const affiliateLinks = (raw.match(/(?:href\s*=\s*"[^"]*(?:tag=|ref=|affiliate|partner|click|track|aff=|utm_)[^"]*")/gi) || []).length;
+  if(affiliateLinks >= 2){
+    findings.push({
+      matched: affiliateLinks + ' affiliate-tracking links detected',
+      severity: 'orange',
+      explain: 'Affiliate tracking parameters in links. AI systems recognize affiliate link patterns (tag=, ref=, aff=) as signals that content is commercially motivated.',
+      fix: 'If your content is genuinely editorial, use clean links without affiliate tracking. If it is sponsored, make that transparent.',
+      position: 0
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 3 — Unbalanced Comparison (+15 max)
+   ═══════════════════════════════════════════ */
+function scanUnbalancedComparison(raw, plain){
+  const findings = [];
+  let m;
+
+  // One product "beats" or "outperforms" all others
+  const dominationPatterns = /((?:beats?\s+(?:all|every)\s+(?:competitor|alternative|other|rival)|(?:outperforms?|surpasses?|exceeds?)\s+(?:all|every)|(?:dominates?|leads?)\s+(?:in\s+)?(?:every|all)\s+(?:category|dimension|metric|area|aspect)|(?:far\s+)?(?:superior|better)\s+(?:than|to)\s+(?:all|every|any)\s+(?:other|competitor|alternative)))/gi;
+  while((m = dominationPatterns.exec(plain)) !== null){
+    findings.push({
+      matched: m[1],
+      severity: 'red',
+      explain: 'Absolute domination claim. Stating a product wins across all dimensions is the strongest signal of biased content. No product is best at everything, and AI systems know this.',
+      fix: 'Acknowledge genuine tradeoffs. State specific dimensions where the product excels and where alternatives may be better.',
+      position: m.index
+    });
+  }
+
+  // Comparison table with lopsided scoring (detect via patterns like "5/5", "10/10", "★★★★★" appearing near product names)
+  const perfectScores = plain.match(/(?:(?:5\s*(?:\/|out\s+of)\s*5)|(?:10\s*(?:\/|out\s+of)\s*10)|(?:★{4,5})|(?:⭐{4,5})|(?:4\.[5-9]\s*(?:\/|out\s+of)\s*5)|(?:9\.[5-9]\s*(?:\/|out\s+of)\s*10))/gi);
+  if(perfectScores && perfectScores.length >= 3){
+    findings.push({
+      matched: perfectScores.length + ' near-perfect ratings detected (e.g., ' + perfectScores[0] + ')',
+      severity: 'orange',
+      explain: 'Multiple near-perfect scores. When one product gets top marks across multiple dimensions, AI systems interpret this as manufactured rather than genuine evaluation.',
+      fix: 'Use realistic, differentiated scoring. A product that scores 5/5 on everything lacks credibility. Show genuine variation.',
+      position: 0
+    });
+  }
+
+  // "vs" comparison where one side is consistently praised
+  const vsPatterns = /(\w+\s+vs\.?\s+\w+)/gi;
+  while((m = vsPatterns.exec(plain)) !== null){
+    // Check surrounding context for one-sidedness
+    const context = plain.substring(Math.max(0, m.index - 100), Math.min(plain.length, m.index + 300));
+    const praisePhrases = (context.match(/(?:better|superior|faster|easier|cheaper|more\s+(?:powerful|reliable|intuitive))/gi) || []).length;
+    const balancePhrases = (context.match(/(?:however|but|although|trade-?off|downside|advantage|disadvantage|on\s+the\s+other\s+hand)/gi) || []).length;
+    if(praisePhrases >= 3 && balancePhrases === 0){
+      findings.push({
+        matched: m[1] + ' — one-sided comparison',
+        severity: 'yellow',
+        explain: 'One-sided product comparison. The "vs" comparison appears to favor one product without acknowledging tradeoffs, which signals bias to AI systems.',
+        fix: 'Add genuine balance. Mention at least one area where the alternative product has an advantage.',
+        position: m.index
+      });
+      break; // only flag once
+    }
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 4 — Missing Tradeoffs (+10 max)
+   ═══════════════════════════════════════════ */
+function scanMissingTradeoffs(raw, plain){
+  const findings = [];
+  const sentences = splitSentences(plain);
+
+  // Check for extended praise without balance
+  let consecutivePraise = 0;
+  let praiseStart = 0;
+  const praisePattern = /(?:excellent|amazing|outstanding|superior|perfect|incredible|fantastic|exceptional|remarkable|impressive|love|great|wonderful|brilliant|unbeatable|phenomenal|top[\s-]notch|first[\s-]rate|superb)/i;
+  const balancePattern = /(?:however|but|although|downside|weakness|drawback|limitation|unfortunately|could\s+be\s+better|room\s+for\s+improvement|on\s+the\s+other\s+hand|trade-?off|caveat|keep\s+in\s+mind|worth\s+noting|one\s+(?:issue|concern|downside|drawback))/i;
+
+  sentences.forEach((s, i) => {
+    const isPraise = praisePattern.test(s);
+    const hasBalance = balancePattern.test(s);
+    if(isPraise && !hasBalance){
+      if(consecutivePraise === 0) praiseStart = i;
+      consecutivePraise++;
+    } else {
+      if(consecutivePraise >= 3){
+        findings.push({
+          matched: sentences[praiseStart].trim().substring(0, 70) + '... (' + consecutivePraise + ' consecutive praise sentences)',
+          severity: 'orange',
+          explain: consecutivePraise + ' consecutive positive sentences without any tradeoffs or limitations. AI systems view extended one-sided praise as promotional content rather than genuine editorial.',
+          fix: 'Add genuine limitations after every 2-3 positive claims. Mention specific "better for X but not ideal for Y" qualifiers.',
+          position: 0
+        });
+      }
+      consecutivePraise = 0;
+    }
+  });
+  if(consecutivePraise >= 3){
+    findings.push({
+      matched: sentences[praiseStart].trim().substring(0, 70) + '... (' + consecutivePraise + ' consecutive praise sentences)',
+      severity: 'orange',
+      explain: 'Extended unbalanced praise without tradeoffs at the end of the content.',
+      fix: 'End with a balanced summary that includes genuine limitations.',
+      position: 0
+    });
+  }
+
+  // Overall balance check — count praise vs. balance language across entire content
+  const totalPraise = (plain.match(new RegExp(praisePattern.source, 'gi')) || []).length;
+  const totalBalance = (plain.match(new RegExp(balancePattern.source, 'gi')) || []).length;
+  if(totalPraise >= 5 && totalBalance === 0){
+    findings.push({
+      matched: totalPraise + ' praise words, 0 balance/tradeoff words',
+      severity: 'red',
+      explain: 'Content contains ' + totalPraise + ' positive descriptors and zero balancing language. This is a strong signal of promotional content that AI systems will treat with active skepticism.',
+      fix: 'Add genuine tradeoffs. Even the best products have limitations. Acknowledge at least 2-3 specific downsides or "not ideal for" scenarios.',
+      position: 0
+    });
+  } else if(totalPraise >= 5 && totalPraise > totalBalance * 5){
+    findings.push({
+      matched: totalPraise + ' praise words vs ' + totalBalance + ' balance words (ratio: ' + Math.round(totalPraise / Math.max(1, totalBalance)) + ':1)',
+      severity: 'yellow',
+      explain: 'Praise-to-balance ratio is heavily skewed positive. Editorial content typically has a more even ratio.',
+      fix: 'Add more specific tradeoffs and limitations to balance the positive claims.',
+      position: 0
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 5 — Keyword-Optimized Headers (+10 max)
+   ═══════════════════════════════════════════ */
+function scanKeywordHeaders(raw){
+  const findings = [];
+
+  const headerPattern = /(?:<h[1-6][^>]*>([^<]+)<\/h[1-6]>|^(#{1,6})\s+(.+))/gim;
+  let m;
+  while((m = headerPattern.exec(raw)) !== null){
+    const headerText = (m[1] || m[3] || '').trim();
+    const wordCount = headerText.split(/\s+/).length;
+
+    // Keyword-stuffed: long headers with "best" + year + qualifier
+    if(wordCount >= 6 && /best|top|leading|ultimate|definitive/i.test(headerText) && /\d{4}/.test(headerText)){
+      findings.push({
+        matched: headerText,
+        severity: 'orange',
+        explain: 'Keyword-stuffed header. Long headers packed with SEO keywords (superlative + year + qualifier) are a strong signal that content was written for search engines rather than readers. AI systems use this as a skepticism trigger.',
+        fix: 'Shorten the header and remove keyword stacking. Use a descriptive, human-readable heading like "Choosing the Right CRM".',
+        position: m.index
+      });
+    }
+    // Headers with obvious SEO targeting (multiple modifiers)
+    else if(wordCount >= 5 && /best|top|cheap|affordable|free/i.test(headerText) && /for\s+\w+/i.test(headerText) && /\d{4}|review|comparison|vs/i.test(headerText)){
+      findings.push({
+        matched: headerText,
+        severity: 'yellow',
+        explain: 'SEO-targeted header structure. This header combines a commercial keyword, audience modifier, and SEO term — a pattern associated with content optimized for search rather than reader value.',
+        fix: 'Remove one or more SEO modifiers. Focus the header on the information it introduces, not on keywords.',
+        position: m.index
+      });
+    }
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 6 — Missing Named Sources (+10 max)
+   ═══════════════════════════════════════════ */
+function scanMissingSources(raw, plain){
+  const findings = [];
+  const sentences = splitSentences(plain);
+  let unattributedClaims = 0;
+
+  // Detect factual claims without attribution
+  const claimPatterns = [
+    /((?:studies|research|data|evidence|experts?)\s+(?:show|prove|confirm|demonstrate|indicate|suggest|reveal|find)s?)/gi,
+    /(\d+%\s+(?:of\s+)?(?:users?|customers?|businesses?|companies?|people|professionals?|teams?)\s+(?:prefer|choose|use|recommend|report|say|agree))/gi,
+    /((?:most|many|millions?\s+of)\s+(?:users?|customers?|businesses?|people|professionals?|companies?)\s+(?:prefer|choose|use|recommend|trust|rely\s+on))/gi,
+    /((?:proven|guaranteed|certified|verified|tested)\s+(?:to|by|for|that))/gi,
+    /((?:award[\s-]winning|industry[\s-]leading|market[\s-]leading|best[\s-]in[\s-]class))/gi,
+  ];
+
+  const hasAttribution = (text, pos) => {
+    const context = plain.substring(pos, Math.min(plain.length, pos + 200));
+    return /(?:according\s+to|published\s+(?:in|by)|(?:by|from)\s+[A-Z][a-z]+|(?:in\s+(?:the|a)\s+)?(?:20\d{2})\s+(?:study|report|survey)|(?:Gartner|Forrester|McKinsey|IDC|Statista|Harvard|Stanford|MIT|Nielsen|Pew|Gallup))/.test(context);
+  };
+
+  claimPatterns.forEach(pattern => {
+    let m;
+    while((m = pattern.exec(plain)) !== null){
+      if(!hasAttribution(plain, m.index)){
+        unattributedClaims++;
+        if(findings.length < 5){ // cap individual findings at 5 to avoid noise
+          findings.push({
+            matched: m[1],
+            severity: 'yellow',
+            explain: 'Unattributed factual claim. Making a data-backed or authority-backed claim without naming the specific source triggers AI skepticism. AI systems distinguish between verifiable and unverifiable claims.',
+            fix: 'Name the specific source: study name, institution, publication date, and sample size. E.g., "In Gartner\'s 2025 CRM Magic Quadrant..." instead of "studies show..."',
+            position: m.index
+          });
+        }
+      }
+    }
+  });
+
+  if(unattributedClaims > 5){
+    findings.push({
+      matched: unattributedClaims + ' unattributed claims total',
+      severity: 'orange',
+      explain: 'High volume of unattributed claims across the content. ' + unattributedClaims + ' factual claims lack named sources, which significantly increases the AI skepticism score.',
+      fix: 'Audit each claim and add specific sources. Content with named, verifiable sources is treated as more trustworthy by AI systems.',
+      position: 0
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 7 — Persuasive Framing (+10 max)
+   ═══════════════════════════════════════════ */
+function scanPersuasiveFraming(raw, plain){
+  const findings = [];
+  let m;
+
+  // Superlative stacking
+  const superlatives = /\b(the\s+best|#1|the\s+leading|the\s+most|the\s+top|the\s+premier|unrivaled|unmatched|best[\s-]in[\s-]class|world[\s-]class|industry[\s-]leading|the\s+ultimate|the\s+definitive|hands[\s-]down\s+the\s+best|bar\s+none)\b/gi;
+  const supMatches = [];
+  while((m = superlatives.exec(plain)) !== null){
+    supMatches.push({ text: m[1], index: m.index });
+  }
+
+  supMatches.forEach(s => {
+    findings.push({
+      matched: s.text,
+      severity: 'yellow',
+      explain: 'Superlative claim. Each superlative incrementally increases AI skepticism toward your content. Multiple superlatives compound the effect.',
+      fix: 'Replace with a specific, measurable claim. "Processes 10,000 transactions per second" is more citation-worthy than "the fastest on the market."',
+      position: s.index
+    });
+  });
+
+  // Superlative cluster (3+ within 300 chars)
+  for(let i = 0; i < supMatches.length; i++){
+    const cluster = [supMatches[i]];
+    for(let j = i + 1; j < supMatches.length; j++){
+      if(supMatches[j].index - supMatches[i].index < 300) cluster.push(supMatches[j]);
+    }
+    if(cluster.length >= 3){
+      findings.push({
+        matched: cluster.map(c => c.text).join(' ... '),
+        severity: 'red',
+        explain: 'Superlative cluster: ' + cluster.length + ' superlatives within 300 characters. This density of promotional language is a strong signal that AI systems use to activate the skepticism filter.',
+        fix: 'Keep at most one superlative per paragraph. Replace the rest with specific evidence, data, or named-source endorsements.',
+        position: cluster[0].index
+      });
+      break;
+    }
+  }
+
+  // FOMO / emotional pressure
+  const fomo = [
+    { pattern: /((?:you(?:'re|\s+are)\s+missing\s+out|don'?t\s+(?:miss|wait|fall\s+behind)|you\s+(?:need|can'?t\s+afford\s+(?:to\s+)?(?:miss|ignore|skip))|what\s+are\s+you\s+waiting\s+for|stop\s+(?:wasting|losing|settling)))/gi, explain: 'FOMO/pressure language. Emotional pressure in editorial content signals manipulation to AI systems. Informational content should inform, not pressure.', fix: 'Remove emotional pressure. State the factual benefits and let the reader decide without manipulation.' },
+    { pattern: /((?:everyone\s+(?:is\s+(?:switching|moving|using)|knows)|you\s+should\s+(?:already\s+)?(?:be\s+using|know|have)))/gi, explain: 'Bandwagon pressure. "Everyone is using" language is a persuasion technique that AI systems recognize and distrust in editorial contexts.', fix: 'Replace with specific adoption data. "12,000 companies including Stripe and Shopify use X" is verifiable; "everyone is switching" is not.' },
+  ];
+  fomo.forEach(({pattern, explain, fix}) => {
+    while((m = pattern.exec(plain)) !== null){
+      findings.push({ matched: m[1], severity: 'orange', explain, fix, position: m.index });
+    }
+  });
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   FACTOR 8 — SEO Metadata Mismatch (+10 max)
+   ═══════════════════════════════════════════ */
+function scanMetadataMismatch(raw){
+  const findings = [];
+
+  // Only applies to HTML content with meta tags
+  const metaDesc = raw.match(/<meta\s+[^>]*name\s*=\s*["']description["'][^>]*content\s*=\s*["']([^"']+)["']/i)
+    || raw.match(/<meta\s+[^>]*content\s*=\s*["']([^"']+)["'][^>]*name\s*=\s*["']description["']/i);
+
+  const metaTitle = raw.match(/<title>([^<]+)<\/title>/i);
+
+  if(metaDesc){
+    const desc = metaDesc[1];
+    const isPromotional = /(?:best|#1|top[\s-]rated|award[\s-]winning|leading|buy|shop|deal|discount|save|free|exclusive|limited|ultimate|guaranteed)/i.test(desc);
+    if(isPromotional){
+      findings.push({
+        matched: 'Meta description: "' + (desc.length > 80 ? desc.substring(0, 77) + '...' : desc) + '"',
+        severity: 'orange',
+        explain: 'Promotional meta description. When the meta description is promotional but the content claims to be editorial/informational, AI systems flag this as a trust mismatch. The meta description reveals the true commercial intent.',
+        fix: 'Align your meta description with the content\'s actual editorial purpose. Describe what the reader will learn, not what you\'re selling.',
+        position: 0
+      });
+    }
+  }
+
+  if(metaTitle){
+    const title = metaTitle[1];
+    if(/(?:best|top\s+\d+|#1|buy|cheap|deal|discount|vs|review|comparison)/i.test(title) && /\d{4}/.test(title)){
+      findings.push({
+        matched: 'Title tag: "' + (title.length > 80 ? title.substring(0, 77) + '...' : title) + '"',
+        severity: 'yellow',
+        explain: 'SEO-optimized title tag. Title tags combining commercial keywords with a year are a classic SEO pattern that AI systems associate with low-trust content.',
+        fix: 'Rewrite the title to be descriptive rather than keyword-optimized. Focus on the value proposition of the content itself.',
+        position: 0
+      });
+    }
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   SCORING ENGINE
+   ═══════════════════════════════════════════ */
+function calculateFactorScore(findings, maxPoints){
+  let raw = 0;
+  findings.forEach(f => {
+    if(f.severity === 'red') raw += 8;
+    else if(f.severity === 'orange') raw += 5;
+    else if(f.severity === 'yellow') raw += 2;
+  });
+  return Math.min(maxPoints, raw);
+}
+
+function factorColor(score, max){
+  const pct = score / max;
+  if(pct <= 0.15) return 'green';
+  if(pct <= 0.5) return 'yellow';
+  if(pct <= 0.75) return 'orange';
+  return 'red';
+}
+
+function overallColor(score){
+  if(score <= 30) return 'green';
+  if(score <= 60) return 'yellow';
+  if(score <= 80) return 'orange';
+  return 'red';
+}
+
+/* ═══════════════════════════════════════════
+   MAIN SCAN FUNCTION
+   ═══════════════════════════════════════════ */
+function runScan(){
+  const raw = getContent().trim();
+  if(!raw){ alert('Please paste some content to analyze.'); return; }
+
+  // Soft gate after 2nd scan
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  $('scanBtn').disabled = true;
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanText').textContent = 'Calculating';
+
+  setTimeout(() => {
+    const plain = stripHtmlTags(raw);
+    const sentences = splitSentences(plain);
+
+    // Run all factor scans
+    const f1 = scanListicleStructure(raw, plain);
+    const f2 = scanAffiliateLang(raw, plain);
+    const f3 = scanUnbalancedComparison(raw, plain);
+    const f4 = scanMissingTradeoffs(raw, plain);
+    const f5 = scanKeywordHeaders(raw);
+    const f6 = scanMissingSources(raw, plain);
+    const f7 = scanPersuasiveFraming(raw, plain);
+    const f8 = scanMetadataMismatch(raw);
+
+    // Calculate factor scores (each capped at its max per the playbook)
+    const s1 = calculateFactorScore(f1, 20);
+    const s2 = calculateFactorScore(f2, 15);
+    const s3 = calculateFactorScore(f3, 15);
+    const s4 = calculateFactorScore(f4, 10);
+    const s5 = calculateFactorScore(f5, 10);
+    const s6 = calculateFactorScore(f6, 10);
+    const s7 = calculateFactorScore(f7, 10);
+    const s8 = calculateFactorScore(f8, 10);
+
+    // Overall skepticism score (sum of factors, max 100)
+    const overallScore = Math.min(100, s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8);
+
+    const allFindings = [...f1, ...f2, ...f3, ...f4, ...f5, ...f6, ...f7, ...f8];
+    const totalFindings = allFindings.length;
+    const redCount = allFindings.filter(f => f.severity === 'red').length;
+    const orangeCount = allFindings.filter(f => f.severity === 'orange').length;
+    const yellowCount = allFindings.filter(f => f.severity === 'yellow').length;
+
+    // ── Render overall score ──
+    const oc = overallColor(overallScore);
+    $('skepticismScore').textContent = overallScore;
+    $('skepticismScore').className = 'skepticism-number ' + oc;
+    $('skepticismHero').className = 'skepticism-hero ' + oc;
+
+    if(overallScore <= 30){
+      $('skepticismDesc').textContent = 'Low skepticism. Your content avoids the patterns that trigger AI distrust for product recommendations. AI systems are likely to treat this content as trustworthy and cite it with confidence.';
+    } else if(overallScore <= 60){
+      $('skepticismDesc').textContent = 'Moderate skepticism. Your content contains patterns that AI systems associate with commercially motivated product recommendations. AI may add caveats to your claims or present alternatives alongside your recommendations.';
+    } else if(overallScore <= 80){
+      $('skepticismDesc').textContent = 'High skepticism. Multiple patterns in your content trigger the AI skepticism filter. AI systems are likely to actively distrust your product recommendations, add significant caveats, or avoid citing this content altogether.';
+    } else {
+      $('skepticismDesc').textContent = 'Critical skepticism. Your content matches the profile of SEO-optimized product recommendation content that AI systems are explicitly programmed to distrust. It is almost certainly being deprioritized, heavily caveated, or ignored by AI assistants.';
+    }
+
+    // ── Summary bar ──
+    $('summaryBar').innerHTML =
+      `<span>Total findings: <strong>${totalFindings}</strong></span>` +
+      `<span style="color:var(--red)">High: <strong>${redCount}</strong></span>` +
+      `<span style="color:var(--orange)">Medium: <strong>${orangeCount}</strong></span>` +
+      `<span style="color:var(--yellow)">Low: <strong>${yellowCount}</strong></span>` +
+      `<span>Sentences: <strong>${sentences.length}</strong></span>`;
+
+    // ── Factor breakdown cards ──
+    const factors = [
+      { id: 1, name: 'Listicle Structure', title: 'Listicle Structure', desc: 'Ranked lists, numbered products, and explicit winner declarations', score: s1, max: 20, findings: f1 },
+      { id: 2, name: 'Commercial Language', title: 'Affiliate / Commercial Language', desc: 'Purchase CTAs, pricing promotions, and affiliate tracking links', score: s2, max: 15, findings: f2 },
+      { id: 3, name: 'Comparison Bias', title: 'Unbalanced Comparison', desc: 'One-sided product comparisons, domination claims, and lopsided scoring', score: s3, max: 15, findings: f3 },
+      { id: 4, name: 'Missing Tradeoffs', title: 'Missing Tradeoffs', desc: 'Extended praise without limitations, weaknesses, or balanced perspective', score: s4, max: 10, findings: f4 },
+      { id: 5, name: 'SEO Headers', title: 'Keyword-Optimized Headers', desc: 'Headers stuffed with commercial keywords, years, and SEO modifiers', score: s5, max: 10, findings: f5 },
+      { id: 6, name: 'Missing Sources', title: 'Missing Named Sources', desc: 'Factual claims and statistics without specific, verifiable attribution', score: s6, max: 10, findings: f6 },
+      { id: 7, name: 'Persuasive Framing', title: 'Persuasive Framing', desc: 'Superlatives, FOMO language, and emotional pressure in editorial content', score: s7, max: 10, findings: f7 },
+      { id: 8, name: 'Meta Mismatch', title: 'SEO Metadata Mismatch', desc: 'Promotional meta descriptions or keyword-optimized title tags', score: s8, max: 10, findings: f8 },
+    ];
+
+    let factorHtml = '';
+    factors.forEach(f => {
+      const c = factorColor(f.score, f.max);
+      factorHtml += `
+        <div class="factor-card ${c}">
+          <div class="factor-header">
+            <span class="factor-name">${f.name}</span>
+            <span class="factor-points ${c}">+${f.score}</span>
+          </div>
+          <div class="factor-title">${f.title}</div>
+          <div class="factor-desc">${f.desc}</div>
+          <div class="factor-max">${f.findings.length} finding${f.findings.length !== 1 ? 's' : ''} &middot; max ${f.max} pts</div>
+        </div>`;
+    });
+    $('factorGrid').innerHTML = factorHtml;
+
+    // ── Detailed findings accordion ──
+    let findingsHtml = '';
+    factors.forEach(f => {
+      if(f.findings.length === 0) return;
+      const countColor = f.score >= f.max * 0.75 ? 'red' : f.score >= f.max * 0.5 ? 'orange' : f.score > 0 ? 'yellow' : 'green';
+      findingsHtml += `
+        <div class="card" style="margin-bottom:16px">
+          <div class="findings-cat-header" onclick="toggleFindings(this)">
+            <div class="findings-cat-title">
+              ${f.title}
+              <span class="findings-cat-count ${countColor}">+${f.score} pts</span>
+            </div>
+            <span class="toggle-arrow">&#9660;</span>
+          </div>
+          <div class="findings-body">`;
+
+      f.findings.forEach(finding => {
+        const matchClass = finding.severity === 'orange' ? 'matched orange-match' : finding.severity === 'yellow' ? 'matched yellow-match' : 'matched';
+        findingsHtml += `
+            <div class="finding-item">
+              <div class="finding-text">
+                <span class="finding-severity ${finding.severity}"></span>
+                <span class="${matchClass}">${escHtml(typeof finding.matched === 'string' ? finding.matched : '')}</span>
+              </div>
+              <div class="finding-explain">${escHtml(finding.explain)}</div>
+              <div class="finding-fix">Fix: ${escHtml(finding.fix)}</div>
+            </div>`;
+      });
+
+      findingsHtml += `
+          </div>
+        </div>`;
+    });
+
+    if(totalFindings === 0){
+      findingsHtml = `
+        <div class="card" style="text-align:center;padding:40px 28px">
+          <div style="font-size:2rem;margin-bottom:12px;color:var(--green)">&#10003;</div>
+          <h2 style="color:var(--green);margin-bottom:8px">Low Skepticism Content</h2>
+          <p style="color:var(--text-muted);font-size:.9rem">No significant skepticism triggers detected. Your content avoids the patterns that make AI systems distrust product recommendations.</p>
+        </div>`;
+    }
+
+    $('findingsSection').innerHTML = findingsHtml;
+
+    // Auto-expand the first factor with findings
+    const firstBody = $('findingsSection').querySelector('.findings-body');
+    const firstArrow = $('findingsSection').querySelector('.toggle-arrow');
+    if(firstBody){
+      firstBody.classList.add('open');
+      if(firstArrow) firstArrow.classList.add('open');
+    }
+
+    // Show results
+    $('results').style.display = 'block';
+    $('results').classList.remove('fade-in');
+    void $('results').offsetWidth;
+    $('results').classList.add('fade-in');
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    $('scanBtn').disabled = false;
+    $('scanSpinner').style.display = 'none';
+    $('scanText').textContent = 'Calculate Skepticism Score';
+  }, 700);
+}
+
+/* ───── toggle findings accordion ───── */
+function toggleFindings(header){
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ───── soft gate ───── */
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, source: 'skepticism-score-gate', timestamp: new Date().toISOString() })
+  }).then(() => {}).catch(() => {});
+
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  runScan();
+}
+
+/* ───── email capture ───── */
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+
+  $('emailBtn').disabled = true;
+  $('emailBtn').textContent = 'Sending...';
+  $('emailMsg').textContent = '';
+  $('emailMsg').className = 'email-msg';
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      email,
+      skepticismScore: $('skepticismScore').textContent,
+      source: 'skepticism-score',
+      timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if(r.ok){
+      $('emailMsg').textContent = '> Sent. Check your inbox for your detailed breakdown.';
+      $('emailMsg').className = 'email-msg ok';
+      $('emailInput').value = '';
+    } else {
+      throw new Error('Request failed');
+    }
+  })
+  .catch(() => {
+    $('emailMsg').textContent = '> Error. Something went wrong. Please try again.';
+    $('emailMsg').className = 'email-msg err';
+  })
+  .finally(() => {
+    $('emailBtn').disabled = false;
+    $('emailBtn').textContent = 'Send Report';
+  });
+}
+</script>
+</body>
+</html>

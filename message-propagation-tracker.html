@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Message Propagation Tracker — AI Brand Propagation Analyzer</title>
+<meta name="description" content="Analyze how effectively your brand propagates through AI-composed emails, texts, and messages. Score your content across 5 dimensions of AI message propagation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --blue:#4da6ff;
+  --purple:#a78bfa;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'——';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:640px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Tabs */
+.input-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.input-tab{
+  padding:10px 20px;background:transparent;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:600;
+  color:var(--text-dim);cursor:pointer;letter-spacing:1px;
+  text-transform:uppercase;border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.input-tab:hover{color:var(--text-muted)}
+.input-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Overall score hero */
+.score-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.score-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.score-hero.green::before{background:var(--green)}
+.score-hero.yellow::before{background:var(--yellow)}
+.score-hero.orange::before{background:var(--orange)}
+.score-hero.red::before{background:var(--red)}
+.score-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.score-number.green{color:var(--green)}
+.score-number.yellow{color:var(--yellow)}
+.score-number.orange{color:var(--orange)}
+.score-number.red{color:var(--red)}
+.score-grade{
+  font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:600;
+  display:inline-block;padding:2px 14px;margin-top:8px;border-radius:2px;
+}
+.score-grade.green{background:rgba(0,229,160,.12);color:var(--green)}
+.score-grade.yellow{background:rgba(240,180,41,.1);color:var(--yellow)}
+.score-grade.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.score-grade.red{background:rgba(255,77,77,.12);color:var(--red)}
+.score-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:12px 0 8px;letter-spacing:1px;text-transform:uppercase;
+}
+.score-desc{font-size:.9rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.6}
+
+/* Dimension cards */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:640px){.dim-grid{grid-template-columns:1fr}}
+.dim-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+.dim-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.dim-card.green::before{background:var(--green)}
+.dim-card.yellow::before{background:var(--yellow)}
+.dim-card.orange::before{background:var(--orange)}
+.dim-card.red::before{background:var(--red)}
+.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dim-name{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;
+}
+.dim-score{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;line-height:1}
+.dim-score.green{color:var(--green)}
+.dim-score.yellow{color:var(--yellow)}
+.dim-score.orange{color:var(--orange)}
+.dim-score.red{color:var(--red)}
+.dim-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:4px;
+}
+.dim-detail{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+
+/* Brand pills */
+.brands-section{margin-bottom:24px}
+.brand-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.brand-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;background:var(--card-elevated);
+  border:1px solid var(--border);font-size:.88rem;
+}
+.brand-pill-name{font-weight:600;color:var(--text)}
+.brand-pill-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--text-dim);letter-spacing:0.5px;
+}
+.brand-pill-score{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;
+  margin-left:4px;
+}
+
+/* Sentence list */
+.sentence-section{margin-bottom:24px}
+.sentence-section .card{padding:0;overflow:hidden}
+.sentence-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.sentence-header:hover{background:rgba(30,35,51,.8)}
+.sentence-header-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.sentence-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:3px 10px;border-radius:2px;
+}
+.sentence-count.green{background:rgba(0,229,160,.1);color:var(--green)}
+.sentence-count.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.toggle-arrow{
+  font-size:.8rem;color:var(--text-dim);transition:transform .2s;
+}
+.toggle-arrow.open{transform:rotate(180deg)}
+.sentence-body{display:none;padding:0}
+.sentence-body.open{display:block}
+
+.sentence-item{
+  padding:14px 24px;border-bottom:1px solid var(--border);
+}
+.sentence-item:last-child{border-bottom:none}
+.sentence-text{
+  font-size:.88rem;color:var(--text);margin-bottom:6px;line-height:1.6;
+}
+.sentence-text .brand-highlight{
+  background:rgba(0,229,160,.12);color:var(--accent);padding:1px 4px;
+  font-weight:500;
+}
+.sentence-meta{
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  font-size:.75rem;font-family:'JetBrains Mono',monospace;
+}
+.sentence-meta .score-chip{
+  padding:2px 8px;border-radius:2px;font-weight:600;
+}
+.sentence-meta .score-chip.high{background:rgba(0,229,160,.12);color:var(--green)}
+.sentence-meta .score-chip.med{background:rgba(240,180,41,.1);color:var(--yellow)}
+.sentence-meta .score-chip.low{background:rgba(255,77,77,.12);color:var(--red)}
+.sentence-reason{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;margin-top:4px;
+}
+
+/* Findings list */
+.findings-section{margin-bottom:24px}
+.findings-section .card{padding:0;overflow:hidden}
+.findings-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-header:hover{background:rgba(30,35,51,.8)}
+.findings-header-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.findings-body{display:none;padding:0}
+.findings-body.open{display:block}
+.finding-item{
+  padding:14px 24px;border-bottom:1px solid var(--border);
+}
+.finding-item:last-child{border-bottom:none}
+.finding-severity{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-right:8px;flex-shrink:0;
+}
+.finding-severity.red{background:var(--red)}
+.finding-severity.orange{background:var(--orange)}
+.finding-severity.yellow{background:var(--yellow)}
+.finding-text{
+  font-size:.88rem;color:var(--text);margin-bottom:6px;
+  display:flex;align-items:flex-start;gap:0;
+}
+.finding-text .matched{
+  background:rgba(255,77,77,.15);color:var(--red);
+  padding:1px 4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;
+}
+.finding-text .matched.orange-match{background:rgba(240,140,41,.15);color:var(--orange)}
+.finding-text .matched.yellow-match{background:rgba(240,180,41,.12);color:var(--yellow)}
+.finding-explain{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;
+  padding-left:16px;margin-top:2px;
+}
+.finding-fix{
+  font-size:.78rem;color:var(--accent);line-height:1.5;
+  padding-left:16px;margin-top:4px;font-style:italic;
+}
+
+/* Context type badges */
+.ctx-badge{
+  display:inline-block;padding:2px 8px;font-size:.65rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  font-family:'JetBrains Mono',monospace;border-radius:2px;
+}
+.ctx-badge.recommendation{background:rgba(0,229,160,.12);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+.ctx-badge.action{background:rgba(77,166,255,.12);color:var(--blue);border:1px solid rgba(77,166,255,.25)}
+.ctx-badge.comparison{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+.ctx-badge.factual{background:rgba(240,180,41,.1);color:var(--yellow);border:1px solid rgba(240,180,41,.25)}
+.ctx-badge.testimonial{background:rgba(240,140,41,.12);color:var(--orange);border:1px solid rgba(240,140,41,.25)}
+.ctx-badge.vague{background:rgba(85,91,110,.15);color:var(--text-dim);border:1px solid rgba(85,91,110,.3)}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Gate overlay */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px;
+}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Message Propagation Tracker</div>
+    <h1>Will AI <span>Recommend Your Brand</span><br>In Its Messages?</h1>
+    <p class="subtitle">Analyze how effectively your brand propagates through AI-composed emails, texts, and social messages &mdash; the hidden channel where AI embeds brand names into personal communications.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="input-tabs">
+      <button class="input-tab active" onclick="switchTab('text')">Raw Text</button>
+      <button class="input-tab" onclick="switchTab('html')">HTML Source</button>
+    </div>
+    <div id="tabText" class="tab-content active">
+      <div class="content-input" id="textInput" contenteditable="true" data-placeholder="Paste your page content here as plain text — product pages, blog posts, landing pages, or any content mentioning your brand..." role="textbox" aria-multiline="true"></div>
+    </div>
+    <div id="tabHtml" class="tab-content">
+      <div class="content-input" id="htmlInput" contenteditable="true" data-placeholder="Paste your page's HTML source code here..." role="textbox" aria-multiline="true" style="font-family:'JetBrains Mono',monospace;font-size:.85rem"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runScan()">
+        <span id="scanText">Analyze Propagation</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Score -->
+    <div class="score-hero" id="scoreHero">
+      <div class="score-number" id="overallScore">&mdash;</div>
+      <div class="score-grade" id="overallGrade"></div>
+      <div class="score-label">Message Propagation Score</div>
+      <div class="score-desc" id="scoreDesc"></div>
+    </div>
+
+    <!-- Detected Brands -->
+    <div class="brands-section" id="brandsSection">
+      <div class="card">
+        <h2>Brands Detected</h2>
+        <div class="brand-list" id="brandList"></div>
+      </div>
+    </div>
+
+    <!-- Dimension Scores -->
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <!-- Propagation-Ready Sentences -->
+    <div class="sentence-section" id="readySection">
+      <div class="card">
+        <div class="sentence-header" onclick="toggleSection('readyBody','readyArrow')">
+          <div class="sentence-header-title">
+            Propagation-Ready Sentences
+            <span class="sentence-count green" id="readyCount">0</span>
+          </div>
+          <span class="toggle-arrow" id="readyArrow">&#9660;</span>
+        </div>
+        <div class="sentence-body" id="readyBody"></div>
+      </div>
+    </div>
+
+    <!-- Weak Sentences -->
+    <div class="sentence-section" id="weakSection">
+      <div class="card">
+        <div class="sentence-header" onclick="toggleSection('weakBody','weakArrow')">
+          <div class="sentence-header-title">
+            Weak Brand Mentions
+            <span class="sentence-count orange" id="weakCount">0</span>
+          </div>
+          <span class="toggle-arrow" id="weakArrow">&#9660;</span>
+        </div>
+        <div class="sentence-body" id="weakBody"></div>
+      </div>
+    </div>
+
+    <!-- Findings -->
+    <div class="findings-section" id="findingsSection">
+      <div class="card">
+        <div class="findings-header" onclick="toggleSection('findingsBody','findingsArrow')">
+          <div class="findings-header-title">
+            Improvement Opportunities
+            <span class="sentence-count orange" id="findingsCount">0</span>
+          </div>
+          <span class="toggle-arrow" id="findingsArrow">&#9660;</span>
+        </div>
+        <div class="findings-body" id="findingsBody"></div>
+      </div>
+    </div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Enter your email to get a detailed propagation report with rewrite recommendations</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want a full message propagation audit with competitor comparison?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 Message Propagation Tracker</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Scans</h3>
+    <p>Enter your email to continue analyzing. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ───── helpers ───── */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+let activeTab = 'text';
+
+/* ───── tab switching ───── */
+function switchTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  if(tab === 'text'){
+    document.querySelectorAll('.input-tab')[0].classList.add('active');
+    $('tabText').classList.add('active');
+  } else {
+    document.querySelectorAll('.input-tab')[1].classList.add('active');
+    $('tabHtml').classList.add('active');
+  }
+  updateCharCount();
+}
+
+/* ───── paste handling ───── */
+['textInput','htmlInput'].forEach(id => {
+  const el = $(id);
+  el.addEventListener('paste', function(e){
+    e.preventDefault();
+    const clip = e.clipboardData || window.clipboardData;
+    const text = clip.getData('text/plain');
+    this.textContent = text;
+    updateCharCount();
+  });
+  el.addEventListener('input', updateCharCount);
+});
+
+function updateCharCount(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  $('charCount').textContent = (el.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  return (el.textContent || '').trim();
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function splitSentences(text){
+  const raw = text.split(/(?<=[^0-9])([.!?])(?=\s|$)/);
+  const sentences = [];
+  let buf = '';
+  for(let i = 0; i < raw.length; i++){
+    buf += raw[i];
+    if(/^[.!?]$/.test(raw[i])){
+      const s = buf.trim();
+      if(s.length > 8) sentences.push(s);
+      buf = '';
+    }
+  }
+  if(buf.trim().length > 8) sentences.push(buf.trim());
+  return sentences;
+}
+
+function colorClass(score, invert){
+  // invert=false: higher is better
+  if(invert) return score <= 20 ? 'green' : score <= 45 ? 'yellow' : score <= 70 ? 'orange' : 'red';
+  return score >= 70 ? 'green' : score >= 40 ? 'yellow' : score >= 20 ? 'orange' : 'red';
+}
+
+function escapeRegex(str){
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function toggleSection(bodyId, arrowId){
+  const body = $(bodyId);
+  const arrow = $(arrowId);
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ═══════════════════════════════════
+   COMMON WORDS (for brand detection)
+   ═══════════════════════════════════ */
+const COMMON_WORDS = new Set([
+  'The','This','That','These','Those','Here','There','When','Where',
+  'What','Which','Who','How','Why','While','Although','However',
+  'Because','Since','After','Before','During','Until','Unless',
+  'Whether','Each','Every','Both','Either','Neither','All','Most',
+  'Some','Any','Many','Much','Few','Several','Other','Another',
+  'First','Second','Third','Next','Last','New','Old','Good','Bad',
+  'Best','Worst','Top','High','Low','Big','Small','Great','Long',
+  'Short','Full','Key','Main','Major','Minor','General','Overall',
+  'Total','Important','For','With','From','About','Into',
+  'Through','Between','Against','Over','Under','Above','Below',
+  'Also','Still','Just','Even','Already','Yet','Only','Then',
+  'Note','Please','See','According','Based','Unlike','Like',
+  'Plus','Our','Your','Their','Its','We','You','They',
+  'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
+  'January','February','March','April','May','June','July',
+  'August','September','October','November','December',
+]);
+
+function isCommonWord(word){
+  return COMMON_WORDS.has(word) || COMMON_WORDS.has(word.split(/\s+/)[0]);
+}
+
+/* ═══════════════════════════════════
+   BRAND DETECTION
+   ═══════════════════════════════════ */
+function detectBrands(plain){
+  const candidates = new Map();
+  let m;
+
+  // Pattern 1: Capitalized names + product indicators
+  const p1 = /\b([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,3})\s+(?:is|offers?|provides?|features?|includes?|delivers?|supports?|enables?|helps?|allows?|makes?|creates?|builds?|designed|built|powered|platform|software|tool|app|service|solution|product|system|suite|framework|engine|API|SDK)\b/g;
+  while((m = p1.exec(plain)) !== null){
+    const name = m[1].trim();
+    if(name.length >= 3 && !isCommonWord(name)) candidates.set(name, (candidates.get(name)||0)+3);
+  }
+
+  // Pattern 2: "with/using/by [Brand]"
+  const p2 = /(?:with|using|by|from|through|via|powered\s+by|built\s+(?:with|on|by))\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,2})\b/g;
+  while((m = p2.exec(plain)) !== null){
+    const name = m[1].trim();
+    if(name.length >= 3 && !isCommonWord(name)) candidates.set(name, (candidates.get(name)||0)+2);
+  }
+
+  // Pattern 3: Repeated proper nouns (3+)
+  const p3 = /\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]+){0,2})\b/g;
+  const nounCounts = new Map();
+  while((m = p3.exec(plain)) !== null){
+    const name = m[1].trim();
+    if(!isCommonWord(name)) nounCounts.set(name, (nounCounts.get(name)||0)+1);
+  }
+  for(const [name, count] of nounCounts){
+    if(count >= 3) candidates.set(name, (candidates.get(name)||0)+count);
+  }
+
+  // Pattern 4: Quoted names
+  const p4 = /["']([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,3})["']/g;
+  while((m = p4.exec(plain)) !== null){
+    const name = m[1].trim();
+    if(name.length >= 3 && !isCommonWord(name)) candidates.set(name, (candidates.get(name)||0)+2);
+  }
+
+  return [...candidates.entries()].sort((a,b) => b[1]-a[1]).slice(0,10).map(([name]) => name);
+}
+
+/* ═══════════════════════════════════
+   CONTEXT CLASSIFICATION
+   ═══════════════════════════════════ */
+function classifyBrandContext(sentence, brand){
+  const lower = sentence.toLowerCase();
+
+  if(/(?:recommend|suggest|try|check\s+out|look\s+into|consider|go\s+with|switch\s+to|sign\s+up\s+for|start\s+(?:with|using))/i.test(lower)){
+    return { sentence, type: 'recommendation', propagationLikelihood: 'high' };
+  }
+  if(/(?:helps?\s+(?:you|us|them|teams?)|allows?\s+(?:you|us)|enables?\s+(?:you|us)|(?:you|we)\s+can\s+use|saves?\s+(?:time|money|hours?)|reduces?\s+|improves?\s+|increases?\s+|automates?\s+|simplifies?\s+|streamlines?\s+)/i.test(lower)){
+    return { sentence, type: 'action', propagationLikelihood: 'high' };
+  }
+  if(/(?:according\s+to|reported|survey|study|research|found\s+that|showed?\s+that|data\s+(?:from|shows?)|results?\s+(?:from|show))/i.test(lower)){
+    return { sentence, type: 'testimonial', propagationLikelihood: 'medium' };
+  }
+  if(/(?:compared?\s+to|versus|vs\.?|unlike|alternative\s+to|instead\s+of|over|rather\s+than|better\s+than|faster\s+than|cheaper\s+than|more\s+(?:than|affordable|powerful|flexible))/i.test(lower)){
+    return { sentence, type: 'comparison', propagationLikelihood: 'medium' };
+  }
+  if(/(?:\d+%|\d+x|\$\d|\d+\s*(?:users?|customers?|companies|teams?|downloads?)|founded|launched|since\s+\d{4}|version\s+\d|supports?\s+\d)/i.test(lower)){
+    return { sentence, type: 'factual', propagationLikelihood: 'medium' };
+  }
+  return { sentence, type: 'vague', propagationLikelihood: 'low' };
+}
+
+/* ═══════════════════════════════════
+   DIMENSION SCORERS
+   ═══════════════════════════════════ */
+function scoreBrandExtractability(brands, sentences, plain){
+  if(brands.length === 0) return { score:0, label:'Brand Extractability', detail:'No brand names detected. Content needs clear, consistently-used brand names.' };
+  let score = 0;
+  const top = brands[0];
+  if(/^[A-Z]/.test(top.name)) score += 15;
+  if(top.count >= 3) score += 15; else if(top.count >= 2) score += 8;
+  const wc = top.name.split(/\s+/).length;
+  if(wc <= 2) score += 15; else if(wc === 3) score += 8;
+  const first3 = sentences.slice(0,3).join(' ');
+  if(first3.includes(top.name)) score += 15;
+  const subjectPattern = new RegExp('(?:^|\\. )' + escapeRegex(top.name) + '\\s+(?:is|offers?|provides?|helps?|enables?|allows?|makes?|has|delivers?|supports?|features?|includes?)', 'gi');
+  const sc = (plain.match(subjectPattern)||[]).length;
+  if(sc >= 2) score += 20; else if(sc >= 1) score += 12;
+  if(brands.length >= 2) score += 10;
+  const exact = (plain.match(new RegExp('\\b'+escapeRegex(top.name)+'\\b','g'))||[]).length;
+  const caseV = (plain.match(new RegExp(escapeRegex(top.name),'gi'))||[]).length;
+  if(exact === caseV && exact >= 2) score += 10;
+  score = Math.min(100, score);
+  return { score, label:'Brand Extractability', detail: score >= 70 ? 'Strong brand presence. "'+top.name+'" is clearly identifiable and consistently used.' : score >= 40 ? 'Moderate brand presence. "'+top.name+'" could be made more prominent as a sentence subject.' : 'Weak brand presence. Brand names need more prominence and consistency.' };
+}
+
+function scoreRecommendationContext(brands){
+  if(brands.length === 0) return { score:0, label:'Recommendation Context', detail:'No brand contexts detected.' };
+  const allCtx = brands.flatMap(b => b.contexts);
+  if(allCtx.length === 0) return { score:0, label:'Recommendation Context', detail:'No brand mention contexts found.' };
+  let score = 0;
+  const rec = allCtx.filter(c => c.type==='recommendation').length;
+  const act = allCtx.filter(c => c.type==='action').length;
+  const comp = allCtx.filter(c => c.type==='comparison').length;
+  const fact = allCtx.filter(c => c.type==='factual').length;
+  const test = allCtx.filter(c => c.type==='testimonial').length;
+  const vag = allCtx.filter(c => c.type==='vague').length;
+  score += Math.min(35, rec*12);
+  score += Math.min(25, act*10);
+  score += Math.min(15, comp*8);
+  score += Math.min(15, fact*6);
+  score += Math.min(10, test*5);
+  if(allCtx.length > 0 && vag/allCtx.length > 0.5) score -= 15;
+  score = Math.max(0, Math.min(100, score));
+  const detail = rec > 0 ? rec+' recommendation context(s), '+act+' action context(s). These propagate into AI-composed messages.' : act > 0 ? act+' action-oriented context(s) but no explicit recommendation framing.' : 'Most brand mentions lack recommendation or action context.';
+  return { score, label:'Recommendation Context', detail };
+}
+
+function scoreMessageFriendlyPhrasing(brands, sentences){
+  if(sentences.length === 0 || brands.length === 0) return { score:0, label:'Message-Friendly Phrasing', detail:'Insufficient content.' };
+  let friendly = 0, total = 0;
+  const names = brands.map(b => b.name);
+  for(const s of sentences){
+    if(!names.some(n => s.includes(n))) continue;
+    total++;
+    let sc = 0;
+    const w = s.split(/\s+/).length;
+    if(w >= 15 && w <= 40) sc += 2; else if(w >= 10 && w <= 50) sc += 1;
+    if(!/^(?:It|This|That|They|He|She|We|These|Those)\b/.test(s)) sc += 2;
+    const jargon = (s.match(/\b(?:leverag|synerg|paradigm|ecosystem|holistic|scalab|disrupt|innovat|best[\s-]in[\s-]class|world[\s-]class|cutting[\s-]edge|bleeding[\s-]edge|state[\s-]of[\s-]the[\s-]art|next[\s-]gen(?:eration)?)\w*/gi)||[]).length;
+    if(jargon === 0) sc += 2; else if(jargon === 1) sc += 1;
+    if(/(?:saves?|reduces?|improves?|increases?|helps?|automates?|simplifies?|cuts?|speeds?\s+up|eliminates?|tracks?|monitors?|analyzes?|detects?|prevents?|enables?|connects?)/i.test(s)) sc += 2;
+    if(!/[*_#|>]/.test(s) && (s.match(/[,;:]/g)||[]).length <= 3) sc += 1;
+    if(sc >= 5) friendly++;
+  }
+  const ratio = total > 0 ? friendly/total : 0;
+  const score = Math.min(100, Math.round(ratio*100));
+  return { score, label:'Message-Friendly Phrasing', detail: score >= 70 ? friendly+' of '+total+' brand sentences use concise, conversational phrasing.' : score >= 40 ? friendly+' of '+total+' brand sentences are message-friendly. Shorten others and remove jargon.' : 'Most brand sentences are too long or jargon-heavy for AI message composition.' };
+}
+
+function scoreMultiVariantPotential(brands){
+  if(brands.length === 0) return { score:0, label:'Multi-Variant Potential', detail:'No brands detected.' };
+  let score = 0;
+  const top = brands[0];
+  const types = new Set(top.contexts.map(c => c.type));
+  score += Math.max(0, Math.min(40, (types.size-1)*12));
+  const high = top.contexts.filter(c => c.propagationLikelihood==='high').length;
+  score += Math.min(30, high*12);
+  const hasProblem = top.contexts.some(c => /(?:challenge|problem|issue|struggle|difficult|frustrat|pain\s+point|time[\s-]consuming|expensive|complex|manual)/i.test(c.sentence));
+  const hasSolution = top.contexts.some(c => c.type==='action' || c.type==='recommendation');
+  if(hasProblem && hasSolution) score += 15; else if(hasSolution) score += 8;
+  const hasEvidence = top.contexts.some(c => c.type==='testimonial' || c.type==='factual');
+  if(hasEvidence) score += 15;
+  score = Math.min(100, score);
+  const vc = Math.min(3, types.size);
+  return { score, label:'Multi-Variant Potential', detail: vc >= 3 ? types.size+' distinct angles for "'+top.name+'" — AI can generate 3 message variants.' : vc === 2 ? types.size+' angles. Adding a third would enable full 3-variant composition.' : 'Only one angle for brand mentions. AI needs multiple angles for variants.' };
+}
+
+function scoreActionOrientation(brands, sentences){
+  if(brands.length === 0 || sentences.length === 0) return { score:0, label:'Action Orientation', detail:'No brands or content detected.' };
+  let score = 0;
+  const names = brands.map(b => b.name);
+  let actionS=0, tryS=0, linkS=0, benefitS=0;
+  for(const s of sentences){
+    if(!names.some(n => s.includes(n))) continue;
+    if(/(?:try|use|sign\s+up|start|get\s+started|switch\s+to|set\s+up|install|download|integrate|deploy|configure|connect|enable|activate)/i.test(s)) actionS++;
+    if(/(?:try|check\s+out|look\s+into|explore|test|evaluate|demo|pilot)/i.test(s)) tryS++;
+    if(/(?:https?:\/\/|\.com|\.io|\.org|visit|website|link|sign\s+up\s+at)/i.test(s)) linkS++;
+    if(/(?:saves?\s+(?:\d|time|money|hours?)|reduces?\s+(?:\d|cost|time|effort)|improves?\s+(?:\d|performance|speed|accuracy)|increases?\s+(?:\d|revenue|conversion|efficiency)|cuts?\s+(?:\d|cost|time))/i.test(s)) benefitS++;
+  }
+  score += Math.min(30, actionS*12);
+  score += Math.min(20, tryS*10);
+  score += Math.min(15, linkS*10);
+  score += Math.min(20, benefitS*10);
+  if(actionS > 0 && benefitS > 0) score += 15;
+  score = Math.min(100, score);
+  return { score, label:'Action Orientation', detail: score >= 70 ? 'Strong action orientation with clear next steps and quantified benefits.' : score >= 40 ? actionS+' action sentence(s) and '+benefitS+' benefit statement(s). Add more "try [Brand] to [benefit]" patterns.' : 'Brand mentions lack clear actions and quantified benefits.' };
+}
+
+/* ═══════════════════════════════════
+   FINDINGS GENERATOR
+   ═══════════════════════════════════ */
+function generateFindings(brands, sentences, plain){
+  const findings = [];
+  if(brands.length === 0){
+    findings.push({ matched:'No detectable brand names', severity:'red', explain:'Content has no identifiable brand or product names. AI cannot propagate unnamed entities.', fix:'Ensure your brand name appears as a proper noun, used consistently, and placed as sentence subjects.' });
+    return findings;
+  }
+  const top = brands[0];
+  const names = brands.map(b => b.name);
+
+  // Buried brands
+  let buried = 0;
+  for(const s of sentences){
+    for(const name of names){
+      if(!s.includes(name)) continue;
+      const idx = s.indexOf(name);
+      if(idx > 40){
+        buried++;
+        if(buried <= 2){
+          findings.push({ matched: s.length>80 ? s.substring(0,77)+'...' : s, severity:'orange', explain:'Brand "'+name+'" appears '+idx+' characters into the sentence. Buried brands are less likely to be extracted.', fix:'Move "'+name+'" to the beginning of the sentence.' });
+        }
+      }
+    }
+  }
+
+  // Vague mentions
+  const vagueCtx = top.contexts.filter(c => c.type === 'vague');
+  for(const ctx of vagueCtx.slice(0,3)){
+    findings.push({ matched: ctx.sentence.length>80 ? ctx.sentence.substring(0,77)+'...' : ctx.sentence, severity:'yellow', explain:'Brand mentioned without recommendation, action, or factual context. Vague mentions rarely propagate.', fix:'Reframe as: "'+top.name+' helps [audience] [achieve benefit] by [specific action]."' });
+  }
+
+  // Jargon-heavy brand sentences
+  for(const s of sentences){
+    if(!names.some(n => s.includes(n))) continue;
+    const jargon = (s.match(/\b(?:leverag|synerg|paradigm|ecosystem|holistic|scalab|disrupt|innovat|best[\s-]in[\s-]class|world[\s-]class|cutting[\s-]edge|next[\s-]gen(?:eration)?)\w*/gi)||[]).length;
+    if(jargon >= 2){
+      findings.push({ matched: s.length>80 ? s.substring(0,77)+'...' : s, severity:'orange', explain:'Brand sentence contains '+jargon+' jargon terms. AI message composition outputs plain language — jargon gets stripped.', fix:'Replace jargon with concrete actions and measurable outcomes.' });
+    }
+  }
+
+  // Overly long brand sentences
+  for(const s of sentences){
+    if(!names.some(n => s.includes(n))) continue;
+    const w = s.split(/\s+/).length;
+    if(w > 50){
+      findings.push({ matched: s.substring(0,77)+'...', severity:'yellow', explain:'Brand sentence is '+w+' words. AI messages target 15-40 words. Long sentences get truncated.', fix:'Split into two sentences: one stating the benefit, one providing evidence.' });
+    }
+  }
+
+  // Missing action orientation
+  const hasAction = top.contexts.some(c => c.type==='recommendation' || c.type==='action');
+  if(!hasAction && top.contexts.length > 0){
+    findings.push({ matched:'"'+top.name+'" — no action-oriented mentions', severity:'orange', explain:'Brand is mentioned but never in an actionable context. AI needs "try/use/start with [Brand]" framing.', fix:'Add: "Try '+top.name+' for [specific use case]" or "Teams using '+top.name+' report [specific benefit]."' });
+  }
+
+  // No quantified benefit
+  const hasBenefit = sentences.some(s => {
+    return names.some(n => s.includes(n)) && /\d+\s*(?:%|x|hours?|minutes?|days?|times?\s+faster|times?\s+more)/i.test(s);
+  });
+  if(!hasBenefit && brands.length > 0){
+    findings.push({ matched:'"'+top.name+'" — no quantified benefits', severity:'yellow', explain:'No brand sentences include quantified benefits. Messages with numbers are more persuasive.', fix:'Add: "'+top.name+' reduces [metric] by [number]%" or "'+top.name+' saves teams [X] hours per week."' });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════
+   MAIN SCAN
+   ═══════════════════════════════════ */
+function runScan(){
+  const raw = getContent();
+  if(!raw){ alert('Please paste some content first.'); return; }
+
+  // Gate check
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  // Show spinner
+  $('scanText').style.display = 'none';
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanBtn').disabled = true;
+
+  setTimeout(() => {
+    const plain = stripHtmlTags(raw);
+    const sentences = splitSentences(plain);
+    const brandNames = detectBrands(plain);
+
+    // Build brand objects
+    const brands = brandNames.map(name => {
+      const brandSentences = sentences.filter(s => s.includes(name));
+      const contexts = brandSentences.map(s => classifyBrandContext(s, name));
+      const highCtx = contexts.filter(c => c.propagationLikelihood==='high').length;
+      const medCtx = contexts.filter(c => c.propagationLikelihood==='medium').length;
+      return {
+        name,
+        count: (plain.match(new RegExp('\\b'+escapeRegex(name)+'\\b','g'))||[]).length,
+        contexts,
+        propagationScore: Math.min(100, highCtx*25 + medCtx*12 + brandSentences.length*3)
+      };
+    });
+
+    // Score dimensions
+    const d1 = scoreBrandExtractability(brands, sentences, plain);
+    const d2 = scoreRecommendationContext(brands);
+    const d3 = scoreMessageFriendlyPhrasing(brands, sentences);
+    const d4 = scoreMultiVariantPotential(brands);
+    const d5 = scoreActionOrientation(brands, sentences);
+
+    // Weighted composite
+    const overall = Math.round(d1.score*0.20 + d2.score*0.25 + d3.score*0.20 + d4.score*0.15 + d5.score*0.20);
+    const grade = overall >= 80 ? 'A' : overall >= 60 ? 'B' : overall >= 40 ? 'C' : overall >= 20 ? 'D' : 'F';
+
+    // Propagation-ready and weak sentences
+    const ready = [], weak = [];
+    for(const brand of brands){
+      for(const ctx of brand.contexts){
+        const entry = {
+          text: ctx.sentence,
+          score: ctx.propagationLikelihood==='high' ? 9 : ctx.propagationLikelihood==='medium' ? 6 : 3,
+          brand: brand.name,
+          type: ctx.type,
+          likelihood: ctx.propagationLikelihood,
+          reason: ctx.propagationLikelihood==='high' ? ctx.type+' context — strong propagation candidate.' : ctx.propagationLikelihood==='medium' ? ctx.type+' context — moderate potential. Could be strengthened.' : 'Vague mention — low propagation potential.'
+        };
+        if(ctx.propagationLikelihood==='high') ready.push(entry);
+        else if(ctx.propagationLikelihood==='low') weak.push(entry);
+      }
+    }
+
+    const findings = generateFindings(brands, sentences, plain);
+
+    // ─── Render ───
+    renderResults(overall, grade, brands, [d1,d2,d3,d4,d5], ready.slice(0,5), weak.slice(0,5), findings);
+
+    // Reset button
+    $('scanText').style.display = 'inline';
+    $('scanSpinner').style.display = 'none';
+    $('scanBtn').disabled = false;
+  }, 300);
+}
+
+/* ═══════════════════════════════════
+   RENDER
+   ═══════════════════════════════════ */
+function renderResults(overall, grade, brands, dims, ready, weak, findings){
+  $('results').style.display = 'block';
+  $('results').className = 'fade-in';
+
+  // Overall score
+  const c = colorClass(overall, false);
+  $('scoreHero').className = 'score-hero '+c;
+  $('overallScore').textContent = overall;
+  $('overallScore').className = 'score-number '+c;
+  $('overallGrade').textContent = 'Grade '+grade;
+  $('overallGrade').className = 'score-grade '+c;
+
+  let desc;
+  if(overall >= 80) desc = 'Excellent message propagation potential. High likelihood of brand propagation into AI-drafted emails and messages.';
+  else if(overall >= 60) desc = 'Good potential. Brand is detectable with some recommendation contexts, but could be strengthened with more action framing.';
+  else if(overall >= 40) desc = 'Moderate potential. Brand mentions exist but lack the recommendation context or conciseness needed for AI message composition.';
+  else if(overall >= 20) desc = 'Weak potential. Brand names are unclear, buried, or missing recommendation context.';
+  else desc = 'Very weak potential. Content needs fundamental restructuring for AI message propagation.';
+  $('scoreDesc').textContent = desc;
+
+  // Brands
+  const bl = $('brandList');
+  bl.innerHTML = '';
+  if(brands.length === 0){
+    bl.innerHTML = '<div style="color:var(--text-dim);font-size:.88rem">No brands detected. Ensure your brand name appears as a capitalized proper noun.</div>';
+  } else {
+    brands.slice(0,5).forEach(b => {
+      const sc = colorClass(b.propagationScore, false);
+      bl.innerHTML += '<div class="brand-pill"><span class="brand-pill-name">'+escHtml(b.name)+'</span><span class="brand-pill-count">'+b.count+' mentions</span><span class="brand-pill-score '+sc+'">'+b.propagationScore+'</span></div>';
+    });
+  }
+
+  // Dimensions
+  const dg = $('dimGrid');
+  dg.innerHTML = '';
+  dims.forEach(d => {
+    const dc = colorClass(d.score, false);
+    dg.innerHTML += '<div class="dim-card '+dc+'"><div class="dim-header"><span class="dim-name">'+escHtml(d.label)+'</span><span class="dim-score '+dc+'">'+d.score+'</span></div><div class="dim-title">'+escHtml(d.label)+'</div><div class="dim-detail">'+escHtml(d.detail)+'</div></div>';
+  });
+
+  // Ready sentences
+  $('readyCount').textContent = ready.length;
+  const rb = $('readyBody');
+  rb.innerHTML = '';
+  rb.classList.remove('open');
+  $('readyArrow').classList.remove('open');
+  if(ready.length === 0){
+    rb.innerHTML = '<div class="sentence-item"><div class="sentence-text" style="color:var(--text-dim)">No propagation-ready sentences found. Add recommendation and action framing around your brand name.</div></div>';
+  } else {
+    ready.forEach(s => {
+      const highlighted = escHtml(s.text).replace(new RegExp(escapeRegex(escHtml(s.brand)), 'g'), '<span class="brand-highlight">'+escHtml(s.brand)+'</span>');
+      rb.innerHTML += '<div class="sentence-item"><div class="sentence-text">'+highlighted+'</div><div class="sentence-meta"><span class="ctx-badge '+s.type+'">'+s.type+'</span><span class="score-chip high">HIGH</span></div><div class="sentence-reason">'+escHtml(s.reason)+'</div></div>';
+    });
+  }
+
+  // Weak sentences
+  $('weakCount').textContent = weak.length;
+  const wb = $('weakBody');
+  wb.innerHTML = '';
+  wb.classList.remove('open');
+  $('weakArrow').classList.remove('open');
+  if(weak.length === 0){
+    wb.innerHTML = '<div class="sentence-item"><div class="sentence-text" style="color:var(--text-dim)">No weak brand mentions found.</div></div>';
+  } else {
+    weak.forEach(s => {
+      const highlighted = escHtml(s.text).replace(new RegExp(escapeRegex(escHtml(s.brand)), 'g'), '<span class="brand-highlight">'+escHtml(s.brand)+'</span>');
+      wb.innerHTML += '<div class="sentence-item"><div class="sentence-text">'+highlighted+'</div><div class="sentence-meta"><span class="ctx-badge '+s.type+'">'+s.type+'</span><span class="score-chip low">LOW</span></div><div class="sentence-reason">'+escHtml(s.reason)+'</div></div>';
+    });
+  }
+
+  // Findings
+  $('findingsCount').textContent = findings.length;
+  const fb = $('findingsBody');
+  fb.innerHTML = '';
+  fb.classList.remove('open');
+  $('findingsArrow').classList.remove('open');
+  if(findings.length === 0){
+    fb.innerHTML = '<div class="finding-item"><div class="finding-text" style="color:var(--text-dim)">No issues found.</div></div>';
+  } else {
+    findings.slice(0,10).forEach(f => {
+      const matchClass = f.severity==='red' ? '' : f.severity==='orange' ? ' orange-match' : ' yellow-match';
+      fb.innerHTML += '<div class="finding-item"><div class="finding-text"><span class="finding-severity '+f.severity+'"></span><span class="matched'+matchClass+'">'+escHtml(f.matched)+'</span></div><div class="finding-explain">'+escHtml(f.explain)+'</div><div class="finding-fix">'+escHtml(f.fix)+'</div></div>';
+    });
+  }
+
+  // Scroll to results
+  $('results').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ═══════════════════════════════════
+   EMAIL & GATE
+   ═══════════════════════════════════ */
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+  $('emailMsg').textContent = 'Report saved. We\'ll be in touch.';
+  $('emailMsg').className = 'email-msg ok';
+  $('emailBtn').disabled = true;
+}
+
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  $('gateMsg').textContent = '';
+  runScan();
+}
+</script>
+</body>
+</html>

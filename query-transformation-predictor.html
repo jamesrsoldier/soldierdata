@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Query Transformation Predictor</title>
+<meta name="description" content="See what AI actually searches for when users ask questions. Predict the 1-6 word queries AI generates from user questions and score your content alignment with those intermediate searches.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --blue:#4dabf7;
+  --purple:#b197fc;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:920px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'\2014\2014';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:660px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Score hero */
+.score-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.score-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.score-hero.green::before{background:var(--green)}
+.score-hero.yellow::before{background:var(--yellow)}
+.score-hero.orange::before{background:var(--orange)}
+.score-hero.red::before{background:var(--red)}
+.score-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.score-number.green{color:var(--green)}
+.score-number.yellow{color:var(--yellow)}
+.score-number.orange{color:var(--orange)}
+.score-number.red{color:var(--red)}
+.score-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:10px 0 4px;letter-spacing:1px;text-transform:uppercase;
+}
+.score-grade{
+  font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;
+  margin-bottom:8px;
+}
+.score-desc{font-size:.9rem;color:var(--text-muted);max-width:580px;margin:0 auto;line-height:1.6}
+
+/* Summary bar */
+.summary-bar{
+  display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);margin-bottom:24px;
+  font-size:.82rem;font-family:'JetBrains Mono',monospace;
+}
+.summary-bar span{color:var(--text-dim);letter-spacing:0.5px}
+.summary-bar strong{color:var(--text);margin-left:4px}
+
+/* Dimension grid */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:640px){.dim-grid{grid-template-columns:1fr}}
+.dim-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+.dim-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.dim-card.green::before{background:var(--green)}
+.dim-card.yellow::before{background:var(--yellow)}
+.dim-card.orange::before{background:var(--orange)}
+.dim-card.red::before{background:var(--red)}
+.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dim-name{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;
+}
+.dim-points{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;line-height:1}
+.dim-points.green{color:var(--green)}
+.dim-points.yellow{color:var(--yellow)}
+.dim-points.orange{color:var(--orange)}
+.dim-points.red{color:var(--red)}
+.dim-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:4px;
+}
+.dim-desc{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+
+/* Query cascade visualization */
+.cascade-section{margin-bottom:24px}
+.query-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:16px 20px;margin-bottom:8px;
+  display:flex;align-items:center;gap:16px;
+  position:relative;
+}
+.query-rank{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;
+  color:var(--text-dim);min-width:28px;text-align:center;
+}
+.query-body{flex:1;min-width:0}
+.query-text{
+  font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:500;
+  color:var(--text);margin-bottom:4px;word-break:break-word;
+}
+.query-meta{
+  font-size:.72rem;color:var(--text-dim);
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+}
+.query-type{
+  display:inline-block;padding:2px 8px;
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:1.5px;
+}
+.query-type.broad{background:rgba(77,171,247,.12);color:var(--blue)}
+.query-type.specific{background:rgba(0,229,160,.1);color:var(--green)}
+.query-type.entity{background:rgba(177,151,252,.12);color:var(--purple)}
+.query-type.comparison{background:rgba(240,140,41,.12);color:var(--orange)}
+.query-type.how-to{background:rgba(240,180,41,.1);color:var(--yellow)}
+.query-type.data{background:rgba(255,77,77,.1);color:var(--red)}
+.query-alignment{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;
+  min-width:60px;text-align:right;
+}
+.query-alignment.green{color:var(--green)}
+.query-alignment.yellow{color:var(--yellow)}
+.query-alignment.orange{color:var(--orange)}
+.query-alignment.red{color:var(--red)}
+.query-bar{
+  position:absolute;bottom:0;left:0;height:2px;
+  transition:width .3s;
+}
+.query-bar.green{background:var(--green)}
+.query-bar.yellow{background:var(--yellow)}
+.query-bar.orange{background:var(--orange)}
+.query-bar.red{background:var(--red)}
+
+/* Gaps section */
+.gap-section{margin-bottom:24px}
+.gap-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:16px 20px;margin-bottom:8px;
+}
+.gap-query{
+  font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:500;
+  color:var(--red);margin-bottom:6px;
+}
+.gap-missing{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.gap-missing li{margin-left:16px;margin-bottom:4px}
+
+/* Long-tail warnings */
+.warnings-section{margin-bottom:24px}
+.warning-item{
+  background:var(--card);border:1px solid var(--border);
+  padding:14px 20px;margin-bottom:8px;
+  font-size:.85rem;color:var(--yellow);line-height:1.5;
+  border-left:3px solid var(--yellow);
+}
+
+/* Findings list */
+.findings-section{margin-bottom:24px}
+.findings-section .card{padding:0;overflow:hidden}
+.findings-cat-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-cat-header:hover{background:rgba(30,35,51,.8)}
+.findings-cat-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.findings-cat-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:3px 10px;border-radius:2px;
+}
+.findings-cat-count.red{background:rgba(255,77,77,.12);color:var(--red)}
+.findings-cat-count.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.findings-cat-count.yellow{background:rgba(240,180,41,.1);color:var(--yellow)}
+.findings-cat-count.green{background:rgba(0,229,160,.1);color:var(--green)}
+.toggle-arrow{font-size:.8rem;color:var(--text-dim);transition:transform .2s}
+.toggle-arrow.open{transform:rotate(180deg)}
+.findings-body{display:none;padding:0}
+.findings-body.open{display:block}
+.finding-item{padding:14px 24px;border-bottom:1px solid var(--border)}
+.finding-item:last-child{border-bottom:none}
+.finding-severity{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;flex-shrink:0}
+.finding-severity.red{background:var(--red)}
+.finding-severity.orange{background:var(--orange)}
+.finding-severity.yellow{background:var(--yellow)}
+.finding-text{font-size:.88rem;color:var(--text);margin-bottom:6px;display:flex;align-items:flex-start;gap:0}
+.finding-text .matched{background:rgba(255,77,77,.15);color:var(--red);padding:1px 4px;font-family:'JetBrains Mono',monospace;font-size:.82rem}
+.finding-text .matched.orange-match{background:rgba(240,140,41,.15);color:var(--orange)}
+.finding-text .matched.yellow-match{background:rgba(240,180,41,.12);color:var(--yellow)}
+.finding-explain{font-size:.78rem;color:var(--text-dim);line-height:1.5;padding-left:16px;margin-top:2px}
+.finding-fix{font-size:.78rem;color:var(--accent);line-height:1.5;padding-left:16px;margin-top:4px;font-style:italic}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Soft gate overlay */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+
+/* Section headers */
+.section-header{
+  font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-header .section-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:2px;
+  padding:3px 10px;border:1px solid var(--border-accent);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Query Transformation Predictor</div>
+    <h1>What Does AI <span>Actually</span><br>Search For?</h1>
+    <p class="subtitle">AI doesn't search using the user's question. It decomposes questions into short 1-6 word queries. See the actual queries AI generates and find out if your content aligns with them.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="content-input" id="contentInput" contenteditable="true" data-placeholder="Paste your web page content here -- raw text, HTML, or markdown all work. The analyzer will extract topics, predict AI search queries, and score your content alignment..." role="textbox" aria-multiline="true"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runScan()">
+        <span id="scanText">Predict AI Queries</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Score -->
+    <div class="score-hero" id="scoreHero">
+      <div class="score-number" id="overallScore">&mdash;</div>
+      <div class="score-grade" id="overallGrade"></div>
+      <div class="score-label">Query Alignment Score</div>
+      <div class="score-desc" id="scoreDesc"></div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <!-- Dimension breakdown -->
+    <div class="section-header">Dimension Breakdown <span class="section-tag">6 Dimensions</span></div>
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <!-- Predicted queries cascade -->
+    <div class="section-header">Predicted AI Query Cascade <span class="section-tag">What AI Searches</span></div>
+    <div class="cascade-section" id="cascadeSection"></div>
+
+    <!-- Worst gaps -->
+    <div class="section-header">Biggest Query Gaps <span class="section-tag">Missing Alignment</span></div>
+    <div class="gap-section" id="gapSection"></div>
+
+    <!-- Long-tail warnings -->
+    <div id="warningsWrapper" style="display:none">
+      <div class="section-header">Long-Tail SEO Risks <span class="section-tag">AI Ignores These</span></div>
+      <div class="warnings-section" id="warningsSection"></div>
+    </div>
+
+    <!-- Detailed findings -->
+    <div class="section-header">Detailed Findings <span class="section-tag">All Issues</span></div>
+    <div class="findings-section" id="findingsSection"></div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Enter your email to get a detailed query alignment report with rewrite suggestions</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want a full diagnostic of how AI search systems find (or miss) your content?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Diagnostic Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 AI Query Transformation Predictor</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Scans</h3>
+    <p>Enter your email to continue scanning. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ───── helpers ───── */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+
+/* ───── contenteditable paste & input handling ───── */
+const contentEl = $('contentInput');
+let rawContent = '';
+
+contentEl.addEventListener('paste', function(e){
+  e.preventDefault();
+  const clip = e.clipboardData || window.clipboardData;
+  const html = clip.getData('text/html');
+  const text = clip.getData('text/plain');
+  if(html){
+    rawContent = html;
+    this.textContent = html;
+  } else {
+    rawContent = text;
+    this.textContent = text;
+  }
+  updateCharCount();
+});
+
+contentEl.addEventListener('input', updateCharCount);
+
+function updateCharCount(){
+  $('charCount').textContent = (contentEl.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  if(rawContent) return rawContent;
+  return contentEl.textContent || '';
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
+}
+
+function splitSentences(text){
+  const raw = text.split(/(?<=[^0-9])([.!?])(?=\s|$)/);
+  const sentences = [];
+  let buf = '';
+  for(let i = 0; i < raw.length; i++){
+    buf += raw[i];
+    if(/^[.!?]$/.test(raw[i])){
+      const s = buf.trim();
+      if(s.length > 8) sentences.push(s);
+      buf = '';
+    }
+  }
+  if(buf.trim().length > 8) sentences.push(buf.trim());
+  return sentences;
+}
+
+function scoreColor(score){
+  if(score >= 75) return 'green';
+  if(score >= 50) return 'yellow';
+  if(score >= 25) return 'orange';
+  return 'red';
+}
+
+function gradeScore(score){
+  if(score >= 80) return 'A';
+  if(score >= 60) return 'B';
+  if(score >= 40) return 'C';
+  if(score >= 20) return 'D';
+  return 'F';
+}
+
+/* ═══════════════════════════════════════════
+   CORE ANALYSIS ENGINE
+   ═══════════════════════════════════════════ */
+
+function extractCoreTopics(plain){
+  const topics = [];
+  const seen = new Set();
+
+  // Proper nouns (multi-word)
+  const properNouns = plain.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\b/g) || [];
+  properNouns.forEach(n => {
+    const lower = n.toLowerCase();
+    if(!seen.has(lower) && n.split(/\s+/).length <= 4){
+      seen.add(lower);
+      topics.push(n);
+    }
+  });
+
+  // Frequent capitalized words
+  const wordFreq = {};
+  plain.split(/\s+/).forEach(w => {
+    const clean = w.replace(/[^a-zA-Z]/g, '');
+    if(clean.length >= 3 && /^[A-Z]/.test(clean)){
+      const key = clean.toLowerCase();
+      wordFreq[key] = (wordFreq[key] || 0) + 1;
+    }
+  });
+  Object.entries(wordFreq)
+    .filter(([,c]) => c >= 2)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0, 10)
+    .forEach(([word]) => {
+      if(!seen.has(word)){
+        seen.add(word);
+        topics.push(word.charAt(0).toUpperCase() + word.slice(1));
+      }
+    });
+
+  return topics.slice(0, 15);
+}
+
+function extractCategoryKeywords(plain){
+  const categories = [];
+  const seen = new Set();
+
+  const patterns = [
+    /\b(CRM|ERP|SaaS|PaaS|IaaS|API|SDK|IDE|CMS|LMS|HRM|ATS)\b/gi,
+    /\b(\w+)\s+(?:software|platform|tool|app|application|service|solution|system|framework|library)\b/gi,
+    /\b(?:software|platform|tool|app|application|service|solution|system|framework|library)\s+(?:for\s+)?(\w+(?:\s+\w+)?)\b/gi,
+    /\b(\w+)\s+(?:management|tracking|analytics|automation|optimization|monitoring|reporting)\b/gi,
+    /\b(\w+)\s+(?:guide|tutorial|review|comparison|alternatives?)\b/gi,
+  ];
+
+  patterns.forEach(pattern => {
+    let m;
+    while((m = pattern.exec(plain)) !== null){
+      const cat = (m[1] || m[0]).trim();
+      const lower = cat.toLowerCase();
+      if(!seen.has(lower) && cat.length >= 2 && cat.length <= 30
+        && !/^(the|this|that|these|those|which|what|how|when|where|our|your|their)$/i.test(cat)){
+        seen.add(lower);
+        categories.push(cat);
+      }
+    }
+  });
+
+  return categories.slice(0, 10);
+}
+
+function predictQueries(topics, categories, plain){
+  const queries = [];
+  const seen = new Set();
+
+  function addQuery(query, type, confidence, rationale){
+    const clean = query.trim().toLowerCase();
+    const wordCount = clean.split(/\s+/).length;
+    if(wordCount > 6 || wordCount < 1 || seen.has(clean)) return;
+    seen.add(clean);
+    queries.push({ query: clean, wordCount, type, confidence, rationale });
+  }
+
+  // Layer 1: Broad queries (1-2 words)
+  categories.forEach(cat => {
+    if(cat.split(/\s+/).length <= 2){
+      addQuery(cat, 'broad', 85, 'AI starts with broad 1-2 word category searches');
+    }
+  });
+
+  topics.forEach(topic => {
+    if(topic.split(/\s+/).length === 1){
+      addQuery(topic, 'entity', 80, 'Single-word entity query');
+    }
+  });
+
+  // Layer 2: Entity queries (2-3 words)
+  topics.forEach(topic => {
+    const words = topic.split(/\s+/);
+    if(words.length >= 2 && words.length <= 3){
+      addQuery(topic, 'entity', 75, 'Multi-word entity search');
+    }
+  });
+
+  // Layer 3: Comparisons
+  const vsMatches = plain.match(/\b(\w+)\s+vs\.?\s+(\w+)\b/gi) || [];
+  vsMatches.forEach(vs => {
+    addQuery(vs, 'comparison', 90, 'Direct comparison query — AI searches for "X vs Y"');
+  });
+
+  // Layer 4: How-to queries
+  const howTo = plain.match(/\bhow\s+to\s+\w+(?:\s+\w+){0,3}\b/gi) || [];
+  howTo.forEach(ht => {
+    if(ht.split(/\s+/).length <= 6) addQuery(ht, 'how-to', 70, 'How-to procedural search');
+  });
+
+  // Layer 5: Entity + category combos
+  topics.slice(0, 5).forEach(topic => {
+    categories.slice(0, 3).forEach(cat => {
+      const combo = topic + ' ' + cat;
+      if(combo.split(/\s+/).length <= 6){
+        addQuery(combo, 'specific', 60, 'Entity + category combination');
+      }
+    });
+  });
+
+  // Layer 6: Data-seeking
+  const dataPatterns = plain.match(/\b(\w+(?:\s+\w+)?)\s+(?:pricing|cost|features|specs|specifications|benchmark|performance|review|rating)\b/gi) || [];
+  dataPatterns.forEach(dp => addQuery(dp, 'data', 65, 'Data-seeking query'));
+
+  // Layer 7: Category + qualifier
+  categories.slice(0, 5).forEach(cat => {
+    ['pricing', 'features', 'comparison', 'alternatives', 'review'].forEach(q => {
+      const combo = cat + ' ' + q;
+      if(combo.split(/\s+/).length <= 6) addQuery(combo, 'data', 55, 'Category + qualifier query');
+    });
+  });
+
+  return queries.sort((a,b) => b.confidence - a.confidence).slice(0, 20);
+}
+
+function scoreAlignment(query, sentences, plain){
+  const queryWords = query.toLowerCase().split(/\s+/);
+  const matchingSentences = [];
+  const missingElements = [];
+
+  sentences.forEach(s => {
+    const sLower = s.toLowerCase();
+    const matchedWords = queryWords.filter(w => sLower.includes(w));
+    if(matchedWords.length / queryWords.length >= 0.5){
+      matchingSentences.push(s.length > 120 ? s.substring(0, 117) + '...' : s);
+    }
+  });
+
+  queryWords.forEach(w => {
+    const regex = new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    if(!regex.test(plain)) missingElements.push('"' + w + '" not found');
+  });
+
+  let score = 0;
+
+  // Word presence (40 pts)
+  const presentWords = queryWords.filter(w => {
+    const regex = new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    return regex.test(plain);
+  });
+  score += Math.round((presentWords.length / queryWords.length) * 40);
+
+  // Matching sentences (30 pts)
+  score += Math.min(30, matchingSentences.length * 10);
+
+  // Proximity (20 pts)
+  if(queryWords.length >= 2){
+    let proxScore = 0;
+    const plainLower = plain.toLowerCase();
+    for(let i = 0; i < queryWords.length - 1; i++){
+      const w1 = queryWords[i];
+      const w2 = queryWords[i + 1];
+      const r1 = new RegExp('\\b' + w1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+      let match1;
+      while((match1 = r1.exec(plainLower)) !== null){
+        const window = plainLower.substring(match1.index, Math.min(plainLower.length, match1.index + 200));
+        const r2 = new RegExp('\\b' + w2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+        if(r2.test(window)){ proxScore += 10; break; }
+      }
+    }
+    score += Math.min(20, proxScore);
+  } else {
+    score += 10;
+  }
+
+  // Header bonus (10 pts)
+  const headerPattern = /(?:<h[1-6][^>]*>([^<]+)<\/h[1-6]>|^#{1,6}\s+(.+))/gim;
+  let headerHits = 0;
+  let m;
+  while((m = headerPattern.exec(plain)) !== null){
+    const ht = (m[1] || m[2] || '').toLowerCase();
+    if(queryWords.some(w => ht.includes(w))) headerHits++;
+  }
+  score += Math.min(10, headerHits * 5);
+
+  return {
+    query,
+    alignmentScore: Math.min(100, score),
+    matchingSentences: matchingSentences.slice(0, 3),
+    missingElements,
+  };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION SCORERS
+   ═══════════════════════════════════════════ */
+
+function scoreKeywordConciseness(sentences){
+  let conciseCount = 0;
+  sentences.forEach(s => {
+    const words = s.trim().split(/\s+/).length;
+    if(words <= 25 && /\b[A-Z][a-z]+\b/.test(s) && /\b\d/.test(s)) conciseCount++;
+  });
+  return Math.min(100, Math.round((conciseCount / Math.max(1, sentences.length)) * 150));
+}
+
+function scoreEntityDensity(topics, sentences){
+  if(sentences.length === 0) return 0;
+  const text = sentences.join(' ');
+  let mentions = 0;
+  topics.forEach(topic => {
+    const regex = new RegExp('\\b' + topic.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+    const m = text.match(regex);
+    if(m) mentions += m.length;
+  });
+  return Math.min(100, Math.round((mentions / sentences.length) * 100));
+}
+
+function scoreTopicCoverage(queries, alignments){
+  const wellAligned = alignments.filter(a => a.alignmentScore >= 50).length;
+  return Math.min(100, Math.round((wellAligned / Math.max(1, queries.length)) * 100));
+}
+
+function scoreQueryBreadth(alignments, queries){
+  let broadHits = 0, specificHits = 0;
+  queries.forEach((q, i) => {
+    if(i < alignments.length && alignments[i].alignmentScore >= 40){
+      if(q.wordCount <= 2) broadHits++;
+      else specificHits++;
+    }
+  });
+  return Math.min(50, broadHits * 15) + Math.min(50, specificHits * 10);
+}
+
+function scoreNaturalLanguageGap(plain){
+  const longQs = (plain.match(/\b(?:how|what|why|when|where|which|can|does|should|is)\s+[\w\s]{15,60}\?/gi) || []).length;
+  const shortKw = (plain.match(/\b[A-Z][a-z]+(?:\s+\w+){0,4}\b/g) || []).length;
+  const hasBridge = /\b(?:also\s+known\s+as|abbreviated|commonly\s+called|or\s+simply|a\.k\.a)\b/i.test(plain);
+  let score = 50;
+  if(shortKw > 10) score += 20;
+  else if(shortKw > 5) score += 10;
+  if(longQs > 3 && shortKw < 5) score -= 20;
+  if(hasBridge) score += 10;
+  return Math.max(0, Math.min(100, score));
+}
+
+function scoreLongTailRisk(raw, plain){
+  let risk = 0;
+  const warnings = [];
+
+  // Long headers
+  const headerPattern = /(?:<h[1-6][^>]*>([^<]+)<\/h[1-6]>|^#{1,6}\s+(.+))/gim;
+  let m, longHeaders = 0;
+  while((m = headerPattern.exec(raw)) !== null){
+    const text = (m[1] || m[2] || '').trim();
+    if(text.split(/\s+/).length > 8){
+      longHeaders++;
+      warnings.push('Long-tail header: "' + text.substring(0, 60) + '..." \u2014 AI will never search for this exact phrase');
+    }
+  }
+  risk += Math.min(30, longHeaders * 10);
+
+  // Long meta description
+  const metaDesc = raw.match(/<meta\s+[^>]*name\s*=\s*["']description["'][^>]*content\s*=\s*["']([^"']+)["']/i)
+    || raw.match(/<meta\s+[^>]*content\s*=\s*["']([^"']+)["'][^>]*name\s*=\s*["']description["']/i);
+  if(metaDesc && metaDesc[1].split(/\s+/).length > 20){
+    risk += 10;
+    warnings.push('Long meta description optimized for traditional SEO \u2014 AI generates its own short queries');
+  }
+
+  // Repeated long phrases
+  const longPhrases = plain.match(/\b\w+(?:\s+\w+){6,10}\b/g) || [];
+  const phraseFreq = {};
+  longPhrases.forEach(p => {
+    const key = p.toLowerCase();
+    phraseFreq[key] = (phraseFreq[key] || 0) + 1;
+  });
+  const repeated = Object.entries(phraseFreq).filter(([,c]) => c >= 2);
+  if(repeated.length > 0){
+    risk += Math.min(30, repeated.length * 10);
+    repeated.slice(0, 3).forEach(([phrase, count]) => {
+      warnings.push('Repeated long-tail phrase (' + count + 'x): "' + phrase.substring(0, 50) + '..." \u2014 AI decomposes this into 1-6 word fragments');
+    });
+  }
+
+  // "Near me" trap
+  if(/\b(?:near\s+me|in\s+my\s+area|close\s+by|nearby|local)\b/i.test(plain)){
+    risk += 10;
+    warnings.push('"Near me" / location phrasing \u2014 AI uses location-aware tools (places_search) instead of web search');
+  }
+
+  // Question-format headers
+  const questionHeaders = (raw.match(/<h[1-6][^>]*>[^<]*\?[^<]*<\/h[1-6]>/gi) || []).length
+    + (raw.match(/^#{1,6}\s+.*\?/gm) || []).length;
+  if(questionHeaders >= 3){
+    risk += 10;
+    warnings.push(questionHeaders + ' question-format headers \u2014 AI does NOT search using questions; it extracts keyword fragments');
+  }
+
+  return { score: Math.min(100, risk), warnings };
+}
+
+function generateFindings(queries, alignments, longTailWarnings, plain){
+  const findings = [];
+
+  queries.forEach((q, i) => {
+    if(i < alignments.length){
+      const a = alignments[i];
+      if(q.confidence >= 70 && a.alignmentScore < 30){
+        findings.push({
+          matched: 'Query: "' + q.query + '" \u2014 alignment: ' + a.alignmentScore + '/100',
+          severity: 'red',
+          explain: 'AI is likely to search for "' + q.query + '" (' + q.confidence + '% confidence) but your content has very low alignment (' + a.alignmentScore + '/100). ' + q.rationale,
+          fix: 'Add content that directly addresses "' + q.query + '" \u2014 use these exact words in a self-contained, fact-dense sentence.',
+          position: 0,
+        });
+      } else if(q.confidence >= 60 && a.alignmentScore < 50){
+        findings.push({
+          matched: 'Query: "' + q.query + '" \u2014 alignment: ' + a.alignmentScore + '/100',
+          severity: 'orange',
+          explain: 'Moderate gap: AI may search for "' + q.query + '" but your content only partially aligns. ' + a.missingElements.join('; '),
+          fix: 'Strengthen content for "' + q.query + '" by adding the missing elements in a concise, citable sentence.',
+          position: 0,
+        });
+      }
+    }
+  });
+
+  longTailWarnings.forEach(w => {
+    findings.push({
+      matched: w.substring(0, 80),
+      severity: 'yellow',
+      explain: w,
+      fix: 'Restructure around 1-6 word keyword clusters that AI will actually search for.',
+      position: 0,
+    });
+  });
+
+  const entityMentions = (plain.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\b/g) || []).length;
+  if(entityMentions < 5){
+    findings.push({
+      matched: 'Only ' + entityMentions + ' named entities found',
+      severity: 'orange',
+      explain: 'Low entity density. AI queries heavily feature entity names. Content with few named entities is harder for AI to find via search.',
+      fix: 'Name specific products, brands, technologies, and organizations throughout your content.',
+      position: 0,
+    });
+  }
+
+  return findings.slice(0, 20);
+}
+
+/* ═══════════════════════════════════════════
+   MAIN SCAN FUNCTION
+   ═══════════════════════════════════════════ */
+function runScan(){
+  const raw = getContent().trim();
+  if(!raw){ alert('Please paste some content to analyze.'); return; }
+
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  $('scanBtn').disabled = true;
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanText').textContent = 'Analyzing';
+
+  setTimeout(() => {
+    const plain = stripHtmlTags(raw);
+    const sentences = splitSentences(plain);
+
+    // Extract & predict
+    const topics = extractCoreTopics(plain);
+    const categories = extractCategoryKeywords(plain);
+    const predictedQueries = predictQueries(topics, categories, plain);
+    const alignments = predictedQueries.map(q => scoreAlignment(q.query, sentences, plain));
+
+    // Dimensions
+    const kwConc = scoreKeywordConciseness(sentences);
+    const entDens = scoreEntityDensity(topics, sentences);
+    const topCov = scoreTopicCoverage(predictedQueries, alignments);
+    const qBreadth = scoreQueryBreadth(alignments, predictedQueries);
+    const nlGap = scoreNaturalLanguageGap(plain);
+    const { score: ltRiskRaw, warnings: ltWarnings } = scoreLongTailRisk(raw, plain);
+    const ltRisk = Math.max(0, 100 - ltRiskRaw);
+
+    // Overall
+    const overallScore = Math.round(
+      kwConc * 0.15 + entDens * 0.20 + topCov * 0.25 +
+      qBreadth * 0.15 + nlGap * 0.10 + ltRisk * 0.15
+    );
+    const grade = gradeScore(overallScore);
+    const oc = scoreColor(overallScore);
+
+    // Findings
+    const findings = generateFindings(predictedQueries, alignments, ltWarnings, plain);
+    const redCount = findings.filter(f => f.severity === 'red').length;
+    const orangeCount = findings.filter(f => f.severity === 'orange').length;
+    const yellowCount = findings.filter(f => f.severity === 'yellow').length;
+
+    // ── Render overall score ──
+    $('overallScore').textContent = overallScore;
+    $('overallScore').className = 'score-number ' + oc;
+    $('overallGrade').textContent = 'Grade: ' + grade;
+    $('overallGrade').style.color = 'var(--' + oc + ')';
+    $('scoreHero').className = 'score-hero ' + oc;
+
+    if(overallScore >= 75){
+      $('scoreDesc').textContent = 'Excellent query alignment. Your content uses concise, entity-rich language that closely matches the short search queries AI systems generate. AI searches are likely to surface your content.';
+    } else if(overallScore >= 55){
+      $('scoreDesc').textContent = 'Good foundation with gaps. Some high-probability AI queries have weak content alignment. Focus on the worst-gap queries below to improve AI discoverability.';
+    } else if(overallScore >= 35){
+      $('scoreDesc').textContent = 'Below average query alignment. Much of your content is optimized for long-tail or natural-language queries that AI decomposes into 1-6 word fragments. Your content may not surface for the actual queries AI uses.';
+    } else {
+      $('scoreDesc').textContent = 'Poor query alignment. AI transforms user questions into short 1-6 word queries, and your content does not align with these intermediate search terms. Significant restructuring needed.';
+    }
+
+    // ── Summary bar ──
+    $('summaryBar').innerHTML =
+      '<span>Queries predicted: <strong>' + predictedQueries.length + '</strong></span>' +
+      '<span>Topics extracted: <strong>' + topics.length + '</strong></span>' +
+      '<span>Sentences: <strong>' + sentences.length + '</strong></span>' +
+      '<span style="color:var(--red)">Gaps: <strong>' + redCount + '</strong></span>' +
+      '<span style="color:var(--orange)">Warnings: <strong>' + orangeCount + '</strong></span>';
+
+    // ── Dimension cards ──
+    const dims = [
+      { name: 'Entity Density', title: 'Entity Density', desc: 'Named brands, products, and technologies that AI uses as search terms', score: entDens },
+      { name: 'Topic Coverage', title: 'Topic Coverage', desc: 'How many predicted AI queries your content aligns with', score: topCov },
+      { name: 'Keyword Concise', title: 'Keyword Conciseness', desc: 'Short, data-rich sentences matching AI query patterns', score: kwConc },
+      { name: 'Query Breadth', title: 'Query Breadth', desc: 'Content supports both broad (1-2 word) and specific (3-6 word) queries', score: qBreadth },
+      { name: 'Long-Tail Safety', title: 'Long-Tail Safety', desc: 'Freedom from long-tail SEO phrases AI never searches for', score: ltRisk },
+      { name: 'NL Bridging', title: 'Natural Language Bridging', desc: 'Bridges between conversational questions and keyword search terms', score: nlGap },
+    ];
+
+    let dimHtml = '';
+    dims.forEach(d => {
+      const c = scoreColor(d.score);
+      dimHtml += '<div class="dim-card ' + c + '">' +
+        '<div class="dim-header">' +
+          '<span class="dim-name">' + d.name + '</span>' +
+          '<span class="dim-points ' + c + '">' + d.score + '</span>' +
+        '</div>' +
+        '<div class="dim-title">' + d.title + '</div>' +
+        '<div class="dim-desc">' + d.desc + '</div>' +
+      '</div>';
+    });
+    $('dimGrid').innerHTML = dimHtml;
+
+    // ── Query cascade ──
+    let cascadeHtml = '';
+    predictedQueries.slice(0, 15).forEach((q, i) => {
+      const a = i < alignments.length ? alignments[i] : { alignmentScore: 0 };
+      const ac = scoreColor(a.alignmentScore);
+      cascadeHtml += '<div class="query-card">' +
+        '<div class="query-rank">' + (i + 1) + '</div>' +
+        '<div class="query-body">' +
+          '<div class="query-text">"' + escHtml(q.query) + '"</div>' +
+          '<div class="query-meta">' +
+            '<span class="query-type ' + q.type + '">' + q.type + '</span>' +
+            '<span>' + q.wordCount + ' word' + (q.wordCount !== 1 ? 's' : '') + '</span>' +
+            '<span>' + q.confidence + '% likely</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="query-alignment ' + ac + '">' + a.alignmentScore + '</div>' +
+        '<div class="query-bar ' + ac + '" style="width:' + a.alignmentScore + '%"></div>' +
+      '</div>';
+    });
+    $('cascadeSection').innerHTML = cascadeHtml;
+
+    // ── Worst gaps ──
+    const worstGaps = [...alignments]
+      .map((a, i) => ({ ...a, query: predictedQueries[i] }))
+      .filter(a => a.alignmentScore < 50 && a.query.confidence >= 55)
+      .sort((a, b) => a.alignmentScore - b.alignmentScore)
+      .slice(0, 5);
+
+    let gapHtml = '';
+    if(worstGaps.length === 0){
+      gapHtml = '<div class="card" style="text-align:center;padding:32px 28px">' +
+        '<div style="font-size:2rem;margin-bottom:12px;color:var(--green)">&#10003;</div>' +
+        '<p style="color:var(--text-muted);font-size:.9rem">No critical query gaps detected. Your content aligns reasonably well with predicted AI queries.</p>' +
+      '</div>';
+    } else {
+      worstGaps.forEach(g => {
+        gapHtml += '<div class="gap-card">' +
+          '<div class="gap-query">"' + escHtml(g.query.query) + '" \u2014 alignment: ' + g.alignmentScore + '/100 (' + g.query.confidence + '% likely query)</div>' +
+          '<div class="gap-missing">';
+        if(g.missingElements.length > 0){
+          gapHtml += '<ul>';
+          g.missingElements.forEach(me => { gapHtml += '<li>' + escHtml(me) + '</li>'; });
+          gapHtml += '</ul>';
+        } else {
+          gapHtml += '<span style="color:var(--text-dim)">Query words present but not in proximity or key positions</span>';
+        }
+        gapHtml += '</div></div>';
+      });
+    }
+    $('gapSection').innerHTML = gapHtml;
+
+    // ── Long-tail warnings ──
+    if(ltWarnings.length > 0){
+      $('warningsWrapper').style.display = 'block';
+      let warnHtml = '';
+      ltWarnings.forEach(w => {
+        warnHtml += '<div class="warning-item">' + escHtml(w) + '</div>';
+      });
+      $('warningsSection').innerHTML = warnHtml;
+    } else {
+      $('warningsWrapper').style.display = 'none';
+    }
+
+    // ── Detailed findings ──
+    let findingsHtml = '';
+    if(findings.length > 0){
+      const sevGroups = [
+        { label: 'Critical Gaps', filter: 'red', color: 'red' },
+        { label: 'Moderate Gaps', filter: 'orange', color: 'orange' },
+        { label: 'Long-Tail Risks', filter: 'yellow', color: 'yellow' },
+      ];
+
+      sevGroups.forEach(group => {
+        const gFindings = findings.filter(f => f.severity === group.filter);
+        if(gFindings.length === 0) return;
+        findingsHtml += '<div class="card" style="margin-bottom:16px">' +
+          '<div class="findings-cat-header" onclick="toggleFindings(this)">' +
+            '<div class="findings-cat-title">' + group.label +
+              '<span class="findings-cat-count ' + group.color + '">' + gFindings.length + '</span>' +
+            '</div>' +
+            '<span class="toggle-arrow">&#9660;</span>' +
+          '</div>' +
+          '<div class="findings-body">';
+
+        gFindings.forEach(f => {
+          const matchClass = f.severity === 'orange' ? 'matched orange-match' : f.severity === 'yellow' ? 'matched yellow-match' : 'matched';
+          findingsHtml += '<div class="finding-item">' +
+            '<div class="finding-text">' +
+              '<span class="finding-severity ' + f.severity + '"></span>' +
+              '<span class="' + matchClass + '">' + escHtml(f.matched) + '</span>' +
+            '</div>' +
+            '<div class="finding-explain">' + escHtml(f.explain) + '</div>' +
+            '<div class="finding-fix">Fix: ' + escHtml(f.fix) + '</div>' +
+          '</div>';
+        });
+        findingsHtml += '</div></div>';
+      });
+    } else {
+      findingsHtml = '<div class="card" style="text-align:center;padding:40px 28px">' +
+        '<div style="font-size:2rem;margin-bottom:12px;color:var(--green)">&#10003;</div>' +
+        '<h2 style="color:var(--green);margin-bottom:8px">Strong Query Alignment</h2>' +
+        '<p style="color:var(--text-muted);font-size:.9rem">No significant query alignment gaps detected. Your content is well-positioned for AI search discovery.</p>' +
+      '</div>';
+    }
+    $('findingsSection').innerHTML = findingsHtml;
+
+    // Auto-expand first findings group
+    const firstBody = $('findingsSection').querySelector('.findings-body');
+    const firstArrow = $('findingsSection').querySelector('.toggle-arrow');
+    if(firstBody){ firstBody.classList.add('open'); if(firstArrow) firstArrow.classList.add('open'); }
+
+    // Show results
+    $('results').style.display = 'block';
+    $('results').classList.remove('fade-in');
+    void $('results').offsetWidth;
+    $('results').classList.add('fade-in');
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    $('scanBtn').disabled = false;
+    $('scanSpinner').style.display = 'none';
+    $('scanText').textContent = 'Predict AI Queries';
+  }, 700);
+}
+
+/* ───── toggle findings accordion ───── */
+function toggleFindings(header){
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ───── soft gate ───── */
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, source: 'query-transformation-gate', timestamp: new Date().toISOString() })
+  }).then(() => {}).catch(() => {});
+
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  runScan();
+}
+
+/* ───── email capture ───── */
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+
+  $('emailBtn').disabled = true;
+  $('emailBtn').textContent = 'Sending...';
+  $('emailMsg').textContent = '';
+  $('emailMsg').className = 'email-msg';
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      email,
+      queryAlignmentScore: $('overallScore').textContent,
+      source: 'query-transformation',
+      timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if(r.ok){
+      $('emailMsg').textContent = '> Sent. Check your inbox for your query alignment report.';
+      $('emailMsg').className = 'email-msg ok';
+      $('emailInput').value = '';
+    } else throw new Error('Request failed');
+  })
+  .catch(() => {
+    $('emailMsg').textContent = '> Error. Something went wrong. Please try again.';
+    $('emailMsg').className = 'email-msg err';
+  })
+  .finally(() => {
+    $('emailBtn').disabled = false;
+    $('emailBtn').textContent = 'Send Report';
+  });
+}
+</script>
+</body>
+</html>

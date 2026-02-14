@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Choice Architecture Monitor — AI Shelf Space Analyzer</title>
+<meta name="description" content="Analyze how brands compete for the 2-4 option slots in AI choice widgets. See which brands win AI shelf space and which get excluded.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --blue:#4da6ff;
+  --purple:#b84dff;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:940px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'——';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:640px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Tabs */
+.input-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.input-tab{
+  padding:10px 20px;background:transparent;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:600;
+  color:var(--text-dim);cursor:pointer;letter-spacing:1px;
+  text-transform:uppercase;border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.input-tab:hover{color:var(--text-muted)}
+.input-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Score hero */
+.score-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.score-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.score-hero.green::before{background:var(--green)}
+.score-hero.yellow::before{background:var(--yellow)}
+.score-hero.orange::before{background:var(--orange)}
+.score-hero.red::before{background:var(--red)}
+.score-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.score-number.green{color:var(--green)}
+.score-number.yellow{color:var(--yellow)}
+.score-number.orange{color:var(--orange)}
+.score-number.red{color:var(--red)}
+.score-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:10px 0 4px;letter-spacing:1px;text-transform:uppercase;
+}
+.score-grade{
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  color:var(--text-dim);letter-spacing:1px;margin-bottom:8px;
+}
+.score-desc{font-size:.9rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.6}
+
+/* Summary bar */
+.summary-bar{
+  display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);margin-bottom:24px;
+  font-size:.82rem;font-family:'JetBrains Mono',monospace;
+}
+.summary-bar span{color:var(--text-dim);letter-spacing:0.5px}
+.summary-bar strong{color:var(--text);margin-left:4px}
+
+/* Slot analysis card */
+.slot-analysis{
+  background:var(--card);border:1px solid var(--border);
+  padding:24px 28px;margin-bottom:24px;
+}
+.slot-analysis h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+.slot-row{
+  display:flex;gap:12px;align-items:center;margin-bottom:10px;
+  font-size:.88rem;
+}
+.slot-indicator{
+  display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;
+}
+.slot-indicator.likely{background:var(--green)}
+.slot-indicator.possible{background:var(--yellow)}
+.slot-indicator.unlikely{background:var(--red)}
+.slot-label{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:500;
+  color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;
+  min-width:80px;
+}
+.slot-brands{color:var(--text)}
+
+/* Brand cards */
+.brand-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:24px}
+.brand-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:24px;position:relative;overflow:hidden;
+}
+.brand-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.brand-card.green::before{background:var(--green)}
+.brand-card.yellow::before{background:var(--yellow)}
+.brand-card.orange::before{background:var(--orange)}
+.brand-card.red::before{background:var(--red)}
+.brand-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.brand-name{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;
+  letter-spacing:0.5px;
+}
+.brand-score-badge{
+  display:flex;flex-direction:column;align-items:flex-end;
+}
+.brand-score{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;line-height:1}
+.brand-score.green{color:var(--green)}
+.brand-score.yellow{color:var(--yellow)}
+.brand-score.orange{color:var(--orange)}
+.brand-score.red{color:var(--red)}
+.brand-grade{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);letter-spacing:1px;margin-top:2px;
+}
+.brand-prediction{
+  display:inline-block;padding:3px 10px;font-size:.65rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;
+  font-family:'JetBrains Mono',monospace;
+}
+.brand-prediction.likely{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+.brand-prediction.possible{background:rgba(240,180,41,.1);color:var(--yellow);border:1px solid rgba(240,180,41,.25)}
+.brand-prediction.unlikely{background:rgba(255,77,77,.12);color:var(--red);border:1px solid rgba(255,77,77,.25)}
+
+.brand-option-label{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  color:var(--accent);background:var(--accent-dim);
+  padding:6px 12px;margin-bottom:14px;display:inline-block;
+}
+
+/* Dimension bars */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-bottom:14px}
+@media(max-width:640px){.dim-grid{grid-template-columns:1fr}}
+.dim-row{display:flex;align-items:center;gap:10px}
+.dim-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;
+  min-width:100px;flex-shrink:0;
+}
+.dim-bar-bg{
+  flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;
+}
+.dim-bar{height:100%;border-radius:3px;transition:width .4s ease}
+.dim-bar.green{background:var(--green)}
+.dim-bar.yellow{background:var(--yellow)}
+.dim-bar.orange{background:var(--orange)}
+.dim-bar.red{background:var(--red)}
+.dim-val{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--text-muted);min-width:24px;text-align:right;
+}
+
+.brand-insights{margin-top:10px}
+.brand-insights-row{display:flex;gap:20px;flex-wrap:wrap}
+.insight-list{flex:1;min-width:200px}
+.insight-list h4{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:6px;
+}
+.insight-item{
+  font-size:.82rem;color:var(--text-muted);padding:3px 0;
+  padding-left:14px;position:relative;
+}
+.insight-item::before{
+  content:'';position:absolute;left:0;top:10px;
+  width:6px;height:6px;border-radius:50%;
+}
+.insight-item.strength::before{background:var(--green)}
+.insight-item.weakness::before{background:var(--red)}
+
+/* Widget simulation */
+.widget-section{margin-bottom:24px}
+.widget-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:24px 28px;margin-bottom:16px;
+}
+.widget-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
+}
+.widget-query{
+  font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:600;
+  letter-spacing:0.3px;
+}
+.widget-type{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;
+  padding:4px 10px;border:1px solid var(--border);
+}
+
+/* Simulated widget */
+.sim-widget{
+  background:var(--bg);border:1px solid var(--border);
+  padding:16px;margin-bottom:12px;
+}
+.sim-option{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;margin-bottom:6px;
+  background:var(--card);border:1px solid var(--border);
+  transition:border-color .2s;cursor:default;
+}
+.sim-option:last-child{margin-bottom:0}
+.sim-option:hover{border-color:var(--accent)}
+.sim-radio{
+  width:16px;height:16px;border-radius:50%;border:2px solid var(--text-dim);
+  flex-shrink:0;
+}
+.sim-option.multi .sim-radio{border-radius:3px}
+.sim-option.rank .sim-radio{
+  border:none;width:auto;height:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--accent);
+}
+.sim-option-text{
+  font-size:.88rem;color:var(--text);
+}
+.sim-option.first .sim-radio{border-color:var(--accent)}
+.sim-option.first{border-color:var(--accent-dim)}
+
+.widget-excluded{
+  font-size:.78rem;color:var(--red);font-family:'JetBrains Mono',monospace;
+  margin-top:8px;letter-spacing:0.3px;
+}
+.widget-reasoning{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;margin-top:8px;
+}
+
+/* Anchoring card */
+.anchoring-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:24px 28px;margin-bottom:24px;
+  border-left:3px solid var(--purple);
+}
+.anchoring-card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:600;
+  margin-bottom:8px;letter-spacing:0.5px;color:var(--purple);
+}
+.anchoring-card .brand-highlight{
+  font-family:'JetBrains Mono',monospace;color:var(--accent);
+}
+.anchoring-card p{font-size:.88rem;color:var(--text-muted);line-height:1.6}
+
+/* Findings */
+.findings-section{margin-bottom:24px}
+.findings-section .card{padding:0;overflow:hidden}
+.findings-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-header:hover{background:rgba(30,35,51,.8)}
+.findings-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.findings-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:3px 10px;border-radius:2px;
+}
+.findings-count.red{background:rgba(255,77,77,.12);color:var(--red)}
+.findings-count.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.findings-count.yellow{background:rgba(240,180,41,.1);color:var(--yellow)}
+.findings-count.green{background:rgba(0,229,160,.1);color:var(--green)}
+.toggle-arrow{font-size:.8rem;color:var(--text-dim);transition:transform .2s}
+.toggle-arrow.open{transform:rotate(180deg)}
+.findings-body{display:none;padding:0}
+.findings-body.open{display:block}
+.finding-item{padding:14px 24px;border-bottom:1px solid var(--border)}
+.finding-item:last-child{border-bottom:none}
+.finding-severity{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-right:8px;flex-shrink:0;
+}
+.finding-severity.red{background:var(--red)}
+.finding-severity.orange{background:var(--orange)}
+.finding-severity.yellow{background:var(--yellow)}
+.finding-text{
+  font-size:.88rem;color:var(--text);margin-bottom:6px;
+  display:flex;align-items:flex-start;gap:0;
+}
+.finding-text .matched{
+  background:rgba(255,77,77,.15);color:var(--red);
+  padding:1px 4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;
+}
+.finding-text .matched.orange-match{background:rgba(240,140,41,.15);color:var(--orange)}
+.finding-text .matched.yellow-match{background:rgba(240,180,41,.12);color:var(--yellow)}
+.finding-explain{font-size:.78rem;color:var(--text-dim);line-height:1.5;padding-left:16px;margin-top:2px}
+.finding-fix{font-size:.78rem;color:var(--accent);line-height:1.5;padding-left:16px;margin-top:4px;font-style:italic}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Gate */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Choice Architecture Monitor</div>
+    <h1>Who Wins <span>AI Shelf Space</span>?</h1>
+    <p class="subtitle">AI assistants present users with 2&ndash;4 option choice widgets. Only 4 brands can appear. Analyze which brands win those slots &mdash; and which get excluded.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="input-tabs">
+      <button class="input-tab active" onclick="switchTab('text')">Raw Text</button>
+      <button class="input-tab" onclick="switchTab('html')">HTML Source</button>
+    </div>
+    <div id="tabText" class="tab-content active">
+      <div class="content-input" id="textInput" contenteditable="true" data-placeholder="Paste a comparison page, product roundup, or any content with multiple brand names..." role="textbox" aria-multiline="true"></div>
+    </div>
+    <div id="tabHtml" class="tab-content">
+      <div class="content-input" id="htmlInput" contenteditable="true" data-placeholder="Paste your page's HTML source code here..." role="textbox" aria-multiline="true" style="font-family:'JetBrains Mono',monospace;font-size:.85rem"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runAnalysis()">
+        <span id="scanText">Analyze Choice Readiness</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Score -->
+    <div class="score-hero" id="scoreHero">
+      <div class="score-number" id="overallScore">&mdash;</div>
+      <div class="score-label">Choice Architecture Readiness</div>
+      <div class="score-grade" id="overallGrade"></div>
+      <div class="score-desc" id="scoreDesc"></div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <!-- Slot Analysis -->
+    <div class="slot-analysis" id="slotAnalysis">
+      <h2>Option Slot Predictions (Max 4 Slots)</h2>
+      <div id="slotRows"></div>
+    </div>
+
+    <!-- Anchoring Analysis -->
+    <div class="anchoring-card" id="anchoringCard">
+      <h2>Anchoring Position Advantage</h2>
+      <p id="anchoringText"></p>
+    </div>
+
+    <!-- Brand Cards -->
+    <div class="brand-grid" id="brandGrid"></div>
+
+    <!-- Widget Simulations -->
+    <div class="widget-section" id="widgetSection">
+      <div class="card" style="padding:16px 24px 8px;margin-bottom:16px">
+        <h2 style="margin-bottom:0">Predicted AI Choice Widgets</h2>
+        <p style="font-size:.8rem;color:var(--text-dim);margin-top:4px">These simulations show how AI would likely present your content's brands in structured choice interfaces.</p>
+      </div>
+      <div id="widgetCards"></div>
+    </div>
+
+    <!-- Findings -->
+    <div class="findings-section" id="findingsSection"></div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Get a detailed choice architecture report with optimization recommendations</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want a full audit of how AI systems select your brand for recommendation widgets?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 Interactive Choice Architecture Monitor</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Analyses</h3>
+    <p>Enter your email to continue analyzing. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+let activeTab = 'text';
+
+function switchTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  if(tab === 'text'){
+    document.querySelectorAll('.input-tab')[0].classList.add('active');
+    $('tabText').classList.add('active');
+  } else {
+    document.querySelectorAll('.input-tab')[1].classList.add('active');
+    $('tabHtml').classList.add('active');
+  }
+  updateCharCount();
+}
+
+['textInput','htmlInput'].forEach(id => {
+  const el = $(id);
+  el.addEventListener('paste', function(e){
+    e.preventDefault();
+    const clip = e.clipboardData || window.clipboardData;
+    const text = clip.getData('text/plain');
+    this.textContent = text;
+    updateCharCount();
+  });
+  el.addEventListener('input', updateCharCount);
+});
+
+function updateCharCount(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  $('charCount').textContent = (el.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  return (el.textContent || '').trim();
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function splitSentences(text){
+  const raw = text.split(/(?<=[^0-9])([.!?])(?=\s|$)/);
+  const sentences = [];
+  let buf = '';
+  for(let i = 0; i < raw.length; i++){
+    buf += raw[i];
+    if(/^[.!?]$/.test(raw[i])){
+      const s = buf.trim();
+      if(s.length > 8) sentences.push(s);
+      buf = '';
+    }
+  }
+  if(buf.trim().length > 8) sentences.push(buf.trim());
+  return sentences;
+}
+
+function scoreColor(score){
+  if(score >= 65) return 'green';
+  if(score >= 45) return 'yellow';
+  if(score >= 25) return 'orange';
+  return 'red';
+}
+
+function dimColor(val){
+  if(val >= 7) return 'green';
+  if(val >= 5) return 'yellow';
+  if(val >= 3) return 'orange';
+  return 'red';
+}
+
+function assignGrade(score){
+  if(score >= 85) return 'A';
+  if(score >= 75) return 'A-';
+  if(score >= 65) return 'B+';
+  if(score >= 55) return 'B';
+  if(score >= 45) return 'B-';
+  if(score >= 35) return 'C+';
+  if(score >= 25) return 'C';
+  if(score >= 15) return 'D';
+  return 'F';
+}
+
+/* ═══════════════════════════════════════════
+   BRAND DETECTION
+   ═══════════════════════════════════════════ */
+const COMMON_WORDS = new Set([
+  'the','and','for','are','but','not','you','all','can','had','her','was','one',
+  'our','out','day','get','has','him','his','how','its','let','may','new','now',
+  'old','see','way','who','did','got','use','say','she','too','any','best','top',
+  'most','more','very','also','just','than','then','them','been','have','many',
+  'some','with','this','that','from','they','will','what','when','your','each',
+  'make','like','over','such','take','into','year','here','well','only','come',
+  'made','find','free','good','help','need','high','long','both','about','which',
+  'their','other','could','would','there','these','after','first','still','using',
+  'where','being','great','right','think','every','those','while','small','large',
+  'price','check','conclusion','overview','summary','introduction','features',
+  'benefits','review','reviews','comparison','guide','list','article','content',
+  'website','page','post','product','service','software','tool','tools','platform',
+  'solution','solutions','option','options','alternative','alternatives','category',
+  'january','february','march','april','june','july','august','september','october',
+  'november','december','monday','tuesday','wednesday','thursday','friday',
+  'saturday','sunday',
+]);
+
+function detectBrands(text, sentences){
+  const candidates = new Map();
+
+  // Pattern 1: Proper nouns mid-sentence
+  const pn = /(?:^|\.\s+|\n\s*)(?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)|(?<=[a-z,]\s)([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})/g;
+  let m;
+  while((m = pn.exec(text)) !== null){
+    const name = (m[1] || m[0]).trim();
+    if(name.length < 2 || name.length > 40) continue;
+    if(COMMON_WORDS.has(name.toLowerCase())) continue;
+    if(name.split(/\s+/).length === 1 && name.toLowerCase().length <= 5) continue;
+    if(!candidates.has(name)) candidates.set(name, { name, mentions: 0, positions: [], contexts: [] });
+    candidates.get(name).mentions++;
+    candidates.get(name).positions.push(m.index);
+  }
+
+  // Pattern 2: Product-like (Name + tier)
+  const pp = /\b([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)\s+(?:Pro|Plus|Premium|Enterprise|Cloud|AI|Suite|Studio|Hub|Max|Ultra|Lite|Basic|Standard|Advanced)\b/g;
+  while((m = pp.exec(text)) !== null){
+    const name = m[0].trim();
+    if(!candidates.has(name)) candidates.set(name, { name, mentions: 0, positions: [], contexts: [] });
+    candidates.get(name).mentions++;
+    candidates.get(name).positions.push(m.index);
+  }
+
+  // Pattern 3: Repeated proper nouns
+  const rp = /\b([A-Z][a-zA-Z]{2,}(?:\.[a-zA-Z]+)?)\b/g;
+  const counts = new Map();
+  while((m = rp.exec(text)) !== null){
+    if(COMMON_WORDS.has(m[1].toLowerCase())) continue;
+    counts.set(m[1], (counts.get(m[1]) || 0) + 1);
+  }
+  for(const [name, count] of counts){
+    if(count >= 2 && !candidates.has(name)){
+      candidates.set(name, { name, mentions: count, positions: [], contexts: [] });
+    }
+  }
+
+  // Filter and classify
+  const brands = [];
+  for(const [, brand] of candidates){
+    if(brand.mentions < 2) continue;
+
+    for(const sentence of sentences){
+      if(!sentence.includes(brand.name)) continue;
+      const lower = sentence.toLowerCase();
+      let type = 'vague';
+      if(/(?:recommend|suggest|choose|pick|go with|opt for|ideal for|perfect for)/i.test(lower)) type = 'recommendation';
+      else if(/(?:vs\.?|versus|compared to|rather than|better than|cheaper than|faster than|unlike)/i.test(lower)) type = 'comparison';
+      else if(/(?:starts? at|costs?|pric|per month|per year|\/mo|\/yr|\$\d)/i.test(lower)) type = 'pricing';
+      else if(/(?:feature|support|integrat|API|built[\s-]in|includes?|offers?|provides?)/i.test(lower)) type = 'feature';
+      else if(/(?:said|according|review|rated|stars?|rating|testimonial|customer)/i.test(lower)) type = 'testimonial';
+      else if(/(?:sign up|try|start|download|install|get started|free trial|demo)/i.test(lower)) type = 'action';
+      else if(/(?:founded|headquarter|revenue|employee|billion|million|raised)/i.test(lower)) type = 'factual';
+      brand.contexts.push({ sentence, type, position: text.indexOf(sentence) });
+    }
+
+    brands.push(brand);
+  }
+
+  brands.sort((a, b) => b.mentions - a.mentions);
+  return brands;
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION SCORING
+   ═══════════════════════════════════════════ */
+function scoreDistinctiveness(brand, allBrands){
+  let score = 5;
+  const words = brand.name.split(/\s+/).length;
+  if(words === 1) score += 2;
+  else if(words === 2) score += 1;
+  else score -= 1;
+  if(brand.name.length < 4) score -= 1;
+  if(brand.name.length > 20) score -= 2;
+  else if(brand.name.length > 15) score -= 1;
+  for(const other of allBrands){
+    if(other.name === brand.name) continue;
+    if(other.name.toLowerCase().includes(brand.name.toLowerCase()) ||
+       brand.name.toLowerCase().includes(other.name.toLowerCase())) score -= 1;
+  }
+  return Math.max(0, Math.min(10, score));
+}
+
+function scoreConciseness(brand){
+  let score = 5;
+  const hasShort = brand.contexts.some(ctx => {
+    const idx = ctx.sentence.indexOf(brand.name);
+    if(idx < 0) return false;
+    const after = ctx.sentence.substring(idx + brand.name.length, idx + brand.name.length + 80);
+    return /^\s*[—:–-]\s*.{5,60}[.!?]?$/.test(after.trim());
+  });
+  if(hasShort) score += 2;
+  const hasFact = brand.contexts.some(c => c.type === 'factual' || c.type === 'feature' || c.type === 'pricing');
+  if(hasFact) score += 1;
+  const avg = brand.contexts.reduce((s, c) => s + c.sentence.length, 0) / Math.max(brand.contexts.length, 1);
+  if(avg < 100) score += 1;
+  else if(avg > 200) score -= 1;
+  else if(avg > 300) score -= 2;
+  return Math.max(0, Math.min(10, score));
+}
+
+function scoreComparability(brand, allBrands){
+  let score = 4;
+  const comps = brand.contexts.filter(c => c.type === 'comparison');
+  if(comps.length >= 2) score += 3;
+  else if(comps.length === 1) score += 2;
+  if(brand.contexts.some(c => c.type === 'pricing')) score += 1;
+  const coOccur = brand.contexts.filter(ctx =>
+    allBrands.some(o => o.name !== brand.name && ctx.sentence.includes(o.name))
+  );
+  if(coOccur.length >= 2) score += 1;
+  else if(coOccur.length === 0) score -= 1;
+  return Math.max(0, Math.min(10, score));
+}
+
+function scoreCategoryClarity(brand, sentences){
+  let score = 5;
+  const catPatterns = [
+    /\b(?:CRM|ERP|CMS|LMS|HR|HRIS|CDP|DMP|SEO|PPC)\b/,
+    /\b(?:project management|email marketing|analytics|accounting|invoicing|payroll)\b/i,
+    /\b(?:tool|platform|software|app|service|solution)\s+(?:for|that)\b/i,
+    /\b(?:designed for|built for|helps? (?:teams?|businesses?|companies?|users?))\b/i,
+  ];
+  const brandSents = sentences.filter(s => s.includes(brand.name));
+  if(brandSents.some(s => catPatterns.some(p => p.test(s)))) score += 2;
+  const esc = brand.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if(brandSents.some(s => new RegExp(esc + '\\s+(?:is\\s+(?:a|an|the)|,\\s+(?:a|an|the))', 'i').test(s))) score += 2;
+  const vagueR = brand.contexts.filter(c => c.type === 'vague').length / Math.max(brand.contexts.length, 1);
+  if(vagueR > 0.6) score -= 2;
+  else if(vagueR > 0.4) score -= 1;
+  return Math.max(0, Math.min(10, score));
+}
+
+function scoreDifferentiator(brand){
+  let score = 4;
+  const pats = [
+    /\b(?:unique|only|first|exclusive|patent|proprietary)\b/i,
+    /\b(?:unlike|different from|stands? out|distinguishes?)\b/i,
+    /\b(?:specializ|focus(?:es|ed)? on|known for|recognized for)\b/i,
+    /\b(?:advantage|strength|differentiator|edge)\b/i,
+  ];
+  const sents = brand.contexts.map(c => c.sentence);
+  let cnt = 0;
+  for(const s of sents){ if(pats.some(p => p.test(s))) cnt++; }
+  if(cnt >= 3) score += 3;
+  else if(cnt >= 2) score += 2;
+  else if(cnt >= 1) score += 1;
+  if(sents.some(s => /\b\d+(?:\.\d+)?(?:%|x|\s*times|\s*faster|\s*cheaper|\s*more)\b/i.test(s))) score += 2;
+  if(brand.contexts.filter(c => c.type === 'feature').length >= 2) score += 1;
+  return Math.max(0, Math.min(10, score));
+}
+
+function scoreAction(brand){
+  let score = 5;
+  const acts = brand.contexts.filter(c => c.type === 'action');
+  if(acts.length >= 2) score += 2;
+  else if(acts.length === 1) score += 1;
+  if(brand.contexts.some(c => /\b(?:free (?:trial|plan|tier)|demo|get started|try(?:ing)?|sign up)\b/i.test(c.sentence))) score += 1;
+  if(brand.contexts.some(c => c.type === 'pricing')) score += 1;
+  return Math.max(0, Math.min(10, score));
+}
+
+function generateOptionLabel(brand){
+  for(const ctx of brand.contexts){
+    if(ctx.type === 'factual' || ctx.type === 'feature'){
+      const idx = ctx.sentence.indexOf(brand.name);
+      if(idx >= 0){
+        const after = ctx.sentence.substring(idx + brand.name.length).trim();
+        const dm = after.match(/^[—:–,]\s*(?:a\s+|an\s+|the\s+)?(.{5,50}?)(?:[.,;!?]|$)/);
+        if(dm && dm[1].trim().length <= 45){
+          return brand.name + ' \u2014 ' + dm[1].trim().charAt(0).toUpperCase() + dm[1].trim().slice(1);
+        }
+      }
+    }
+  }
+  const esc = brand.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for(const ctx of brand.contexts){
+    const isM = new RegExp(esc + '\\s+is\\s+(?:a|an|the)\\s+(.{5,40}?)(?:[.,;!?]|$)', 'i').exec(ctx.sentence);
+    if(isM) return brand.name + ' \u2014 ' + isM[1].trim().charAt(0).toUpperCase() + isM[1].trim().slice(1);
+  }
+  return brand.name;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN ANALYSIS
+   ═══════════════════════════════════════════ */
+function analyzeContent(raw){
+  const plain = stripHtmlTags(raw);
+  const sentences = splitSentences(plain);
+  const detected = detectBrands(plain, sentences);
+  const findings = [];
+  const maxSlots = 4;
+
+  if(detected.length === 0){
+    return {
+      overallScore: 0, grade: 'F', brandsDetected: 0, brands: [],
+      widgetSimulations: [], findings: [{
+        matched: 'No brands detected', severity: 'red',
+        explain: 'No recognizable brand names found. AI choice widgets require distinct, named options.',
+        fix: 'Ensure brand names use proper capitalization and appear at least twice.',
+        position: 0
+      }],
+      optionSlotAnalysis: { totalBrandsCompeting: 0, maxSlots: 4, likelyWinners: [], atRisk: [], likelyExcluded: [] },
+      anchoringAnalysis: { firstPositionBrand: null, anchoringAdvantage: 'No brands detected.' },
+      summary: 'No brands detected in content.'
+    };
+  }
+
+  // Score each brand
+  const brands = detected.map(brand => {
+    const dims = {
+      distinctiveness: scoreDistinctiveness(brand, detected),
+      conciseness: scoreConciseness(brand),
+      comparability: scoreComparability(brand, detected),
+      categoryClarity: scoreCategoryClarity(brand, sentences),
+      differentiatorStrength: scoreDifferentiator(brand),
+      actionOrientation: scoreAction(brand),
+    };
+
+    const overall = Math.round(
+      dims.distinctiveness * 0.20 + dims.conciseness * 0.10 +
+      dims.comparability * 0.15 + dims.categoryClarity * 0.20 +
+      dims.differentiatorStrength * 0.25 + dims.actionOrientation * 0.10
+    );
+    const scaled = Math.min(100, overall * 10);
+
+    const strengths = [];
+    const weaknesses = [];
+    if(dims.distinctiveness >= 7) strengths.push('Highly distinctive name');
+    if(dims.differentiatorStrength >= 7) strengths.push('Strong differentiators');
+    if(dims.categoryClarity >= 7) strengths.push('Clear category positioning');
+    if(dims.comparability >= 7) strengths.push('Presented comparably');
+    if(dims.conciseness >= 7) strengths.push('Concise descriptor available');
+    if(dims.actionOrientation >= 7) strengths.push('Clear next action');
+    if(dims.distinctiveness < 5) weaknesses.push('Name not distinctive enough for option labels');
+    if(dims.differentiatorStrength < 5) weaknesses.push('Weak differentiators \u2014 may lose slot');
+    if(dims.categoryClarity < 5) weaknesses.push('Unclear category positioning');
+    if(dims.comparability < 5) weaknesses.push('Not presented comparably');
+    if(dims.conciseness < 5) weaknesses.push('No concise descriptor for option label');
+    if(dims.actionOrientation < 5) weaknesses.push('No clear next action');
+
+    let prediction = 'possible';
+    if(scaled >= 60) prediction = 'likely';
+    else if(scaled < 35) prediction = 'unlikely';
+
+    return {
+      brand: brand.name, overallScore: scaled, grade: assignGrade(scaled),
+      dimensions: dims, strengths, weaknesses,
+      optionSlotPrediction: prediction,
+      suggestedOptionLabel: generateOptionLabel(brand),
+    };
+  });
+
+  brands.sort((a, b) => b.overallScore - a.overallScore);
+
+  // Findings
+  if(detected.length > 4){
+    findings.push({
+      matched: detected.length + ' brands detected',
+      severity: 'orange',
+      explain: 'AI choice widgets are limited to 2-4 options. With ' + detected.length + ' brands competing, at least ' + (detected.length - 4) + ' will be excluded.',
+      fix: 'Ensure your brand has the strongest differentiators and clearest positioning to secure a slot.',
+      position: 0
+    });
+  }
+
+  for(const brand of brands){
+    if(brand.dimensions.differentiatorStrength < 5){
+      findings.push({ matched: brand.brand, severity: 'orange',
+        explain: '"' + brand.brand + '" has weak differentiators (' + brand.dimensions.differentiatorStrength + '/10). May lose slot to better-positioned competitor.',
+        fix: 'Add specific, quantified differentiators for "' + brand.brand + '".',
+        position: 0 });
+    }
+    if(brand.dimensions.categoryClarity < 5){
+      findings.push({ matched: brand.brand, severity: 'yellow',
+        explain: '"' + brand.brand + '" has unclear category (' + brand.dimensions.categoryClarity + '/10). AI may not include in relevant widgets.',
+        fix: 'Add: "' + brand.brand + ' is a [category] tool that [primary function]."',
+        position: 0 });
+    }
+    if(brand.optionSlotPrediction === 'unlikely'){
+      findings.push({ matched: brand.brand, severity: 'red',
+        explain: '"' + brand.brand + '" is unlikely to appear in AI choice widgets.',
+        fix: 'Needs clear category definition, quantified differentiators, and concise descriptor.',
+        position: 0 });
+    }
+  }
+
+  // Widget simulations
+  const sims = [];
+  if(brands.length >= 2){
+    const ranked = [...brands].sort((a, b) => b.overallScore - a.overallScore);
+    sims.push({
+      query: 'Which option best fits your needs?',
+      widgetType: 'single_select',
+      predictedOptions: ranked.slice(0, maxSlots).map(b => b.suggestedOptionLabel),
+      excludedBrands: ranked.slice(maxSlots).map(b => b.brand),
+      reasoning: ranked.length > maxSlots
+        ? 'Only 4 options fit. ' + ranked.slice(maxSlots).map(b => b.brand).join(', ') + ' excluded based on lower scores.'
+        : 'All ' + ranked.length + ' brands fit within the 4-option limit.'
+    });
+
+    if(brands.length >= 3){
+      const byDiff = [...brands].sort((a, b) => b.dimensions.differentiatorStrength - a.dimensions.differentiatorStrength);
+      sims.push({
+        query: 'Rank these by priority for your use case',
+        widgetType: 'rank_priorities',
+        predictedOptions: byDiff.slice(0, maxSlots).map(b => b.suggestedOptionLabel),
+        excludedBrands: byDiff.slice(maxSlots).map(b => b.brand),
+        reasoning: 'Rank-priorities widgets emphasize differentiation. The first-listed option benefits from anchoring bias.'
+      });
+    }
+
+    const byComp = [...brands].sort((a, b) => b.dimensions.comparability - a.dimensions.comparability);
+    sims.push({
+      query: 'Select all that you want to explore',
+      widgetType: 'multi_select',
+      predictedOptions: byComp.slice(0, maxSlots).map(b => b.suggestedOptionLabel),
+      excludedBrands: byComp.slice(maxSlots).map(b => b.brand),
+      reasoning: 'Multi-select widgets favor clearly comparable brands with distinct identities.'
+    });
+  }
+
+  const likelyWinners = brands.filter(b => b.optionSlotPrediction === 'likely').map(b => b.brand);
+  const atRisk = brands.filter(b => b.optionSlotPrediction === 'possible').map(b => b.brand);
+  const likelyExcluded = brands.filter(b => b.optionSlotPrediction === 'unlikely').map(b => b.brand);
+  const firstBrand = brands.length > 0 ? brands[0].brand : null;
+  const top = brands.slice(0, maxSlots);
+  const avg = top.length > 0 ? Math.round(top.reduce((s, b) => s + b.overallScore, 0) / top.length) : 0;
+
+  let summary;
+  if(avg >= 70) summary = 'Strong choice-readiness. ' + brands.length + ' brands detected, ' + likelyWinners.length + ' likely to win option slots.';
+  else if(avg >= 45) summary = 'Moderate choice-readiness. ' + brands.length + ' brands detected. ' + atRisk.length + ' at risk of exclusion.';
+  else summary = 'Low choice-readiness. Most brands lack differentiation or clarity for AI option slots.';
+  if(brands.length > maxSlots) summary += ' ' + (brands.length - maxSlots) + ' brand(s) will be excluded from any widget.';
+
+  return {
+    overallScore: avg, grade: assignGrade(avg), brandsDetected: brands.length,
+    brands, widgetSimulations: sims, findings,
+    optionSlotAnalysis: { totalBrandsCompeting: brands.length, maxSlots, likelyWinners, atRisk, likelyExcluded },
+    anchoringAnalysis: {
+      firstPositionBrand: firstBrand,
+      anchoringAdvantage: firstBrand
+        ? '"' + firstBrand + '" would likely appear first in choice widgets. The first option receives disproportionate attention due to anchoring bias.'
+        : 'No brands detected.'
+    },
+    summary
+  };
+}
+
+/* ═══════════════════════════════════════════
+   RENDERING
+   ═══════════════════════════════════════════ */
+function runAnalysis(){
+  const raw = getContent();
+  if(!raw){ alert('Please paste some content to analyze.'); return; }
+
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  $('scanBtn').disabled = true;
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanText').textContent = 'Analyzing';
+
+  setTimeout(() => {
+    const result = analyzeContent(raw);
+    renderResults(result);
+    $('scanBtn').disabled = false;
+    $('scanSpinner').style.display = 'none';
+    $('scanText').textContent = 'Analyze Choice Readiness';
+  }, 600);
+}
+
+function renderResults(r){
+  // Overall score
+  const sc = scoreColor(r.overallScore);
+  $('overallScore').textContent = r.overallScore;
+  $('overallScore').className = 'score-number ' + sc;
+  $('scoreHero').className = 'score-hero ' + sc;
+  $('overallGrade').textContent = 'Grade: ' + r.grade + '  \u00B7  ' + r.brandsDetected + ' brand' + (r.brandsDetected !== 1 ? 's' : '') + ' detected';
+  $('scoreDesc').textContent = r.summary;
+
+  // Summary bar
+  const la = r.optionSlotAnalysis;
+  $('summaryBar').innerHTML =
+    '<span>Brands competing: <strong>' + la.totalBrandsCompeting + '</strong></span>' +
+    '<span>Max slots: <strong>' + la.maxSlots + '</strong></span>' +
+    '<span style="color:var(--green)">Likely winners: <strong>' + la.likelyWinners.length + '</strong></span>' +
+    '<span style="color:var(--yellow)">At risk: <strong>' + la.atRisk.length + '</strong></span>' +
+    '<span style="color:var(--red)">Likely excluded: <strong>' + la.likelyExcluded.length + '</strong></span>';
+
+  // Slot analysis rows
+  let slotHtml = '';
+  if(la.likelyWinners.length > 0){
+    slotHtml += '<div class="slot-row"><span class="slot-indicator likely"></span><span class="slot-label">Likely</span><span class="slot-brands">' + la.likelyWinners.map(b => escHtml(b)).join(', ') + '</span></div>';
+  }
+  if(la.atRisk.length > 0){
+    slotHtml += '<div class="slot-row"><span class="slot-indicator possible"></span><span class="slot-label">At Risk</span><span class="slot-brands">' + la.atRisk.map(b => escHtml(b)).join(', ') + '</span></div>';
+  }
+  if(la.likelyExcluded.length > 0){
+    slotHtml += '<div class="slot-row"><span class="slot-indicator unlikely"></span><span class="slot-label">Excluded</span><span class="slot-brands">' + la.likelyExcluded.map(b => escHtml(b)).join(', ') + '</span></div>';
+  }
+  $('slotRows').innerHTML = slotHtml;
+
+  // Anchoring
+  $('anchoringText').innerHTML = r.anchoringAnalysis.firstPositionBrand
+    ? 'First-position brand: <span class="brand-highlight">' + escHtml(r.anchoringAnalysis.firstPositionBrand) + '</span>. ' + escHtml(r.anchoringAnalysis.anchoringAdvantage)
+    : escHtml(r.anchoringAnalysis.anchoringAdvantage);
+
+  // Brand cards
+  let brandHtml = '';
+  r.brands.forEach(b => {
+    const bc = scoreColor(b.overallScore);
+    const dims = [
+      { label: 'Distinctive', val: b.dimensions.distinctiveness },
+      { label: 'Conciseness', val: b.dimensions.conciseness },
+      { label: 'Comparable', val: b.dimensions.comparability },
+      { label: 'Category', val: b.dimensions.categoryClarity },
+      { label: 'Differentiator', val: b.dimensions.differentiatorStrength },
+      { label: 'Action', val: b.dimensions.actionOrientation },
+    ];
+
+    brandHtml += '<div class="brand-card ' + bc + '">';
+    brandHtml += '<div class="brand-header"><span class="brand-name">' + escHtml(b.brand) + '</span>';
+    brandHtml += '<div class="brand-score-badge"><span class="brand-score ' + bc + '">' + b.overallScore + '</span>';
+    brandHtml += '<span class="brand-grade">Grade ' + b.grade + '</span></div></div>';
+    brandHtml += '<span class="brand-prediction ' + b.optionSlotPrediction + '">' +
+      (b.optionSlotPrediction === 'likely' ? 'Likely to win slot' : b.optionSlotPrediction === 'possible' ? 'At risk of exclusion' : 'Unlikely to appear') + '</span>';
+    brandHtml += '<div class="brand-option-label">Predicted label: ' + escHtml(b.suggestedOptionLabel) + '</div>';
+
+    // Dimension bars
+    brandHtml += '<div class="dim-grid">';
+    dims.forEach(d => {
+      const dc = dimColor(d.val);
+      brandHtml += '<div class="dim-row">';
+      brandHtml += '<span class="dim-label">' + d.label + '</span>';
+      brandHtml += '<div class="dim-bar-bg"><div class="dim-bar ' + dc + '" style="width:' + (d.val * 10) + '%"></div></div>';
+      brandHtml += '<span class="dim-val">' + d.val + '</span>';
+      brandHtml += '</div>';
+    });
+    brandHtml += '</div>';
+
+    // Strengths/weaknesses
+    if(b.strengths.length > 0 || b.weaknesses.length > 0){
+      brandHtml += '<div class="brand-insights"><div class="brand-insights-row">';
+      if(b.strengths.length > 0){
+        brandHtml += '<div class="insight-list"><h4>Strengths</h4>';
+        b.strengths.forEach(s => { brandHtml += '<div class="insight-item strength">' + escHtml(s) + '</div>'; });
+        brandHtml += '</div>';
+      }
+      if(b.weaknesses.length > 0){
+        brandHtml += '<div class="insight-list"><h4>Weaknesses</h4>';
+        b.weaknesses.forEach(w => { brandHtml += '<div class="insight-item weakness">' + escHtml(w) + '</div>'; });
+        brandHtml += '</div>';
+      }
+      brandHtml += '</div></div>';
+    }
+
+    brandHtml += '</div>';
+  });
+  $('brandGrid').innerHTML = brandHtml;
+
+  // Widget simulations
+  let widgetHtml = '';
+  r.widgetSimulations.forEach(sim => {
+    widgetHtml += '<div class="widget-card">';
+    widgetHtml += '<div class="widget-header"><span class="widget-query">"' + escHtml(sim.query) + '"</span>';
+    widgetHtml += '<span class="widget-type">' + sim.widgetType.replace(/_/g, ' ') + '</span></div>';
+
+    widgetHtml += '<div class="sim-widget">';
+    sim.predictedOptions.forEach((opt, i) => {
+      const cls = sim.widgetType === 'multi_select' ? ' multi' : sim.widgetType === 'rank_priorities' ? ' rank' : '';
+      const firstCls = i === 0 ? ' first' : '';
+      widgetHtml += '<div class="sim-option' + cls + firstCls + '">';
+      if(sim.widgetType === 'rank_priorities'){
+        widgetHtml += '<span class="sim-radio">#' + (i + 1) + '</span>';
+      } else {
+        widgetHtml += '<span class="sim-radio"></span>';
+      }
+      widgetHtml += '<span class="sim-option-text">' + escHtml(opt) + '</span></div>';
+    });
+    widgetHtml += '</div>';
+
+    if(sim.excludedBrands.length > 0){
+      widgetHtml += '<div class="widget-excluded">Excluded: ' + sim.excludedBrands.map(b => escHtml(b)).join(', ') + '</div>';
+    }
+    widgetHtml += '<div class="widget-reasoning">' + escHtml(sim.reasoning) + '</div>';
+    widgetHtml += '</div>';
+  });
+  $('widgetCards').innerHTML = widgetHtml;
+
+  // Findings
+  let findingsHtml = '';
+  if(r.findings.length > 0){
+    const red = r.findings.filter(f => f.severity === 'red').length;
+    const orange = r.findings.filter(f => f.severity === 'orange').length;
+    const yellow = r.findings.filter(f => f.severity === 'yellow').length;
+    const total = r.findings.length;
+    const countColor = red > 0 ? 'red' : orange > 0 ? 'orange' : 'yellow';
+
+    findingsHtml += '<div class="card" style="margin-bottom:16px">';
+    findingsHtml += '<div class="findings-header" onclick="toggleFindings(this)">';
+    findingsHtml += '<div class="findings-title">Optimization Findings <span class="findings-count ' + countColor + '">' + total + '</span></div>';
+    findingsHtml += '<span class="toggle-arrow">&#9660;</span></div>';
+    findingsHtml += '<div class="findings-body open">';
+
+    r.findings.forEach(f => {
+      const matchClass = f.severity === 'orange' ? 'matched orange-match' : f.severity === 'yellow' ? 'matched yellow-match' : 'matched';
+      findingsHtml += '<div class="finding-item">';
+      findingsHtml += '<div class="finding-text"><span class="finding-severity ' + f.severity + '"></span>';
+      findingsHtml += '<span class="' + matchClass + '">' + escHtml(f.matched) + '</span></div>';
+      findingsHtml += '<div class="finding-explain">' + escHtml(f.explain) + '</div>';
+      findingsHtml += '<div class="finding-fix">Fix: ' + escHtml(f.fix) + '</div>';
+      findingsHtml += '</div>';
+    });
+
+    findingsHtml += '</div></div>';
+  }
+  $('findingsSection').innerHTML = findingsHtml;
+
+  // Show results
+  $('results').style.display = 'block';
+  $('results').classList.remove('fade-in');
+  void $('results').offsetWidth;
+  $('results').classList.add('fade-in');
+  $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ═══════════════════════════════════════════
+   TOGGLES, GATE, EMAIL
+   ═══════════════════════════════════════════ */
+function toggleFindings(header){
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, source: 'choice-monitor-gate', timestamp: new Date().toISOString() })
+  }).then(() => {}).catch(() => {});
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  runAnalysis();
+}
+
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+  $('emailBtn').disabled = true;
+  $('emailBtn').textContent = 'Sending...';
+  $('emailMsg').textContent = '';
+  $('emailMsg').className = 'email-msg';
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      email, score: $('overallScore').textContent,
+      source: 'choice-monitor', timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if(r.ok){
+      $('emailMsg').textContent = '> Sent. Check your inbox for your detailed report.';
+      $('emailMsg').className = 'email-msg ok';
+      $('emailInput').value = '';
+    } else throw new Error('fail');
+  })
+  .catch(() => {
+    $('emailMsg').textContent = '> Error. Something went wrong. Please try again.';
+    $('emailMsg').className = 'email-msg err';
+  })
+  .finally(() => {
+    $('emailBtn').disabled = false;
+    $('emailBtn').textContent = 'Send Report';
+  });
+}
+</script>
+</body>
+</html>

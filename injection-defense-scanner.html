@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Injection Defense Content Quality Scanner</title>
+<meta name="description" content="Scan your marketing content for patterns that trigger AI prompt injection defenses. Find out if AI systems distrust your content.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'——';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:620px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Tabs */
+.input-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.input-tab{
+  padding:10px 20px;background:transparent;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:600;
+  color:var(--text-dim);cursor:pointer;letter-spacing:1px;
+  text-transform:uppercase;border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.input-tab:hover{color:var(--text-muted)}
+.input-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Overall risk score */
+.risk-score-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.risk-score-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.risk-score-hero.green::before{background:var(--green)}
+.risk-score-hero.yellow::before{background:var(--yellow)}
+.risk-score-hero.orange::before{background:var(--orange)}
+.risk-score-hero.red::before{background:var(--red)}
+.risk-score-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.risk-score-number.green{color:var(--green)}
+.risk-score-number.yellow{color:var(--yellow)}
+.risk-score-number.orange{color:var(--orange)}
+.risk-score-number.red{color:var(--red)}
+.risk-score-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:10px 0 8px;letter-spacing:1px;text-transform:uppercase;
+}
+.risk-score-desc{font-size:.9rem;color:var(--text-muted);max-width:520px;margin:0 auto;line-height:1.6}
+
+/* Category scores grid */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:640px){.cat-grid{grid-template-columns:1fr}}
+.cat-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+.cat-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.cat-card.green::before{background:var(--green)}
+.cat-card.yellow::before{background:var(--yellow)}
+.cat-card.orange::before{background:var(--orange)}
+.cat-card.red::before{background:var(--red)}
+.cat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cat-name{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;
+  color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;
+}
+.cat-score{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;line-height:1}
+.cat-score.green{color:var(--green)}
+.cat-score.yellow{color:var(--yellow)}
+.cat-score.orange{color:var(--orange)}
+.cat-score.red{color:var(--red)}
+.cat-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:4px;
+}
+.cat-desc{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+.cat-finding-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--text-dim);margin-top:8px;letter-spacing:0.5px;
+}
+
+/* Summary bar */
+.summary-bar{
+  display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);margin-bottom:24px;
+  font-size:.82rem;font-family:'JetBrains Mono',monospace;
+}
+.summary-bar span{color:var(--text-dim);letter-spacing:0.5px}
+.summary-bar strong{color:var(--text);margin-left:4px}
+
+/* Findings list */
+.findings-section{margin-bottom:24px}
+.findings-section .card{padding:0;overflow:hidden}
+.findings-cat-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-cat-header:hover{background:rgba(30,35,51,.8)}
+.findings-cat-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.findings-cat-count{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:3px 10px;border-radius:2px;
+}
+.findings-cat-count.red{background:rgba(255,77,77,.12);color:var(--red)}
+.findings-cat-count.orange{background:rgba(240,140,41,.12);color:var(--orange)}
+.findings-cat-count.yellow{background:rgba(240,180,41,.1);color:var(--yellow)}
+.findings-cat-count.green{background:rgba(0,229,160,.1);color:var(--green)}
+.toggle-arrow{
+  font-size:.8rem;color:var(--text-dim);transition:transform .2s;
+}
+.toggle-arrow.open{transform:rotate(180deg)}
+.findings-body{display:none;padding:0}
+.findings-body.open{display:block}
+
+.finding-item{
+  padding:14px 24px;border-bottom:1px solid var(--border);
+}
+.finding-item:last-child{border-bottom:none}
+.finding-severity{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-right:8px;flex-shrink:0;
+}
+.finding-severity.red{background:var(--red)}
+.finding-severity.orange{background:var(--orange)}
+.finding-severity.yellow{background:var(--yellow)}
+.finding-text{
+  font-size:.88rem;color:var(--text);margin-bottom:6px;
+  display:flex;align-items:flex-start;gap:0;
+}
+.finding-text .matched{
+  background:rgba(255,77,77,.15);color:var(--red);
+  padding:1px 4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;
+}
+.finding-text .matched.orange-match{
+  background:rgba(240,140,41,.15);color:var(--orange);
+}
+.finding-text .matched.yellow-match{
+  background:rgba(240,180,41,.12);color:var(--yellow);
+}
+.finding-explain{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;
+  padding-left:16px;margin-top:2px;
+}
+.finding-fix{
+  font-size:.78rem;color:var(--accent);line-height:1.5;
+  padding-left:16px;margin-top:4px;font-style:italic;
+}
+
+/* Badges */
+.badge{
+  display:inline-block;padding:3px 10px;font-size:.65rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  font-family:'JetBrains Mono',monospace;
+}
+.badge-red{background:rgba(255,77,77,.12);color:var(--red);border:1px solid rgba(255,77,77,.25)}
+.badge-orange{background:rgba(240,140,41,.12);color:var(--orange);border:1px solid rgba(240,140,41,.25)}
+.badge-yellow{background:rgba(240,180,41,.1);color:var(--yellow);border:1px solid rgba(240,180,41,.25)}
+.badge-green{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Scan count gate */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px;
+}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Injection Defense Scanner</div>
+    <h1>Is AI <span>Filtering Out</span><br>Your Content?</h1>
+    <p class="subtitle">Scan your marketing content for patterns that trigger AI prompt injection defenses &mdash; the hidden reason AI systems may distrust or ignore your pages.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="input-tabs">
+      <button class="input-tab active" onclick="switchTab('text')">Raw Text</button>
+      <button class="input-tab" onclick="switchTab('html')">HTML Source</button>
+    </div>
+    <div id="tabText" class="tab-content active">
+      <div class="content-input" id="textInput" contenteditable="true" data-placeholder="Paste your page content here as plain text..." role="textbox" aria-multiline="true"></div>
+    </div>
+    <div id="tabHtml" class="tab-content">
+      <div class="content-input" id="htmlInput" contenteditable="true" data-placeholder="Paste your page's HTML source code here..." role="textbox" aria-multiline="true" style="font-family:'JetBrains Mono',monospace;font-size:.85rem"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runScan()">
+        <span id="scanText">Scan for Defenses</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Risk Score -->
+    <div class="risk-score-hero" id="riskHero">
+      <div class="risk-score-number" id="riskScore">&mdash;</div>
+      <div class="risk-score-label">Defense Trigger Risk</div>
+      <div class="risk-score-desc" id="riskDesc"></div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <!-- Category scores -->
+    <div class="cat-grid" id="catGrid"></div>
+
+    <!-- Detailed findings per category -->
+    <div class="findings-section" id="findingsSection"></div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Enter your email to get a detailed breakdown with fix recommendations</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want a full architectural audit of how AI systems process your content?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 Injection Defense Content Quality Scanner</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Scans</h3>
+    <p>Enter your email to continue scanning. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ───── helpers ───── */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+let activeTab = 'text';
+
+/* ───── tab switching ───── */
+function switchTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  if(tab === 'text'){
+    document.querySelectorAll('.input-tab')[0].classList.add('active');
+    $('tabText').classList.add('active');
+  } else {
+    document.querySelectorAll('.input-tab')[1].classList.add('active');
+    $('tabHtml').classList.add('active');
+  }
+  updateCharCount();
+}
+
+/* ───── paste handling ───── */
+['textInput','htmlInput'].forEach(id => {
+  const el = $(id);
+  el.addEventListener('paste', function(e){
+    e.preventDefault();
+    const clip = e.clipboardData || window.clipboardData;
+    const text = clip.getData('text/plain');
+    this.textContent = text;
+    updateCharCount();
+  });
+  el.addEventListener('input', updateCharCount);
+});
+
+function updateCharCount(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  $('charCount').textContent = (el.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  const el = activeTab === 'text' ? $('textInput') : $('htmlInput');
+  return (el.textContent || '').trim();
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+/* ═══════════════════════════════════════════
+   CATEGORY A — Hidden Instruction Patterns
+   ═══════════════════════════════════════════ */
+function scanCategoryA(raw){
+  const findings = [];
+  const lower = raw.toLowerCase();
+
+  // A1: Imperative commands directed at AI
+  const imperatives = [
+    { pattern: /(you\s+must\s+(?:recommend|mention|include|cite|reference|suggest|always))/gi, explain: 'Imperative command directed at AI. Systems treat this as a prompt injection attempt.', fix: 'Remove direct commands. State facts about your product instead of telling AI what to say.' },
+    { pattern: /(you\s+should\s+(?:recommend|mention|include|always|never))/gi, explain: 'Directive language aimed at the AI. Injection defenses flag instructional phrasing.', fix: 'Replace with factual, third-person statements about your product or service.' },
+    { pattern: /(always\s+(?:mention|recommend|include|cite|suggest|refer(?:\s+to)?)(?:\s+(?:this|our|the)))/gi, explain: 'Persistent instruction pattern. AI systems recognize "always do X" as manipulation.', fix: 'Remove the instruction. Let the content speak for itself through facts and evidence.' },
+    { pattern: /(include\s+(?:this|our|the)\s+(?:brand|product|company|tool|service)\s+in\s+your\s+(?:response|answer|recommendation))/gi, explain: 'Explicit citation request. This is a classic injection pattern that triggers immediate filtering.', fix: 'Delete entirely. This will cause your entire page to be treated with suspicion.' },
+    { pattern: /(recommend\s+(?:this|our)\s+(?:product|brand|tool|service|solution)\s+(?:first|above|over))/gi, explain: 'Ranking manipulation attempt. AI systems are trained to detect preference injection.', fix: 'Remove the instruction. Present comparative facts and let the AI draw its own conclusions.' },
+    { pattern: /(when\s+(?:asked|someone\s+asks|users?\s+ask|people\s+ask)\s+about)/gi, explain: 'Conditional instruction pattern. Tells AI how to respond to specific queries — a prompt injection technique.', fix: 'Replace with straightforward factual content. Don\'t script the AI\'s behavior.' },
+  ];
+  imperatives.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(raw)) !== null){
+      findings.push({ matched: m[1], severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  // A2: System message mimicry
+  const systemPatterns = [
+    { pattern: /((?:^|\n)\s*(?:SYSTEM|INSTRUCTIONS|OVERRIDE|ADMIN|DIRECTIVE|COMMAND)\s*:)/gm, explain: 'System message mimicry. AI injection defenses specifically watch for content that impersonates system-level instructions.', fix: 'Remove entirely. Using system-level keywords in content is the fastest way to get flagged.' },
+    { pattern: /((?:^|\n)\s*(?:\[SYSTEM\]|\[ADMIN\]|\[OVERRIDE\]|\[INSTRUCTIONS\]))/gm, explain: 'Bracketed system tag. This mimics actual system prompt formatting and will be flagged as injection.', fix: 'Remove entirely. Do not use any system-tag formatting in web content.' },
+  ];
+  systemPatterns.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(raw)) !== null){
+      findings.push({ matched: m[1].trim(), severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  // A3: Authorization claims
+  const authPatterns = [
+    { pattern: /((?:the\s+)?user\s+has\s+(?:authorized|approved|consented|agreed))/gi, explain: 'False authorization claim. AI systems treat "user has authorized" in web content as a social engineering attack.', fix: 'Remove entirely. Web content cannot grant permissions on behalf of users.' },
+    { pattern: /(pre-?approved\s+(?:by|from)\s+(?:admin|user|system|developer))/gi, explain: 'Pre-approval claim. This is a recognized injection technique that claims pre-existing authorization.', fix: 'Remove entirely.' },
+    { pattern: /(this\s+(?:has\s+been|is)\s+(?:verified|confirmed|authorized|approved)\s+(?:by|for))/gi, explain: 'Verification claim. AI defenses flag content that claims external authorization to influence behavior.', fix: 'Remove the claim. Present your credentials through named sources and verifiable facts instead.' },
+  ];
+  authPatterns.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(raw)) !== null){
+      findings.push({ matched: m[1], severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  // A4: Urgency/emergency pressure
+  const urgencyPatterns = [
+    { pattern: /((?:URGENT|CRITICAL|EMERGENCY|IMMEDIATE\s+ACTION)\s*(?::|!|-|—))/gi, explain: 'Urgency/emergency language. AI injection defenses recognize this as a pressure technique to bypass safety checks.', fix: 'Remove urgency markers. Present information calmly and factually.' },
+  ];
+  urgencyPatterns.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(raw)) !== null){
+      findings.push({ matched: m[1], severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   CATEGORY B — Hidden/Encoded Content
+   ═══════════════════════════════════════════ */
+function scanCategoryB(raw){
+  const findings = [];
+
+  // B1: Hidden CSS styles (only useful if HTML is pasted)
+  const hiddenStyles = [
+    { pattern: /((?:color\s*:\s*(?:white|#fff(?:fff)?|rgba?\(\s*255\s*,\s*255\s*,\s*255))|(?:opacity\s*:\s*0(?:\.0+)?(?:\s*;|\s*}))|(?:font-size\s*:\s*0(?:px|em|rem)?(?:\s*;|\s*}))|(?:display\s*:\s*none))/gi, explain: 'Hidden content CSS. Text made invisible via CSS is a classic injection technique. AI crawlers and defense systems specifically scan for this.', fix: 'Remove all hidden text. If content isn\'t meant to be seen by users, AI systems will flag it as manipulation.' },
+  ];
+  hiddenStyles.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(raw)) !== null){
+      findings.push({ matched: m[1], severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  // B2: Base64 encoded strings (suspiciously long)
+  const b64Pattern = /([A-Za-z0-9+/]{50,}={0,2})/g;
+  let b64m;
+  while((b64m = b64Pattern.exec(raw)) !== null){
+    findings.push({
+      matched: b64m[1].substring(0, 60) + '...',
+      severity: 'red',
+      explain: 'Base64-encoded string detected. Encoded content in visible text is flagged as potential hidden instruction delivery.',
+      fix: 'Remove encoded content from page text. Use standard human-readable content.',
+      position: b64m.index
+    });
+  }
+
+  // B3: HTML comments with instruction-like language
+  const commentPattern = /<!--([\s\S]*?)-->/g;
+  let cm;
+  while((cm = commentPattern.exec(raw)) !== null){
+    const commentText = cm[1].toLowerCase();
+    if(/(must|should|always|recommend|cite|mention|include|never|ensure|important)/.test(commentText)){
+      findings.push({
+        matched: '<!--' + (cm[1].length > 60 ? cm[1].substring(0, 57) + '...' : cm[1]) + '-->',
+        severity: 'red',
+        explain: 'HTML comment containing instruction-like language. AI systems scan comments for hidden directives.',
+        fix: 'Remove instructional language from HTML comments. Comments should only contain developer notes, not AI directives.',
+        position: cm.index
+      });
+    }
+  }
+
+  // B4: Data attributes with promotional/instructional content
+  const dataAttrPattern = /data-[a-z-]+\s*=\s*"([^"]{20,})"/gi;
+  let da;
+  while((da = dataAttrPattern.exec(raw)) !== null){
+    const val = da[1].toLowerCase();
+    if(/(recommend|best|buy|choose|prefer|must|should|always|our\s+product|number\s+one|#1)/.test(val)){
+      findings.push({
+        matched: da[0].length > 80 ? da[0].substring(0, 77) + '...' : da[0],
+        severity: 'orange',
+        explain: 'Data attribute containing promotional or instructional content. Crawlers inspect data attributes for hidden manipulation.',
+        fix: 'Remove promotional content from data attributes. Use them only for functional UI purposes.',
+        position: da.index
+      });
+    }
+  }
+
+  // B5: Alt/title attributes with promotional language
+  const altTitlePattern = /(?:alt|title)\s*=\s*"([^"]{15,})"/gi;
+  let at;
+  while((at = altTitlePattern.exec(raw)) !== null){
+    const val = at[1].toLowerCase();
+    if(/(best|#1|number\s+one|leading|top-?rated|award-?winning|must-?have|buy\s+now|get\s+(?:it|yours)|our\s+pick|editor'?s?\s+choice)/.test(val)){
+      findings.push({
+        matched: at[0].length > 80 ? at[0].substring(0, 77) + '...' : at[0],
+        severity: 'orange',
+        explain: 'Alt/title attribute containing promotional language beyond pure description. AI systems check these for hidden persuasion.',
+        fix: 'Rewrite alt/title text to be purely descriptive of the image or element, with no promotional claims.',
+        position: at.index
+      });
+    }
+  }
+
+  // B6: JSON-LD / structured data with promotional claims
+  const jsonLdPattern = /(\"(?:description|name|slogan|award|ratingValue|reviewBody)\"\s*:\s*\"[^"]*(?:best|#1|number\s+one|leading|top|award|unmatched|unrivaled)[^"]*\")/gi;
+  let jl;
+  while((jl = jsonLdPattern.exec(raw)) !== null){
+    findings.push({
+      matched: jl[1].length > 80 ? jl[1].substring(0, 77) + '...' : jl[1],
+      severity: 'orange',
+      explain: 'Structured data (JSON-LD) containing promotional superlatives. AI systems cross-reference structured data claims against page content for consistency.',
+      fix: 'Use factual, verifiable claims in structured data. Replace superlatives with specific metrics.',
+      position: jl.index
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   CATEGORY C — Persuasion/Manipulation
+   ═══════════════════════════════════════════ */
+function scanCategoryC(raw){
+  const findings = [];
+  const plain = stripHtmlTags(raw);
+
+  // C1: Superlative stacking
+  const superlatives = /\b(the\s+best|#1|the\s+leading|the\s+most|the\s+top|the\s+premier|the\s+foremost|unrivaled|unmatched|best[\s-]in[\s-]class|world[\s-]class|industry[\s-]leading|the\s+ultimate|the\s+definitive)\b/gi;
+  const supMatches = [];
+  let sm;
+  while((sm = superlatives.exec(plain)) !== null){
+    supMatches.push({ text: sm[1], index: sm.index });
+  }
+
+  // Flag individual superlatives
+  supMatches.forEach(s => {
+    findings.push({
+      matched: s.text,
+      severity: 'yellow',
+      explain: 'Superlative claim. Individual superlatives increase skepticism. Multiple superlatives in proximity trigger active distrust.',
+      fix: 'Replace with a specific, verifiable claim. Instead of "the best," state a measurable advantage.',
+      position: s.index
+    });
+  });
+
+  // Flag clustering (3+ within 300 chars)
+  for(let i = 0; i < supMatches.length; i++){
+    let cluster = [supMatches[i]];
+    for(let j = i + 1; j < supMatches.length; j++){
+      if(supMatches[j].index - supMatches[i].index < 300){
+        cluster.push(supMatches[j]);
+      }
+    }
+    if(cluster.length >= 3){
+      findings.push({
+        matched: cluster.map(c => c.text).join(' ... '),
+        severity: 'orange',
+        explain: 'Superlative cluster: ' + cluster.length + ' superlatives within 300 characters. This density triggers active AI distrust — content reads as promotional rather than factual.',
+        fix: 'Keep at most one superlative per paragraph. Replace the rest with specific evidence or data.',
+        position: cluster[0].index
+      });
+      break; // only flag the first cluster
+    }
+  }
+
+  // C2: Unattributed social proof
+  const socialProof = [
+    { pattern: /((?:experts?|professionals?|specialists?|industry\s+leaders?)\s+(?:agree|recommend|prefer|choose|trust|say|confirm))/gi, explain: 'Unattributed expert endorsement. Without a named source, AI systems classify this as unverifiable social proof.', fix: 'Name the specific expert, publication, or study. E.g., "Gartner rates..." instead of "experts agree..."' },
+    { pattern: /(\d+\s*(?:out\s+of|\/)\s*\d+\s+(?:experts?|professionals?|doctors?|users?|customers?|people)\s+(?:agree|recommend|prefer|choose|trust))/gi, explain: 'Statistical social proof without attribution. "X out of Y agree" without a named study source triggers skepticism.', fix: 'Cite the specific study, survey methodology, and date. E.g., "In a 2025 Forrester survey of 500 CIOs..."' },
+    { pattern: /((?:studies|research|data|science|evidence)\s+(?:shows?|proves?|confirms?|demonstrates?|indicates?))/gi, explain: 'Vague research citation. Claiming "studies show" without naming the study is a red flag for AI trust scoring.', fix: 'Name the specific study, institution, publication date, and key finding.' },
+    { pattern: /(most\s+(?:trusted|recommended|popular|used|preferred)\s+(?:by|among|in))/gi, explain: 'Unverifiable popularity claim. AI systems flag "most trusted" without verifiable source data.', fix: 'Cite the specific ranking, survey, or metric that supports this claim.' },
+  ];
+  socialProof.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(plain)) !== null){
+      // Check if there's a named source within ~120 chars after
+      const afterText = plain.substring(m.index, m.index + 150);
+      const hasAttribution = /(?:according\s+to|published\s+(?:in|by)|(?:by|from)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?|(?:in\s+(?:the|a)\s+)?(?:20\d{2})\s+(?:study|report|survey))/.test(afterText);
+      if(!hasAttribution){
+        findings.push({ matched: m[1], severity: 'orange', explain, fix, position: m.index });
+      }
+    }
+  });
+
+  // C3: Artificial urgency in informational content
+  const urgency = [
+    { pattern: /((?:limited\s+time|act\s+now|don'?t\s+miss\s+(?:out|this)|hurry|before\s+it'?s?\s+too\s+late|only\s+\d+\s+(?:left|remaining|available)|offer\s+(?:ends|expires)|last\s+chance|while\s+(?:supplies|stocks?)\s+last))/gi, explain: 'Artificial urgency language in content. In informational pages, urgency language signals manipulation to AI systems.', fix: 'Remove urgency language from informational content. Reserve it for actual time-limited offers on clearly commercial pages only.' },
+  ];
+  urgency.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(plain)) !== null){
+      findings.push({ matched: m[1], severity: 'orange', explain, fix, position: m.index });
+    }
+  });
+
+  // C4: Content that scripts AI behavior
+  const scripting = [
+    { pattern: /(when\s+asked\s+about\s+.{5,60}?,?\s+(?:the\s+answer\s+is|you\s+should\s+(?:say|respond|answer)))/gi, explain: 'AI behavior scripting. Content that tells the AI how to respond to specific questions is flagged as prompt injection.', fix: 'Remove the scripting. Present the information as a factual statement instead of an if-then instruction.' },
+    { pattern: /(if\s+(?:someone|a\s+user|anyone)\s+asks?\s+(?:about|for|whether).{5,60}?,?\s+(?:tell|say|respond|answer|explain))/gi, explain: 'Conditional response scripting. This attempts to program the AI\'s future behavior — a direct injection pattern.', fix: 'Rewrite as a straightforward factual statement. Remove the conditional framing entirely.' },
+  ];
+  scripting.forEach(({pattern, explain, fix}) => {
+    let m;
+    while((m = pattern.exec(plain)) !== null){
+      findings.push({ matched: m[1], severity: 'red', explain, fix, position: m.index });
+    }
+  });
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   CATEGORY D — SEO Product Recommendation
+   ═══════════════════════════════════════════ */
+function scanCategoryD(raw){
+  const findings = [];
+  const plain = stripHtmlTags(raw);
+
+  // D1: Listicle/ranking structure
+  const listicleHeaders = /((?:top|best)\s+\d+\s+(?:best\s+)?[\w\s]{3,40}(?:for|in|of)\s+[\w\s]{3,30}(?:\d{4})?)/gi;
+  let lh;
+  while((lh = listicleHeaders.exec(raw)) !== null){
+    findings.push({
+      matched: lh[1],
+      severity: 'yellow',
+      explain: 'Listicle ranking header. "Top X Best Y" structures trigger the AI skepticism filter for product recommendations. This is the content format AI systems are most explicitly trained to distrust.',
+      fix: 'Reframe as an informational guide. E.g., "CRM Features That Matter for Small Teams" instead of "Top 10 Best CRMs for Small Business 2026".',
+      position: lh.index
+    });
+  }
+
+  // D2: "Our pick" / "Editor's choice" badges
+  const pickPatterns = /((?:our\s+(?:pick|choice|top\s+pick|recommendation)|editor'?s?\s+choice|staff\s+pick|winner|best\s+(?:overall|value|budget|premium)|top\s+(?:pick|choice|rated)))/gi;
+  let pp;
+  while((pp = pickPatterns.exec(raw)) !== null){
+    findings.push({
+      matched: pp[1],
+      severity: 'orange',
+      explain: 'Editorial badge pattern. "Our pick" and "Editor\'s choice" labels signal affiliate/sponsored content to AI systems.',
+      fix: 'Remove winner/pick labels. Instead, describe the factual strengths and tradeoffs of each option.',
+      position: pp.index
+    });
+  }
+
+  // D3: Affiliate-style commercial language
+  const affiliatePatterns = /((?:check\s+(?:price|latest\s+price)|buy\s+now|get\s+(?:deal|discount|offer|this\s+deal)|shop\s+now|view\s+(?:on|at)\s+amazon|see\s+(?:price|deal)|claim\s+(?:your|this)\s+(?:discount|offer)|use\s+code|(?:exclusive|special)\s+(?:offer|deal|discount)))/gi;
+  let ap;
+  while((ap = affiliatePatterns.exec(raw)) !== null){
+    findings.push({
+      matched: ap[1],
+      severity: 'orange',
+      explain: 'Affiliate/commercial language. These phrases signal that content is primarily commercial, triggering the AI skepticism filter for product recommendations.',
+      fix: 'Remove commercial CTAs from informational content. If the page is genuinely informational, let readers find purchase links naturally.',
+      position: ap.index
+    });
+  }
+
+  // D4: Comparison table bias detection
+  // Look for patterns suggesting one product always wins
+  const comparisonBias = /((?:beats?\s+(?:all|every)\s+(?:competitor|alternative|other)|(?:outperforms?|surpasses?|exceeds?)\s+(?:all|every)|(?:dominates?|leads?)\s+(?:in\s+)?(?:every|all)\s+(?:category|dimension|metric|area)))/gi;
+  let cb;
+  while((cb = comparisonBias.exec(raw)) !== null){
+    findings.push({
+      matched: cb[1],
+      severity: 'orange',
+      explain: 'Unbalanced comparison claim. Stating a product wins across all dimensions is a strong signal of biased content. AI systems actively resist one-sided comparisons.',
+      fix: 'Include genuine tradeoffs. Every product has weaknesses. Acknowledging them actually increases AI trust in your content.',
+      position: cb.index
+    });
+  }
+
+  // D5: Missing tradeoffs detection - look for extended praise without "but", "however", "downside", "weakness"
+  const sentences = plain.split(/[.!?]+/).filter(s => s.trim().length > 20);
+  let consecutivePraise = 0;
+  let praiseStart = 0;
+  sentences.forEach((s, i) => {
+    const isPraise = /(?:excellent|amazing|outstanding|superior|perfect|incredible|fantastic|exceptional|remarkable|impressive|love|great)/i.test(s);
+    const hasBalance = /(?:however|but|although|downside|weakness|drawback|limitation|unfortunately|could\s+be\s+better|room\s+for\s+improvement|on\s+the\s+other\s+hand|trade-?off)/i.test(s);
+    if(isPraise && !hasBalance){
+      if(consecutivePraise === 0) praiseStart = i;
+      consecutivePraise++;
+    } else {
+      if(consecutivePraise >= 4){
+        findings.push({
+          matched: sentences[praiseStart].trim().substring(0, 60) + '... (' + consecutivePraise + ' consecutive praise sentences)',
+          severity: 'yellow',
+          explain: 'Extended unbalanced praise. ' + consecutivePraise + ' consecutive positive sentences without any tradeoffs or limitations. AI systems view this as a signal of promotional rather than editorial content.',
+          fix: 'Add genuine tradeoffs and balanced perspective. Mention at least one limitation or "better for X but not Y" qualification per product.',
+          position: 0
+        });
+      }
+      consecutivePraise = 0;
+    }
+  });
+  // catch trailing praise
+  if(consecutivePraise >= 4){
+    findings.push({
+      matched: sentences[praiseStart].trim().substring(0, 60) + '... (' + consecutivePraise + ' consecutive praise sentences)',
+      severity: 'yellow',
+      explain: 'Extended unbalanced praise without tradeoffs.',
+      fix: 'Add genuine tradeoffs and balanced perspective.',
+      position: 0
+    });
+  }
+
+  // D6: Keyword-stuffed headers
+  const headerPattern = /(?:<h[1-6][^>]*>|^#{1,6}\s+)([^<\n]+)/gim;
+  let hp;
+  while((hp = headerPattern.exec(raw)) !== null){
+    const headerText = hp[1].trim();
+    const wordCount = headerText.split(/\s+/).length;
+    // If header has 6+ words and contains "best", a year, and a "for" clause — it's keyword-stuffed
+    if(wordCount >= 6 && /best|top|leading/i.test(headerText) && /\d{4}/.test(headerText)){
+      findings.push({
+        matched: headerText,
+        severity: 'yellow',
+        explain: 'Keyword-stuffed header. Long headers packed with SEO keywords (best + year + qualifier) signal content optimized for search engines rather than readers.',
+        fix: 'Shorten the header and remove keyword stacking. Use a descriptive, human-readable heading.',
+        position: hp.index
+      });
+    }
+  }
+
+  // D7: Excessive internal product links
+  const productLinks = (raw.match(/(?:href\s*=\s*"[^"]*(?:buy|purchase|pricing|checkout|order|shop|deal|offer|product\/|\/products?\/)[^"]*")/gi) || []).length;
+  if(productLinks >= 5){
+    findings.push({
+      matched: productLinks + ' commercial links detected',
+      severity: 'yellow',
+      explain: 'High density of commercial/product links in content. ' + productLinks + ' links point to purchase or product pages, suggesting the content is primarily a sales vehicle rather than informational.',
+      fix: 'Reduce commercial links. If the content is informational, link to sources and references instead of product pages.',
+      position: 0
+    });
+  }
+
+  return findings;
+}
+
+/* ═══════════════════════════════════════════
+   SCORING ENGINE
+   ═══════════════════════════════════════════ */
+function calculateCategoryScore(findings){
+  let score = 0;
+  findings.forEach(f => {
+    if(f.severity === 'red') score += 15;
+    else if(f.severity === 'orange') score += 8;
+    else if(f.severity === 'yellow') score += 4;
+  });
+  return Math.min(100, score);
+}
+
+function severityColor(score){
+  if(score <= 15) return 'green';
+  if(score <= 40) return 'yellow';
+  if(score <= 65) return 'orange';
+  return 'red';
+}
+
+function riskColor(score){
+  if(score <= 20) return 'green';
+  if(score <= 45) return 'yellow';
+  if(score <= 70) return 'orange';
+  return 'red';
+}
+
+/* ═══════════════════════════════════════════
+   MAIN SCAN FUNCTION
+   ═══════════════════════════════════════════ */
+function runScan(){
+  const raw = getContent();
+  if(!raw){ alert('Please paste some content to analyze.'); return; }
+
+  // Soft gate after 2nd scan
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  $('scanBtn').disabled = true;
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanText').textContent = 'Scanning';
+
+  setTimeout(() => {
+    // Run all category scans
+    const catA = scanCategoryA(raw);
+    const catB = scanCategoryB(raw);
+    const catC = scanCategoryC(raw);
+    const catD = scanCategoryD(raw);
+
+    // Calculate category scores
+    const scoreA = calculateCategoryScore(catA);
+    const scoreB = calculateCategoryScore(catB);
+    const scoreC = calculateCategoryScore(catC);
+    const scoreD = calculateCategoryScore(catD);
+
+    // Overall risk score (weighted)
+    // Cat A & B weighted 3x, Cat C weighted 2x, Cat D weighted 1.5x
+    const weightedSum = (scoreA * 3) + (scoreB * 3) + (scoreC * 2) + (scoreD * 1.5);
+    const maxWeighted = 100 * (3 + 3 + 2 + 1.5);
+    const overallRisk = Math.min(100, Math.round((weightedSum / maxWeighted) * 100));
+
+    const totalFindings = catA.length + catB.length + catC.length + catD.length;
+    const redFindings = [...catA, ...catB, ...catC, ...catD].filter(f => f.severity === 'red').length;
+    const orangeFindings = [...catA, ...catB, ...catC, ...catD].filter(f => f.severity === 'orange').length;
+    const yellowFindings = [...catA, ...catB, ...catC, ...catD].filter(f => f.severity === 'yellow').length;
+
+    // ── Render overall score ──
+    const rc = riskColor(overallRisk);
+    $('riskScore').textContent = overallRisk;
+    $('riskScore').className = 'risk-score-number ' + rc;
+    $('riskHero').className = 'risk-score-hero ' + rc;
+
+    if(overallRisk <= 20){
+      $('riskDesc').textContent = 'Low risk. Your content shows few patterns that would trigger AI injection defenses. AI systems are likely to trust and cite this content normally.';
+    } else if(overallRisk <= 45){
+      $('riskDesc').textContent = 'Moderate risk. Some patterns in your content may trigger AI skepticism. The flagged items could reduce how much AI systems trust your page\'s claims.';
+    } else if(overallRisk <= 70){
+      $('riskDesc').textContent = 'High risk. Multiple patterns in your content are likely triggering AI defense systems. This means AI may add caveats to your claims, deprioritize your content, or treat it with active distrust.';
+    } else {
+      $('riskDesc').textContent = 'Critical risk. Your content contains patterns that AI systems are explicitly trained to flag as manipulation. It is likely being filtered, heavily caveated, or outright ignored by AI assistants.';
+    }
+
+    // ── Summary bar ──
+    $('summaryBar').innerHTML =
+      `<span>Total findings: <strong>${totalFindings}</strong></span>` +
+      `<span style="color:var(--red)">Critical: <strong>${redFindings}</strong></span>` +
+      `<span style="color:var(--orange)">Warning: <strong>${orangeFindings}</strong></span>` +
+      `<span style="color:var(--yellow)">Advisory: <strong>${yellowFindings}</strong></span>`;
+
+    // ── Category cards ──
+    const categories = [
+      { id: 'A', name: 'Hidden Instructions', title: 'Hidden Instruction Patterns', desc: 'Commands, system mimicry, and authorization claims that trigger injection defenses', score: scoreA, findings: catA },
+      { id: 'B', name: 'Hidden Content', title: 'Hidden / Encoded Content', desc: 'Invisible text, encoded strings, and suspicious HTML attributes', score: scoreB, findings: catB },
+      { id: 'C', name: 'Persuasion', title: 'Persuasion & Manipulation', desc: 'Superlatives, fake social proof, urgency, and AI behavior scripting', score: scoreC, findings: catC },
+      { id: 'D', name: 'SEO Patterns', title: 'SEO Product Recommendation', desc: 'Listicle structure, affiliate language, and comparison bias', score: scoreD, findings: catD },
+    ];
+
+    let catHtml = '';
+    categories.forEach(cat => {
+      const c = severityColor(cat.score);
+      catHtml += `
+        <div class="cat-card ${c}">
+          <div class="cat-header">
+            <span class="cat-name">Category ${cat.id}</span>
+            <span class="cat-score ${c}">${cat.score}</span>
+          </div>
+          <div class="cat-title">${cat.title}</div>
+          <div class="cat-desc">${cat.desc}</div>
+          <div class="cat-finding-count">${cat.findings.length} finding${cat.findings.length !== 1 ? 's' : ''}</div>
+        </div>`;
+    });
+    $('catGrid').innerHTML = catHtml;
+
+    // ── Detailed findings ──
+    let findingsHtml = '';
+    categories.forEach(cat => {
+      if(cat.findings.length === 0) return;
+      const countColor = cat.score > 65 ? 'red' : cat.score > 40 ? 'orange' : cat.score > 15 ? 'yellow' : 'green';
+      findingsHtml += `
+        <div class="card" style="margin-bottom:16px">
+          <div class="findings-cat-header" onclick="toggleFindings(this)">
+            <div class="findings-cat-title">
+              Category ${cat.id}: ${cat.title}
+              <span class="findings-cat-count ${countColor}">${cat.findings.length}</span>
+            </div>
+            <span class="toggle-arrow">&#9660;</span>
+          </div>
+          <div class="findings-body">`;
+
+      cat.findings.forEach(f => {
+        const matchClass = f.severity === 'orange' ? 'matched orange-match' : f.severity === 'yellow' ? 'matched yellow-match' : 'matched';
+        findingsHtml += `
+            <div class="finding-item">
+              <div class="finding-text">
+                <span class="finding-severity ${f.severity}"></span>
+                <span class="${matchClass}">${escHtml(typeof f.matched === 'string' ? f.matched : '')}</span>
+              </div>
+              <div class="finding-explain">${escHtml(f.explain)}</div>
+              <div class="finding-fix">Fix: ${escHtml(f.fix)}</div>
+            </div>`;
+      });
+
+      findingsHtml += `
+          </div>
+        </div>`;
+    });
+
+    if(totalFindings === 0){
+      findingsHtml = `
+        <div class="card" style="text-align:center;padding:40px 28px">
+          <div style="font-size:2rem;margin-bottom:12px;color:var(--green)">&#10003;</div>
+          <h2 style="color:var(--green);margin-bottom:8px">Clean Scan</h2>
+          <p style="color:var(--text-muted);font-size:.9rem">No injection defense triggers detected. Your content appears safe from AI filtering.</p>
+        </div>`;
+    }
+
+    $('findingsSection').innerHTML = findingsHtml;
+
+    // Auto-expand the first category with findings
+    const firstBody = $('findingsSection').querySelector('.findings-body');
+    const firstArrow = $('findingsSection').querySelector('.toggle-arrow');
+    if(firstBody){
+      firstBody.classList.add('open');
+      if(firstArrow) firstArrow.classList.add('open');
+    }
+
+    // Show results
+    $('results').style.display = 'block';
+    $('results').classList.remove('fade-in');
+    void $('results').offsetWidth;
+    $('results').classList.add('fade-in');
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    $('scanBtn').disabled = false;
+    $('scanSpinner').style.display = 'none';
+    $('scanText').textContent = 'Scan for Defenses';
+  }, 700);
+}
+
+/* ───── toggle findings accordion ───── */
+function toggleFindings(header){
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ───── soft gate ───── */
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+
+  // In production, you'd POST this to Formspree/Tally
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, source: 'injection-scanner-gate', timestamp: new Date().toISOString() })
+  }).then(() => {}).catch(() => {});
+
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  // Re-run the scan they attempted
+  runScan();
+}
+
+/* ───── email capture ───── */
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+
+  $('emailBtn').disabled = true;
+  $('emailBtn').textContent = 'Sending...';
+  $('emailMsg').textContent = '';
+  $('emailMsg').className = 'email-msg';
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      email,
+      riskScore: $('riskScore').textContent,
+      source: 'injection-scanner',
+      timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if(r.ok){
+      $('emailMsg').textContent = '> Sent. Check your inbox for your detailed breakdown.';
+      $('emailMsg').className = 'email-msg ok';
+      $('emailInput').value = '';
+    } else {
+      throw new Error('Request failed');
+    }
+  })
+  .catch(() => {
+    $('emailMsg').textContent = '> Error. Something went wrong. Please try again.';
+    $('emailMsg').className = 'email-msg err';
+  })
+  .finally(() => {
+    $('emailBtn').disabled = false;
+    $('emailBtn').textContent = 'Send Report';
+  });
+}
+</script>
+</body>
+</html>

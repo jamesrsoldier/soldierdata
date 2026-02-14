@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentence-Level AI Citation Scorer</title>
+<meta name="description" content="Score every sentence in your content for AI citation probability. See which sentences AI will actually cite — and which it will skip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --card:#141821;
+  --card-elevated:#1a1f2b;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --green:#00e5a0;
+  --yellow:#f0b429;
+  --orange:#f08c29;
+  --red:#ff4d4d;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+  --blue:#4da6ff;
+  --purple:#a78bfa;
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+.container{max-width:960px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+header{text-align:center;padding:56px 0 40px}
+.section-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  color:var(--accent);text-transform:uppercase;letter-spacing:4px;
+  margin-bottom:20px;
+}
+.section-label::before{content:'——';color:var(--accent);letter-spacing:-2px}
+header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text);line-height:1.15;
+}
+header h1 span{color:var(--accent)}
+header p.subtitle{
+  font-family:'Outfit',sans-serif;color:var(--text-muted);
+  font-size:clamp(0.9rem,2vw,1.05rem);max-width:640px;margin:0 auto;font-weight:400;
+}
+
+/* Card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  padding:28px;margin-bottom:24px;
+}
+.card h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+
+/* Content input */
+.content-input{
+  width:100%;min-height:220px;max-height:500px;padding:16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;line-height:1.7;
+  overflow-y:auto;transition:border-color .2s;white-space:pre-wrap;word-wrap:break-word;
+}
+.content-input:focus{outline:none;border-color:var(--accent)}
+.content-input:empty::before{
+  content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border:none;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-cta{
+  background:var(--accent);color:var(--bg);
+  padding:16px 36px;font-size:1.05rem;
+  width:100%;max-width:420px;
+}
+.btn-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.char-count{
+  font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:.75rem;
+  letter-spacing:0.5px;
+}
+
+/* Results */
+#results{display:none}
+
+/* Score hero */
+.score-hero{
+  text-align:center;padding:36px 28px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.score-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.score-hero.green::before{background:var(--green)}
+.score-hero.yellow::before{background:var(--yellow)}
+.score-hero.orange::before{background:var(--orange)}
+.score-hero.red::before{background:var(--red)}
+.score-number{font-family:'Rajdhani',sans-serif;font-size:4.5rem;font-weight:700;line-height:1}
+.score-number.green{color:var(--green)}
+.score-number.yellow{color:var(--yellow)}
+.score-number.orange{color:var(--orange)}
+.score-number.red{color:var(--red)}
+.score-grade{
+  font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:600;
+  display:inline-block;padding:4px 16px;margin:12px 0 8px;
+  border:1px solid;letter-spacing:2px;
+}
+.score-grade.green{color:var(--green);border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.08)}
+.score-grade.yellow{color:var(--yellow);border-color:rgba(240,180,41,.3);background:rgba(240,180,41,.08)}
+.score-grade.orange{color:var(--orange);border-color:rgba(240,140,41,.3);background:rgba(240,140,41,.08)}
+.score-grade.red{color:var(--red);border-color:rgba(255,77,77,.3);background:rgba(255,77,77,.08)}
+.score-label{
+  font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;
+  margin:10px 0 8px;letter-spacing:1px;text-transform:uppercase;
+}
+.score-desc{font-size:.9rem;color:var(--text-muted);max-width:580px;margin:0 auto;line-height:1.6}
+
+/* Grade distribution bar */
+.grade-bar{
+  display:flex;height:8px;overflow:hidden;margin:20px auto 12px;max-width:400px;
+  background:var(--card-elevated);
+}
+.grade-bar div{transition:width .4s ease}
+.grade-bar .bar-a{background:var(--green)}
+.grade-bar .bar-b{background:var(--blue)}
+.grade-bar .bar-c{background:var(--yellow)}
+.grade-bar .bar-d{background:var(--orange)}
+.grade-bar .bar-f{background:var(--red)}
+.grade-legend{
+  display:flex;justify-content:center;gap:16px;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);
+  letter-spacing:0.5px;
+}
+.grade-legend span{display:flex;align-items:center;gap:4px}
+.grade-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.grade-dot.a{background:var(--green)}
+.grade-dot.b{background:var(--blue)}
+.grade-dot.c{background:var(--yellow)}
+.grade-dot.d{background:var(--orange)}
+.grade-dot.f{background:var(--red)}
+
+/* Summary bar */
+.summary-bar{
+  display:flex;gap:16px;flex-wrap:wrap;padding:16px 20px;
+  background:var(--card);border:1px solid var(--border);margin-bottom:24px;
+  font-size:.82rem;font-family:'JetBrains Mono',monospace;
+}
+.summary-bar span{color:var(--text-dim);letter-spacing:0.5px}
+.summary-bar strong{color:var(--text);margin-left:4px}
+
+/* Dimension radar — simple bar version */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:720px){.dim-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.dim-grid{grid-template-columns:1fr}}
+.dim-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;position:relative;overflow:hidden;
+}
+.dim-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.dim-card.green::before{background:var(--green)}
+.dim-card.yellow::before{background:var(--yellow)}
+.dim-card.orange::before{background:var(--orange)}
+.dim-card.red::before{background:var(--red)}
+.dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dim-name{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;
+  color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;
+}
+.dim-score{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;line-height:1}
+.dim-score.green{color:var(--green)}
+.dim-score.yellow{color:var(--yellow)}
+.dim-score.orange{color:var(--orange)}
+.dim-score.red{color:var(--red)}
+.dim-title{
+  font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;
+  letter-spacing:0.5px;margin-bottom:4px;
+}
+.dim-desc{font-size:.75rem;color:var(--text-dim);line-height:1.5}
+.dim-bar-track{height:4px;background:var(--card-elevated);margin-top:10px;position:relative}
+.dim-bar-fill{height:100%;transition:width .4s ease}
+.dim-bar-fill.green{background:var(--green)}
+.dim-bar-fill.yellow{background:var(--yellow)}
+.dim-bar-fill.orange{background:var(--orange)}
+.dim-bar-fill.red{background:var(--red)}
+
+/* Sentence list */
+.sentence-section{margin-bottom:24px}
+.sentence-section h2{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:16px;letter-spacing:0.5px;
+}
+.sentence-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:20px 24px;margin-bottom:12px;position:relative;overflow:hidden;
+}
+.sentence-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.sentence-card.grade-a::before{background:var(--green)}
+.sentence-card.grade-b::before{background:var(--blue)}
+.sentence-card.grade-c::before{background:var(--yellow)}
+.sentence-card.grade-d::before{background:var(--orange)}
+.sentence-card.grade-f::before{background:var(--red)}
+.sentence-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.sentence-text{
+  font-size:.88rem;color:var(--text);line-height:1.6;flex:1;
+  font-family:'Outfit',sans-serif;
+}
+.sentence-badge{
+  flex-shrink:0;display:flex;align-items:center;gap:8px;
+}
+.sentence-score-num{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;line-height:1;
+}
+.sentence-score-num.green{color:var(--green)}
+.sentence-score-num.yellow{color:var(--yellow)}
+.sentence-score-num.orange{color:var(--orange)}
+.sentence-score-num.red{color:var(--red)}
+.sentence-score-num.blue{color:var(--blue)}
+.sentence-grade-badge{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
+  padding:2px 8px;letter-spacing:1px;
+}
+.sentence-grade-badge.green{background:rgba(0,229,160,.12);color:var(--green);border:1px solid rgba(0,229,160,.25)}
+.sentence-grade-badge.blue{background:rgba(77,166,255,.12);color:var(--blue);border:1px solid rgba(77,166,255,.25)}
+.sentence-grade-badge.yellow{background:rgba(240,180,41,.1);color:var(--yellow);border:1px solid rgba(240,180,41,.25)}
+.sentence-grade-badge.orange{background:rgba(240,140,41,.12);color:var(--orange);border:1px solid rgba(240,140,41,.25)}
+.sentence-grade-badge.red{background:rgba(255,77,77,.12);color:var(--red);border:1px solid rgba(255,77,77,.25)}
+.sentence-dims{
+  display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;
+}
+.dim-chip{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  padding:3px 8px;letter-spacing:0.5px;
+  background:var(--card-elevated);color:var(--text-muted);
+  border:1px solid var(--border);
+}
+.dim-chip.good{color:var(--green);border-color:rgba(0,229,160,.2)}
+.dim-chip.ok{color:var(--yellow);border-color:rgba(240,180,41,.15)}
+.dim-chip.bad{color:var(--red);border-color:rgba(255,77,77,.15)}
+.sentence-issues{margin-top:8px}
+.sentence-issue{
+  font-size:.78rem;color:var(--text-dim);line-height:1.5;
+  padding-left:16px;position:relative;
+}
+.sentence-issue::before{
+  content:'';position:absolute;left:4px;top:7px;
+  width:5px;height:5px;border-radius:50%;background:var(--orange);
+}
+.sentence-rewrite{
+  font-size:.78rem;color:var(--accent);line-height:1.5;
+  padding-left:16px;margin-top:2px;font-style:italic;position:relative;
+}
+.sentence-rewrite::before{
+  content:'';position:absolute;left:4px;top:7px;
+  width:5px;height:5px;border-radius:50%;background:var(--accent);
+}
+
+/* Show more toggle */
+.show-more-btn{
+  display:block;width:100%;padding:14px;text-align:center;
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  cursor:pointer;transition:all .2s;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.show-more-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Accordion */
+.findings-cat-header{
+  padding:16px 24px;background:var(--card-elevated);
+  border-bottom:1px solid var(--border);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;user-select:none;
+}
+.findings-cat-header:hover{background:rgba(30,35,51,.8)}
+.findings-cat-title{
+  font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:0.5px;display:flex;align-items:center;gap:10px;
+}
+.toggle-arrow{
+  font-size:.8rem;color:var(--text-dim);transition:transform .2s;
+}
+.toggle-arrow.open{transform:rotate(180deg)}
+.findings-body{display:none}
+.findings-body.open{display:block}
+
+/* Email capture */
+.email-section{text-align:center;padding:32px 0 12px;border-top:1px solid var(--border);margin-top:32px}
+.email-section p{color:var(--text-muted);font-size:.95rem;margin-bottom:16px}
+.email-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.email-form input[type="email"]{
+  flex:1;min-width:220px;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+}
+.email-form input[type="email"]:focus{outline:none;border-color:var(--accent)}
+.email-form input[type="email"]::placeholder{color:var(--text-dim)}
+.email-msg{font-size:.85rem;margin-top:10px;min-height:20px;font-family:'JetBrains Mono',monospace}
+.email-msg.ok{color:var(--green)}
+.email-msg.err{color:var(--red)}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:36px}
+.cta-section p{color:var(--text-muted);font-size:.9rem;margin-bottom:16px}
+
+/* Footer */
+footer{
+  text-align:center;padding:40px 0 0;
+  color:var(--text-dim);font-size:.75rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* Spinner */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(10,12,16,.3);border-top-color:var(--bg);
+  border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Fade-in */
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Soft gate */
+.gate-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,12,16,.85);
+  z-index:100;justify-content:center;align-items:center;
+}
+.gate-overlay.show{display:flex}
+.gate-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:40px 36px;max-width:440px;text-align:center;
+}
+.gate-box h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:600;margin-bottom:12px;
+}
+.gate-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+.gate-box .email-form{margin:0 auto}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="section-label">Sentence-Level Citation Scorer</div>
+    <h1>Will AI <span>Cite</span><br>Your Sentences?</h1>
+    <p class="subtitle">AI citation operates at the sentence level. Every claim must be individually extractable and citable. Score every sentence in your content across the six dimensions that determine AI citation probability.</p>
+  </header>
+
+  <div class="card">
+    <h2>Paste Your Content</h2>
+    <div class="content-input" id="contentInput" contenteditable="true" data-placeholder="Paste your content here — articles, product pages, blog posts, docs. Raw text, HTML, or markdown all work..." role="textbox" aria-multiline="true"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="scanBtn" onclick="runScan()">
+        <span id="scanText">Score Every Sentence</span>
+        <span class="spinner" id="scanSpinner"></span>
+      </button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+  </div>
+
+  <div id="results" class="fade-in">
+    <!-- Overall Score Hero -->
+    <div class="score-hero" id="scoreHero">
+      <div class="score-number" id="overallScore">&mdash;</div>
+      <div class="score-grade" id="overallGrade">&mdash;</div>
+      <div class="score-label">Sentence Citation Readiness</div>
+      <div class="score-desc" id="overallDesc"></div>
+      <div class="grade-bar" id="gradeBar">
+        <div class="bar-a" id="barA"></div>
+        <div class="bar-b" id="barB"></div>
+        <div class="bar-c" id="barC"></div>
+        <div class="bar-d" id="barD"></div>
+        <div class="bar-f" id="barF"></div>
+      </div>
+      <div class="grade-legend" id="gradeLegend"></div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <!-- Dimension averages -->
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <!-- Top Citable Sentences -->
+    <div class="sentence-section" id="topSection">
+      <h2 style="color:var(--green)">Most Citable Sentences</h2>
+      <div id="topList"></div>
+    </div>
+
+    <!-- Worst Offenders -->
+    <div class="sentence-section" id="worstSection">
+      <h2 style="color:var(--red)">Worst Offenders — Fix These First</h2>
+      <div id="worstList"></div>
+    </div>
+
+    <!-- All sentences (expandable) -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px" id="allSentencesCard">
+      <div class="findings-cat-header" onclick="toggleAll()">
+        <div class="findings-cat-title">All Sentences — Detailed Breakdown</div>
+        <span class="toggle-arrow" id="allArrow">&#9660;</span>
+      </div>
+      <div class="findings-body" id="allBody"></div>
+    </div>
+
+    <!-- Email capture -->
+    <div class="email-section">
+      <p>Get a detailed per-sentence report with custom rewrite suggestions</p>
+      <form class="email-form" id="emailForm" onsubmit="submitEmail(event)">
+        <input type="email" id="emailInput" placeholder="you@company.com" required>
+        <button type="submit" class="btn btn-primary" id="emailBtn">Send Report</button>
+      </form>
+      <div class="email-msg" id="emailMsg"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <p>Want every sentence in your content rewritten for maximum AI citation probability?</p>
+      <a href="#" class="btn btn-cta" id="ctaBtn">Get a Full Sentence-Level Audit</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2026 Sentence-Level AI Citation Scorer</footer>
+</div>
+
+<!-- Soft gate after 2nd scan -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-box">
+    <h3>Unlock Unlimited Scans</h3>
+    <p>Enter your email to continue scoring. We'll send you a summary of all your results.</p>
+    <form class="email-form" onsubmit="gateSubmit(event)">
+      <input type="email" id="gateEmail" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+    <div class="email-msg" id="gateMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ───── helpers ───── */
+const $ = id => document.getElementById(id);
+let scanCount = 0;
+let gateUnlocked = false;
+
+/* ───── contenteditable paste & input handling ───── */
+const contentEl = $('contentInput');
+let rawContent = '';
+
+contentEl.addEventListener('paste', function(e){
+  e.preventDefault();
+  const clip = e.clipboardData || window.clipboardData;
+  const html = clip.getData('text/html');
+  const text = clip.getData('text/plain');
+  if(html){
+    rawContent = html;
+    this.textContent = html;
+  } else {
+    rawContent = text;
+    this.textContent = text;
+  }
+  updateCharCount();
+});
+
+contentEl.addEventListener('input', updateCharCount);
+
+function updateCharCount(){
+  $('charCount').textContent = (contentEl.textContent || '').length.toLocaleString() + ' characters';
+}
+
+function getContent(){
+  if(rawContent) return rawContent;
+  return contentEl.textContent || '';
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function stripHtmlTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function splitSentences(text){
+  const raw = text.split(/(?<=[^0-9])([.!?])(?=\s|$)/);
+  const sentences = [];
+  let buf = '';
+  for(let i = 0; i < raw.length; i++){
+    buf += raw[i];
+    if(/^[.!?]$/.test(raw[i])){
+      const s = buf.trim();
+      if(s.length > 8) sentences.push(s);
+      buf = '';
+    }
+  }
+  if(buf.trim().length > 8) sentences.push(buf.trim());
+  return sentences;
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 1: Fact Density (0-10)
+   ═══════════════════════════════════════════ */
+function scoreFactDensity(sentence){
+  let score = 0;
+  const issues = [];
+
+  const hasStat = /\b\d{1,3}(,\d{3})*(\.\d+)?%/.test(sentence) ||
+    /\$\d/.test(sentence) ||
+    /\b\d+(\.\d+)?\s*(x|times|fold)\b/i.test(sentence);
+
+  const hasQuantity = /\b\d{1,3}(,\d{3})*(\.\d+)?\s*(percent|billion|million|thousand|trillion|users|customers|employees|companies|countries|years|months|hours|minutes)\b/i.test(sentence);
+
+  const hasComparison = /\b(\d+(\.\d+)?%?\s*(more|less|faster|slower|higher|lower|cheaper|larger|smaller)\s+than)\b/i.test(sentence);
+
+  const hasDate = /\b(in\s+)?(20\d{2}|19\d{2})\b/.test(sentence) ||
+    /\b(Q[1-4]\s+20\d{2}|January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{2}\b/i.test(sentence);
+
+  const hasMeasurement = /\b\d+(\.\d+)?\s*(ms|seconds?|minutes?|hours?|days?|GB|TB|MB|KB|Mbps|Gbps|rpm|mph|kg|lbs?|ft|meters?|inches?)\b/i.test(sentence);
+
+  if(hasStat) score += 4;
+  else if(hasQuantity) score += 3;
+  else if(hasMeasurement) score += 3;
+
+  if(hasComparison) score += 3;
+  if(hasDate) score += 2;
+
+  const hasBinaryFact = /\b(supports?|includes?|features?|offers?|provides?|requires?|integrates?\s+with|compatible\s+with|available\s+(in|for|on))\b/i.test(sentence);
+  if(hasBinaryFact && score < 3) score += 2;
+
+  const hasNamedEntity = /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/.test(sentence) &&
+    !/^\s*(It|This|That|They|These|Those|He|She|We)\b/.test(sentence);
+  if(hasNamedEntity && score < 2) score += 1;
+
+  score = Math.min(10, score);
+
+  if(score <= 2){
+    if(!hasStat && !hasQuantity && !hasMeasurement) issues.push('No concrete data — add a statistic, measurement, or quantity');
+    if(!hasDate) issues.push('No temporal anchor — add a date or time reference');
+  }
+
+  return { score, label: score >= 8 ? 'Data-rich' : score >= 5 ? 'Some facts' : score >= 3 ? 'Weak facts' : 'No facts', issues };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 2: Source Attribution (0-10)
+   ═══════════════════════════════════════════ */
+function scoreSourceAttribution(sentence){
+  let score = 0;
+  const issues = [];
+
+  const hasNamedSource = /\b(according\s+to|published\s+(in|by)|reported\s+by|as\s+(noted|stated|reported)\s+(in|by))\b/i.test(sentence);
+  const hasInstitution = /\b(Gartner|Forrester|McKinsey|IDC|Statista|Harvard|Stanford|MIT|Nielsen|Pew|Gallup|Bloomberg|Reuters|FDA|WHO|CDC|IEEE|Nature|Science|Lancet|BMJ)\b/.test(sentence);
+  const hasJournal = /\b(university|institute|journal|publication|proceedings|conference)\b/i.test(sentence);
+  const hasStudyRef = /\b(study|report|survey|analysis|research|paper|whitepaper|meta-?analysis|review)\b/i.test(sentence) && /\b(found|showed|revealed|concluded|demonstrated|indicated)\b/i.test(sentence);
+  const hasAuthor = /\b((?:Dr\.|Prof\.|Professor)\s+[A-Z][a-z]+|[A-Z][a-z]+\s+(?:et\s+al|and\s+colleagues))\b/.test(sentence);
+
+  if(hasNamedSource) score += 4;
+  if(hasInstitution) score += 4;
+  else if(hasJournal) score += 3;
+  if(hasAuthor) score += 3;
+  if(hasStudyRef) score += 2;
+
+  const vagueAttribution = /\b(studies\s+show|research\s+suggests?|experts?\s+say|data\s+shows?|evidence\s+suggests?|it\s+is\s+(widely\s+)?(known|accepted|believed))\b/i.test(sentence);
+  if(vagueAttribution && !hasNamedSource && !hasInstitution){
+    score = Math.max(0, score - 2);
+    issues.push('Vague attribution ("studies show") — name the specific study');
+  }
+
+  score = Math.min(10, score);
+
+  if(score <= 2){
+    issues.push('No named source — add "according to [Source]" or name the institution');
+  }
+
+  return { score, label: score >= 8 ? 'Well-sourced' : score >= 5 ? 'Partial source' : score >= 3 ? 'Weak source' : 'No source', issues };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 3: Self-Containment (0-10)
+   ═══════════════════════════════════════════ */
+function scoreSelfContainment(sentence){
+  let score = 10;
+  const issues = [];
+
+  if(/^\s*(It|This|That|They|These|Those|He|She|We|Its|Their|His|Her|Our)\b/.test(sentence)){
+    score -= 4;
+    issues.push('Starts with a pronoun — AI cannot cite this without prior context');
+  }
+
+  if(/\b(the\s+(?:above|below|former|latter|following|previous|aforementioned))\b/i.test(sentence)){
+    score -= 3;
+    issues.push('References surrounding content — not extractable');
+  }
+
+  if(/^\s*(Additionally|Furthermore|Moreover|Also|However|Therefore|Thus|Hence|Consequently|Meanwhile|Nevertheless|Nonetheless)\b/.test(sentence)){
+    score -= 2;
+    issues.push('Starts with a continuation word — implies dependency on prior sentence');
+  }
+
+  const wordCount = sentence.trim().split(/\s+/).length;
+  if(wordCount < 6){
+    score -= 3;
+    issues.push('Too short to stand alone as a citation');
+  }
+
+  const hasSubject = /\b[A-Z][a-z]{2,}\b/.test(sentence) || /\b(the|a|an)\s+\w+/i.test(sentence);
+  const hasVerb = /\b(is|are|was|were|has|have|had|does|did|can|could|will|would|should|may|might|must|shall|provides?|offers?|supports?|includes?|requires?|features?|uses?|enables?|delivers?|processes?|handles?|generates?|achieves?|reduces?|increases?|improves?|creates?|builds?|allows?|found|showed|reported|achieved|reached|exceeded|grew|declined|rose|fell|measured|recorded|completed|launched|released|announced|introduced)\b/i.test(sentence);
+  if(!hasSubject || !hasVerb){
+    score -= 2;
+    issues.push('May lack complete subject-verb structure');
+  }
+
+  return { score: Math.max(0, Math.min(10, score)), label: score >= 8 ? 'Self-contained' : score >= 5 ? 'Mostly standalone' : score >= 3 ? 'Context-dependent' : 'Not extractable', issues };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 4: Specificity (0-10)
+   ═══════════════════════════════════════════ */
+function scoreSpecificity(sentence){
+  let score = 0;
+  const issues = [];
+
+  const hasSuperlative = /\b(the\s+best|the\s+leading|the\s+most|the\s+top|world[\s-]class|industry[\s-]leading|cutting[\s-]edge|state[\s-]of[\s-]the[\s-]art|revolutionary|game[\s-]changing|groundbreaking|innovative|next[\s-]generation|best[\s-]in[\s-]class|unrivaled|unmatched)\b/i.test(sentence);
+  const hasVagueQuantifier = /\b(many|several|numerous|various|some|a\s+lot\s+of|lots\s+of|countless|a\s+number\s+of|a\s+range\s+of|significant|substantial|considerable)\b/i.test(sentence);
+  const hasAdverb = /\b(very|extremely|incredibly|remarkably|significantly|substantially|dramatically|vastly|tremendously|enormously|exceptionally)\b/i.test(sentence);
+
+  const hasExactNumber = /\b\d{1,3}(,\d{3})*(\.\d+)?/.test(sentence);
+  const hasProperNoun = /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\b/.test(sentence);
+  const hasVersion = /\b(v\d+(\.\d+)*|version\s+\d+|[A-Z]\w+\s+\d+(\.\d+)?)\b/i.test(sentence);
+  const hasTimeframe = /\b(in\s+20\d{2}|Q[1-4]\s+20\d{2}|since\s+20\d{2}|between\s+20\d{2}\s+and\s+20\d{2}|as\s+of\s+(January|February|March|April|May|June|July|August|September|October|November|December))\b/i.test(sentence);
+  const hasGeography = /\b(in\s+(the\s+)?(US|UK|EU|Asia|Europe|North\s+America|Latin\s+America|Africa|Australia)|globally|worldwide|in\s+\d+\s+countries)\b/i.test(sentence);
+
+  if(hasExactNumber) score += 3;
+  if(hasProperNoun) score += 2;
+  if(hasVersion) score += 2;
+  if(hasTimeframe) score += 2;
+  if(hasGeography) score += 1;
+
+  if(hasSuperlative){
+    score -= 2;
+    issues.push('Contains superlative/marketing language — replace with measurable claim');
+  }
+  if(hasVagueQuantifier){
+    score -= 1;
+    issues.push('Vague quantifier ("many", "several") — use exact numbers');
+  }
+  if(hasAdverb){
+    score -= 1;
+    issues.push('Intensifier adverb ("very", "extremely") — remove or replace with data');
+  }
+
+  if(score === 0 && !hasSuperlative && !hasVagueQuantifier) score = 2;
+
+  return { score: Math.max(0, Math.min(10, score)), label: score >= 8 ? 'Highly specific' : score >= 5 ? 'Moderately specific' : score >= 3 ? 'Somewhat vague' : 'Too vague', issues };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 5: Conversational Fit (0-10)
+   ═══════════════════════════════════════════ */
+function scoreConversationalFit(sentence){
+  let score = 7;
+  const issues = [];
+  const wordCount = sentence.trim().split(/\s+/).length;
+
+  if(wordCount > 50){
+    score -= 3;
+    issues.push('Too long for conversational citation — AI must heavily summarize (50+ words)');
+  } else if(wordCount > 35){
+    score -= 2;
+    issues.push('Lengthy — AI prefers sentences under 35 words for citation');
+  } else if(wordCount <= 20 && wordCount >= 8){
+    score += 2;
+  }
+
+  const jargonCount = (sentence.match(/\b(leverage|synerg|utiliz|optimiz|paradigm|holistic|scalab|ecosystem|bleeding[\s-]edge|disrupt|empower|streamlin|framework|methodology|best[\s-]practice|value[\s-]proposition|core\s+competenc|mission[\s-]critical|end[\s-]to[\s-]end|full[\s-]stack)\w*\b/gi) || []).length;
+  if(jargonCount >= 3){
+    score -= 3;
+    issues.push('High jargon density — AI translates this to plain language, losing precision');
+  } else if(jargonCount >= 2){
+    score -= 1;
+    issues.push('Contains jargon that AI will simplify');
+  }
+
+  if((sentence.match(/\(/g) || []).length >= 2){
+    score -= 2;
+    issues.push('Multiple parentheticals — AI drops these in conversational output');
+  }
+
+  if(sentence.includes(';')){
+    score -= 1;
+    issues.push('Semicolon compound sentence — AI splits or drops second clause');
+  }
+
+  try {
+    if(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(sentence)){
+      score -= 2;
+      issues.push('Contains emoji — AI suppresses emoji by default');
+    }
+  } catch(e){}
+
+  const capsWords = (sentence.match(/\b[A-Z]{4,}\b/g) || []).filter(w =>
+    !/^(HTTP|HTTPS|API|SDK|SQL|HTML|CSS|JSON|XML|REST|SMTP|IMAP|SaaS|PaaS|IaaS|NASA|NATO|GDPR|HIPAA|CCPA|WCAG)$/.test(w)
+  );
+  if(capsWords.length > 0){
+    score -= 1;
+    issues.push('ALL CAPS emphasis — AI normalizes this');
+  }
+
+  return { score: Math.max(0, Math.min(10, score)), label: score >= 8 ? 'Conversation-ready' : score >= 5 ? 'Needs simplification' : score >= 3 ? 'Poor conversational fit' : 'Not conversation-ready', issues };
+}
+
+/* ═══════════════════════════════════════════
+   DIMENSION 6: Paraphrase Survival (0-10)
+   ═══════════════════════════════════════════ */
+function scoreParaphraseSurvival(sentence){
+  let score = 0;
+  const issues = [];
+
+  const hasStat = /\b\d{1,3}(,\d{3})*(\.\d+)?(%|\s*(percent|billion|million|thousand|x|times|fold))\b/i.test(sentence);
+  if(hasStat) score += 4;
+
+  const hasNamedComparison = /\b[A-Z][a-z]+\b.*\b(compared\s+to|versus|vs\.?|rather\s+than|over|outperform)\b/i.test(sentence) ||
+    /\b(faster|slower|cheaper|more\s+expensive|larger|smaller|higher|lower)\s+than\s+[A-Z]/i.test(sentence);
+  if(hasNamedComparison) score += 3;
+
+  const hasBinaryFact = /\b(supports?|does\s+not\s+support|includes?|does\s+not\s+include|compatible\s+with|not\s+compatible|available\s+(in|for|on)|not\s+available|requires?|free|open[\s-]source|proprietary)\b/i.test(sentence);
+  if(hasBinaryFact && score < 4) score += 2;
+
+  const hasMethodology = /\b(using|via|through|by\s+means\s+of|process|method|approach|technique|algorithm|protocol)\b/i.test(sentence);
+  if(hasMethodology && score < 3) score += 1;
+
+  const hasBrandVoice = /\b(we\s+believe|our\s+mission|we're\s+passionate|our\s+commitment|we\s+strive|at\s+[A-Z][a-z]+,\s+we)\b/i.test(sentence);
+  const hasCreative = /\b(imagine|picture\s+this|what\s+if|let's\s+face\s+it|here's\s+the\s+thing|the\s+truth\s+is|spoiler\s+alert|fun\s+fact|pro\s+tip)\b/i.test(sentence);
+  const hasOpinion = /\b(I\s+think|we\s+think|in\s+(?:my|our)\s+(?:opinion|view|experience)|personally|arguably|undoubtedly)\b/i.test(sentence);
+
+  if(hasBrandVoice){
+    score = Math.max(0, score - 3);
+    issues.push('Brand voice — AI paraphrases away "we believe" / mission language');
+  }
+  if(hasCreative){
+    score = Math.max(0, score - 2);
+    issues.push('Creative phrasing — AI drops informal hooks during paraphrase');
+  }
+  if(hasOpinion){
+    score = Math.max(0, score - 2);
+    issues.push('Opinion marker — AI hedges or drops subjective claims');
+  }
+
+  if(score === 0 && !hasBrandVoice && !hasCreative && !hasOpinion) score = 3;
+
+  return { score: Math.max(0, Math.min(10, score)), label: score >= 8 ? 'Survives intact' : score >= 5 ? 'Core survives' : score >= 3 ? 'Partially lost' : 'Will not survive', issues };
+}
+
+/* ═══════════════════════════════════════════
+   GRADING & COLORS
+   ═══════════════════════════════════════════ */
+function gradeScore(score){
+  if(score >= 80) return 'A';
+  if(score >= 60) return 'B';
+  if(score >= 40) return 'C';
+  if(score >= 20) return 'D';
+  return 'F';
+}
+
+function gradeColor(grade){
+  switch(grade){
+    case 'A': return 'green';
+    case 'B': return 'blue';
+    case 'C': return 'yellow';
+    case 'D': return 'orange';
+    case 'F': return 'red';
+  }
+  return 'red';
+}
+
+function scoreColor(score){
+  if(score >= 70) return 'green';
+  if(score >= 50) return 'yellow';
+  if(score >= 30) return 'orange';
+  return 'red';
+}
+
+function dimColor(score){
+  if(score >= 7) return 'green';
+  if(score >= 5) return 'yellow';
+  if(score >= 3) return 'orange';
+  return 'red';
+}
+
+function dimChipClass(score){
+  if(score >= 7) return 'good';
+  if(score >= 4) return 'ok';
+  return 'bad';
+}
+
+/* ═══════════════════════════════════════════
+   RENDER SENTENCE CARD
+   ═══════════════════════════════════════════ */
+function renderSentenceCard(s){
+  const gc = gradeColor(s.grade);
+  const dims = s.dimensions;
+  const dimNames = [
+    { key:'factDensity', short:'FACTS' },
+    { key:'sourceAttribution', short:'SOURCE' },
+    { key:'selfContainment', short:'STANDALONE' },
+    { key:'specificity', short:'SPECIFIC' },
+    { key:'conversationalFit', short:'CONVO FIT' },
+    { key:'paraphraseSurvival', short:'PARAPHRASE' },
+  ];
+
+  let html = `<div class="sentence-card grade-${s.grade.toLowerCase()}">
+    <div class="sentence-header">
+      <div class="sentence-text">${escHtml(s.text)}</div>
+      <div class="sentence-badge">
+        <span class="sentence-score-num ${gc}">${s.overallScore}</span>
+        <span class="sentence-grade-badge ${gc}">${s.grade}</span>
+      </div>
+    </div>
+    <div class="sentence-dims">`;
+
+  dimNames.forEach(d => {
+    const dim = dims[d.key];
+    html += `<span class="dim-chip ${dimChipClass(dim.score)}">${d.short}: ${dim.score}/10</span>`;
+  });
+
+  html += '</div>';
+
+  if(s.issues.length > 0){
+    html += '<div class="sentence-issues">';
+    s.issues.forEach(issue => {
+      html += `<div class="sentence-issue">${escHtml(issue)}</div>`;
+    });
+    html += '</div>';
+  }
+
+  if(s.rewrites.length > 0){
+    s.rewrites.forEach(r => {
+      html += `<div class="sentence-rewrite">${escHtml(r)}</div>`;
+    });
+  }
+
+  html += '</div>';
+  return html;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN SCAN FUNCTION
+   ═══════════════════════════════════════════ */
+function runScan(){
+  const raw = getContent().trim();
+  if(!raw){ alert('Please paste some content to analyze.'); return; }
+
+  scanCount++;
+  if(scanCount > 2 && !gateUnlocked){
+    $('gateOverlay').classList.add('show');
+    return;
+  }
+
+  $('scanBtn').disabled = true;
+  $('scanSpinner').style.display = 'inline-block';
+  $('scanText').textContent = 'Scoring';
+
+  setTimeout(() => {
+    const plain = stripHtmlTags(raw);
+    const sentences = splitSentences(plain);
+    const totalSentences = Math.max(sentences.length, 1);
+
+    // Score each sentence
+    const scored = sentences.map(text => {
+      const factDensity = scoreFactDensity(text);
+      const sourceAttribution = scoreSourceAttribution(text);
+      const selfContainment = scoreSelfContainment(text);
+      const specificity = scoreSpecificity(text);
+      const conversationalFit = scoreConversationalFit(text);
+      const paraphraseSurvival = scoreParaphraseSurvival(text);
+
+      const dimensions = { factDensity, sourceAttribution, selfContainment, specificity, conversationalFit, paraphraseSurvival };
+
+      const overallScore = Math.round(
+        factDensity.score * 0.22 * 10 +
+        sourceAttribution.score * 0.18 * 10 +
+        selfContainment.score * 0.20 * 10 +
+        specificity.score * 0.15 * 10 +
+        conversationalFit.score * 0.13 * 10 +
+        paraphraseSurvival.score * 0.12 * 10
+      );
+
+      const grade = gradeScore(overallScore);
+
+      const allIssues = [
+        ...factDensity.issues, ...sourceAttribution.issues,
+        ...selfContainment.issues, ...specificity.issues,
+        ...conversationalFit.issues, ...paraphraseSurvival.issues,
+      ].slice(0, 5);
+
+      const rewrites = [];
+      if(selfContainment.score < 5 && /^\s*(It|This|That|They)\b/.test(text))
+        rewrites.push('Replace the opening pronoun with the actual subject name');
+      if(factDensity.score < 4)
+        rewrites.push('Add a specific number, percentage, or measurement');
+      if(sourceAttribution.score < 4)
+        rewrites.push('Add "according to [Source Name]" with a specific institution or study');
+      if(specificity.score < 4)
+        rewrites.push('Replace vague language with exact figures, proper nouns, or dates');
+      if(conversationalFit.score < 5){
+        if(text.trim().split(/\s+/).length > 35) rewrites.push('Split into two shorter sentences under 25 words each');
+        rewrites.push('Simplify jargon to plain language a non-expert would use');
+      }
+      if(paraphraseSurvival.score < 4)
+        rewrites.push('Replace brand voice / creative hooks with a verifiable fact');
+
+      return {
+        text: text.length > 200 ? text.substring(0, 197) + '...' : text,
+        overallScore, grade, dimensions,
+        issues: allIssues,
+        rewrites: rewrites.slice(0, 3),
+      };
+    });
+
+    // Aggregates
+    const gradeCounts = { A:0, B:0, C:0, D:0, F:0 };
+    let totalScore = 0;
+    const dimTotals = { factDensity:0, sourceAttribution:0, selfContainment:0, specificity:0, conversationalFit:0, paraphraseSurvival:0 };
+
+    scored.forEach(s => {
+      gradeCounts[s.grade]++;
+      totalScore += s.overallScore;
+      dimTotals.factDensity += s.dimensions.factDensity.score;
+      dimTotals.sourceAttribution += s.dimensions.sourceAttribution.score;
+      dimTotals.selfContainment += s.dimensions.selfContainment.score;
+      dimTotals.specificity += s.dimensions.specificity.score;
+      dimTotals.conversationalFit += s.dimensions.conversationalFit.score;
+      dimTotals.paraphraseSurvival += s.dimensions.paraphraseSurvival.score;
+    });
+
+    const overallScore = Math.round(totalScore / totalSentences);
+    const overallGrade = gradeScore(overallScore);
+    const oc = scoreColor(overallScore);
+    const gc = gradeColor(overallGrade);
+
+    // ── Render overall score ──
+    $('overallScore').textContent = overallScore;
+    $('overallScore').className = 'score-number ' + oc;
+    $('overallGrade').textContent = 'GRADE: ' + overallGrade;
+    $('overallGrade').className = 'score-grade ' + gc;
+    $('scoreHero').className = 'score-hero ' + oc;
+
+    if(overallScore >= 70){
+      $('overallDesc').textContent = 'Excellent citation readiness. Most sentences contain the fact density, attribution, and self-containment that AI needs for citation. Your content is well-positioned for AI search responses.';
+    } else if(overallScore >= 50){
+      $('overallDesc').textContent = 'Good foundation with room for improvement. Some sentences are citation-ready but many lack specific data, named sources, or self-contained context. Focus on the worst-scoring sentences first.';
+    } else if(overallScore >= 30){
+      $('overallDesc').textContent = 'Below average citation readiness. Most sentences lack the specificity AI needs. Common issues: vague language, missing sources, pronoun-dependent openings, and overly long sentences.';
+    } else {
+      $('overallDesc').textContent = 'Poor citation readiness. AI is unlikely to cite individual sentences from this content. Significant rewriting needed: add data, name sources, eliminate pronoun dependencies, and write concise standalone statements.';
+    }
+
+    // Grade distribution bar
+    $('barA').style.width = (gradeCounts.A / totalSentences * 100) + '%';
+    $('barB').style.width = (gradeCounts.B / totalSentences * 100) + '%';
+    $('barC').style.width = (gradeCounts.C / totalSentences * 100) + '%';
+    $('barD').style.width = (gradeCounts.D / totalSentences * 100) + '%';
+    $('barF').style.width = (gradeCounts.F / totalSentences * 100) + '%';
+
+    $('gradeLegend').innerHTML =
+      `<span><span class="grade-dot a"></span> A: ${gradeCounts.A}</span>` +
+      `<span><span class="grade-dot b"></span> B: ${gradeCounts.B}</span>` +
+      `<span><span class="grade-dot c"></span> C: ${gradeCounts.C}</span>` +
+      `<span><span class="grade-dot d"></span> D: ${gradeCounts.D}</span>` +
+      `<span><span class="grade-dot f"></span> F: ${gradeCounts.F}</span>`;
+
+    // ── Summary bar ──
+    $('summaryBar').innerHTML =
+      `<span>Sentences: <strong>${totalSentences}</strong></span>` +
+      `<span style="color:var(--green)">A-grade: <strong>${gradeCounts.A}</strong></span>` +
+      `<span style="color:var(--blue)">B-grade: <strong>${gradeCounts.B}</strong></span>` +
+      `<span style="color:var(--yellow)">C-grade: <strong>${gradeCounts.C}</strong></span>` +
+      `<span style="color:var(--orange)">D-grade: <strong>${gradeCounts.D}</strong></span>` +
+      `<span style="color:var(--red)">F-grade: <strong>${gradeCounts.F}</strong></span>`;
+
+    // ── Dimension averages ──
+    const dimMeta = [
+      { key:'factDensity', name:'Fact Density', title:'Fact Density', desc:'Concrete statistics, measurements, dates, and verifiable data points' },
+      { key:'sourceAttribution', name:'Attribution', title:'Source Attribution', desc:'Named sources, institutions, studies, and verifiable references' },
+      { key:'selfContainment', name:'Standalone', title:'Self-Containment', desc:'Can the sentence be cited without surrounding context?' },
+      { key:'specificity', name:'Specificity', title:'Specificity', desc:'Exact numbers, proper nouns, versions, and falsifiable claims' },
+      { key:'conversationalFit', name:'Convo Fit', title:'Conversational Fit', desc:'Concise, plain-language sentences AI can embed in natural prose' },
+      { key:'paraphraseSurvival', name:'Paraphrase', title:'Paraphrase Survival', desc:'Will the core meaning survive AI mandatory paraphrasing?' },
+    ];
+
+    let dimHtml = '';
+    dimMeta.forEach(d => {
+      const avg = Math.round((dimTotals[d.key] / totalSentences) * 10) / 10;
+      const dc = dimColor(avg);
+      dimHtml += `
+        <div class="dim-card ${dc}">
+          <div class="dim-header">
+            <span class="dim-name">${d.name}</span>
+            <span class="dim-score ${dc}">${avg}</span>
+          </div>
+          <div class="dim-title">${d.title}</div>
+          <div class="dim-desc">${d.desc}</div>
+          <div class="dim-bar-track"><div class="dim-bar-fill ${dc}" style="width:${avg * 10}%"></div></div>
+        </div>`;
+    });
+    $('dimGrid').innerHTML = dimHtml;
+
+    // ── Top citable ──
+    const topCitable = [...scored].sort((a,b) => b.overallScore - a.overallScore).slice(0, 5);
+    let topHtml = '';
+    topCitable.forEach(s => { topHtml += renderSentenceCard(s); });
+    $('topList').innerHTML = topHtml;
+
+    // ── Worst offenders ──
+    const worstOffenders = [...scored].sort((a,b) => a.overallScore - b.overallScore).slice(0, 5);
+    let worstHtml = '';
+    worstOffenders.forEach(s => { worstHtml += renderSentenceCard(s); });
+    $('worstList').innerHTML = worstHtml;
+
+    // ── All sentences ──
+    let allHtml = '';
+    scored.forEach((s, i) => {
+      allHtml += `<div style="padding:4px 0 0 24px;margin-bottom:0"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-dim)">SENTENCE ${i + 1}</span></div>`;
+      allHtml += renderSentenceCard(s);
+    });
+    $('allBody').innerHTML = allHtml;
+
+    // Show results
+    $('results').style.display = 'block';
+    $('results').classList.remove('fade-in');
+    void $('results').offsetWidth;
+    $('results').classList.add('fade-in');
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    $('scanBtn').disabled = false;
+    $('scanSpinner').style.display = 'none';
+    $('scanText').textContent = 'Score Every Sentence';
+  }, 700);
+}
+
+/* ───── toggle all sentences ───── */
+function toggleAll(){
+  const body = $('allBody');
+  const arrow = $('allArrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ───── soft gate ───── */
+function gateSubmit(e){
+  e.preventDefault();
+  const email = $('gateEmail').value.trim();
+  if(!email) return;
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ email, source: 'sentence-citation-scorer-gate', timestamp: new Date().toISOString() })
+  }).then(() => {}).catch(() => {});
+
+  gateUnlocked = true;
+  $('gateOverlay').classList.remove('show');
+  runScan();
+}
+
+/* ───── email capture ───── */
+function submitEmail(e){
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  if(!email) return;
+
+  $('emailBtn').disabled = true;
+  $('emailBtn').textContent = 'Sending...';
+  $('emailMsg').textContent = '';
+  $('emailMsg').className = 'email-msg';
+
+  fetch('https://formspree.io/f/PLACEHOLDER', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      email,
+      citationScore: $('overallScore').textContent,
+      source: 'sentence-citation-scorer',
+      timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if(r.ok){
+      $('emailMsg').textContent = '> Sent. Check your inbox for your detailed report.';
+      $('emailMsg').className = 'email-msg ok';
+      $('emailInput').value = '';
+    } else {
+      throw new Error('Request failed');
+    }
+  })
+  .catch(() => {
+    $('emailMsg').textContent = '> Error. Something went wrong. Please try again.';
+    $('emailMsg').className = 'email-msg err';
+  })
+  .finally(() => {
+    $('emailBtn').disabled = false;
+    $('emailBtn').textContent = 'Send Report';
+  });
+}
+</script>
+</body>
+</html>
