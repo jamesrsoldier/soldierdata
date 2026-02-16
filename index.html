@@ -381,33 +381,6 @@
     color: var(--accent);
   }
 
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    margin-top: 72px;
-    padding-top: 40px;
-    border-top: 1px solid var(--border);
-    animation: fadeSlideUp 0.8s ease-out 0.4s both;
-  }
-
-  .stat-item .stat-number {
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: 700;
-    font-size: 2.2rem;
-    color: var(--text-primary);
-    line-height: 1;
-  }
-
-  .stat-item .stat-number span { color: var(--accent); }
-
-  .stat-item .stat-label {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-top: 6px;
-  }
-
   /* ── HERO TERMINAL ── */
   .hero-terminal {
     position: absolute;
@@ -1232,7 +1205,6 @@
     nav { padding: 0 24px; }
     .nav-links { display: none; }
     section, .hero { padding: 80px 24px; }
-    .hero-stats { gap: 24px; flex-wrap: wrap; }
     .form-row { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 16px; text-align: center; }
     .services-grid { grid-template-columns: 1fr; }
@@ -1278,20 +1250,6 @@
     <div class="hero-actions">
       <a href="#contact" class="btn-primary">Schedule a Consultation</a>
       <a href="#services" class="btn-secondary">Explore Services</a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-number">50<span>+</span></div>
-        <div class="stat-label">Projects Deployed</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">99.9<span>%</span></div>
-        <div class="stat-label">Uptime Delivered</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">6<span>+</span></div>
-        <div class="stat-label">Service Verticals</div>
-      </div>
     </div>
   </div>
 
