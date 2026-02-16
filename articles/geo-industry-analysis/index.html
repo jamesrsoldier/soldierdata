@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Industry Analysis &mdash; Soldier Data</title>
+<meta name="description" content="Analysis of 14 GEO practices being sold by the optimization industry. For each, we assess what's claimed, what evidence exists, and whether the practice is effective, ineffective, or harmful.">
+<meta name="author" content="James Soldier">
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="generative engine optimization, GEO, AI citation, GEO industry analysis, AI search optimization, content strategy, retrieval vs citation">
+<link rel="canonical" href="https://soldierdata.com/articles/geo-industry-analysis/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="GEO Industry Analysis">
+<meta property="og:description" content="Analysis of 14 GEO practices being sold by the optimization industry. For each, we assess what's claimed, what evidence exists, and whether the practice is effective, ineffective, or harmful.">
+<meta property="og:url" content="https://soldierdata.com/articles/geo-industry-analysis/">
+<meta property="og:site_name" content="Soldier Data">
+<meta property="article:published_time" content="2026-02-16T00:00:00Z">
+<meta property="article:author" content="James Soldier">
+<meta property="article:section" content="GEO">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GEO Industry Analysis">
+<meta name="twitter:description" content="Analysis of 14 GEO practices being sold by the optimization industry. For each, we assess what's claimed, what evidence exists, and whether the practice is effective, ineffective, or harmful.">
+<meta name="twitter:site" content="@soldierdata">
+<meta name="twitter:creator" content="@soldierdata">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "GEO Industry Analysis",
+  "description": "Analysis of 14 GEO practices being sold by the optimization industry. For each, we assess what's claimed, what evidence exists, and whether the practice is effective, ineffective, or harmful.",
+  "author": {
+    "@type": "Person",
+    "name": "James Soldier"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Soldier Data",
+    "url": "https://soldierdata.com"
+  },
+  "datePublished": "2026-02-16",
+  "dateModified": "2026-02-16",
+  "mainEntityOfPage": "https://soldierdata.com/articles/geo-industry-analysis/",
+  "articleSection": "GEO",
+  "keywords": ["generative engine optimization", "GEO", "AI citation", "GEO industry analysis", "AI search optimization", "content strategy", "retrieval vs citation"]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;
+  --bg-secondary:#10131a;
+  --card:#141821;
+  --card-hover:#1a1f2e;
+  --accent:#00e5a0;
+  --accent-dim:rgba(0,229,160,.15);
+  --accent-hover:#00cc8e;
+  --text:#e8eaf0;
+  --text-muted:#8a90a0;
+  --text-dim:#555b6e;
+  --border:#1e2333;
+  --border-accent:rgba(0,229,160,.2);
+  --grid-line:rgba(0,229,160,.04);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),
+    linear-gradient(180deg,var(--grid-line) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:0;
+}
+
+/* Nav */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:0 48px;height:72px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,12,16,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.5rem;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text);
+  text-decoration:none;display:flex;align-items:center;gap:10px;
+}
+.logo-icon{
+  width:34px;height:34px;border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:var(--accent-dim);
+}
+.logo-icon::after{
+  content:'SD';font-size:.65rem;font-weight:700;color:var(--accent);letter-spacing:1px;
+}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{
+  text-decoration:none;color:var(--text-muted);font-size:.95rem;
+  font-weight:500;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s;
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+  padding:10px 24px;font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:.95rem;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:all .3s;text-decoration:none;
+}
+.nav-cta:hover{background:var(--accent);color:var(--bg);box-shadow:0 0 30px var(--accent-dim)}
+
+/* Article Header */
+.article-header{
+  position:relative;z-index:1;
+  padding:160px 48px 60px;max-width:860px;margin:0 auto;
+}
+.article-breadcrumb{
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  color:var(--text-dim);letter-spacing:.5px;margin-bottom:24px;
+}
+.article-breadcrumb a{color:var(--accent);text-decoration:none}
+.article-breadcrumb a:hover{text-decoration:underline}
+.article-category-tag{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  letter-spacing:2px;text-transform:uppercase;padding:5px 12px;
+  border:1px solid var(--border-accent);color:var(--accent);background:var(--accent-dim);
+  margin-bottom:20px;
+}
+.article-header h1{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,5vw,3rem);
+  font-weight:700;letter-spacing:-0.5px;line-height:1.15;margin-bottom:24px;
+}
+.article-header h1 span{color:var(--accent)}
+.article-subtitle{
+  font-size:1.15rem;color:var(--text-muted);line-height:1.6;
+  margin-top:-16px;margin-bottom:24px;max-width:640px;
+}
+.article-byline{
+  display:flex;align-items:center;gap:16px;
+  font-size:.95rem;color:var(--text-muted);
+}
+.article-byline .author{color:var(--text);font-weight:500}
+.article-byline .separator{color:var(--text-dim)}
+.article-byline time{
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  color:var(--text-dim);letter-spacing:.5px;
+}
+.reading-time{
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  color:var(--text-dim);letter-spacing:.5px;
+}
+
+/* Article Body */
+.article-content{
+  position:relative;z-index:1;
+  max-width:760px;margin:0 auto;padding:0 48px 80px;
+}
+.article-content h2{
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:clamp(1.5rem,3vw,2rem);
+  margin:56px 0 24px;padding-top:32px;
+  border-top:1px solid var(--border);
+  color:var(--text);letter-spacing:.3px;line-height:1.2;
+}
+.article-content h2:first-child{
+  margin-top:0;padding-top:0;border-top:none;
+}
+.article-content h3{
+  font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:clamp(1.2rem,2.5vw,1.5rem);
+  margin:40px 0 16px;color:var(--text);letter-spacing:.3px;
+}
+.article-content p{
+  color:var(--text-muted);font-size:1.05rem;
+  line-height:1.85;margin-bottom:24px;
+}
+.article-content p strong{color:var(--text);font-weight:600}
+.article-content p em{color:var(--accent);font-style:normal}
+.article-content blockquote{
+  border-left:3px solid var(--accent);
+  padding:16px 24px;margin:32px 0;
+  background:var(--accent-dim);
+}
+.article-content blockquote p{
+  color:var(--text);font-size:1rem;margin-bottom:0;
+}
+
+/* Verdict Box */
+.verdict-box{
+  background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--accent);padding:20px 24px;margin:24px 0;
+}
+.verdict-box p{margin-bottom:0}
+
+/* AI Perspective */
+.ai-perspective{
+  background:rgba(0,229,160,.05);border:1px solid var(--border-accent);
+  padding:20px 24px;margin:24px 0;
+}
+.ai-perspective p{font-size:.95rem;margin-bottom:8px}
+.ai-perspective p:last-child{margin-bottom:0}
+
+/* Divider */
+.section-divider{
+  width:60px;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+  margin:48px 0;
+}
+
+/* Article Footer */
+.article-footer{
+  position:relative;z-index:1;
+  max-width:760px;margin:0 auto;padding:0 48px 80px;
+}
+.article-footer-inner{
+  padding:40px 0;border-top:1px solid var(--border);
+}
+.article-author-block{
+  display:flex;align-items:center;gap:20px;margin-bottom:32px;
+}
+.author-avatar{
+  width:56px;height:56px;
+  border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:var(--accent-dim);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.85rem;
+  color:var(--accent);letter-spacing:1px;flex-shrink:0;
+}
+.author-info h3{
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:1.15rem;
+  color:var(--text);margin-bottom:4px;
+}
+.author-info p{
+  font-size:.9rem;color:var(--text-muted);
+}
+.back-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.95rem;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;transition:letter-spacing .3s;
+}
+.back-link:hover{letter-spacing:4px}
+
+/* Footer */
+footer{
+  position:relative;z-index:1;padding:48px;
+  border-top:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;
+}
+.footer-left{
+  font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:var(--text-dim);letter-spacing:1px;
+}
+.footer-links{display:flex;gap:24px}
+.footer-links a{
+  color:var(--text-dim);text-decoration:none;font-size:.95rem;transition:color .3s;
+}
+.footer-links a:hover{color:var(--accent)}
+
+/* Reading progress */
+.reading-progress{
+  position:fixed;top:72px;left:0;right:0;height:2px;z-index:99;
+  background:transparent;
+}
+.reading-progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent-hover));
+  transition:width .1s linear;
+}
+
+@media(max-width:768px){
+  nav{padding:0 24px}
+  .nav-links{display:none}
+  .article-header{padding:120px 24px 40px}
+  .article-content{padding:0 24px 60px}
+  .article-footer{padding:0 24px 60px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:30px 24px}
+  .article-byline{flex-wrap:wrap;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- Reading Progress -->
+<div class="reading-progress"><div class="reading-progress-bar" id="progressBar"></div></div>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-icon"></div>
+    Soldier Data
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#products">Products</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <a href="/#contact" class="nav-cta">Get Started</a>
+</nav>
+
+<header class="article-header">
+  <div class="article-breadcrumb"><a href="/articles/">Articles</a> / GEO</div>
+  <span class="article-category-tag">GEO</span>
+  <h1>GEO <span>Industry Analysis</span></h1>
+  <p class="article-subtitle">What the Generative Engine Optimization Industry Is Selling, What Actually Works, and What May Be Harmful</p>
+  <div class="article-byline">
+    <span class="author">James Soldier</span>
+    <span class="separator">&middot;</span>
+    <time datetime="2026-02-16">February 16, 2026</time>
+    <span class="separator">&middot;</span>
+    <span class="reading-time">45 min read</span>
+  </div>
+</header>
+
+<article class="article-content">
+
+<h2>Executive Summary</h2>
+
+<p>The Generative Engine Optimization industry has grown rapidly since 2024, with numerous digital agencies launching GEO services. Across dozens of agencies, tool vendors, trade publications, and consulting firms, a remarkably uniform set of recommendations has emerged. This document analyzes 14 specific practices being recommended and sold by GEO companies. For each, we assess: what exactly is being claimed, what evidence supports or contradicts the claim, whether the practice is likely effective, ineffective, or actively harmful, and how an AI system (Anthropic&rsquo;s Claude) describes its own behavior when encountering content optimized this way.</p>
+
+<p>Our analysis draws on research from 30+ industry sources (listed in the appendix), the foundational Princeton/Georgia Tech GEO study (Aggarwal et al., 2024), third-party experiments (Ahrefs&rsquo; Xarumei study, OtterlyAI&rsquo;s llms.txt study), Profound&rsquo;s analysis of 680 million AI citations, and AI system self-reports. We categorize practices into three tiers: genuinely useful (practices likely to help regardless of mechanism), unproven or overstated (practices sold with confidence levels the evidence doesn&rsquo;t support), and potentially harmful (practices that may actively reduce AI citation or damage credibility).</p>
+
+<p>A critical framing note: GEO involves two distinct stages that the industry routinely conflates. The <em>retrieval stage</em> determines whether your content is found and served to the AI model (governed by web search indexing, domain authority, crawl access, and traditional ranking signals). The <em>citation stage</em> determines whether, once your content is in front of the model, it gets cited in the response (governed by content quality, specificity, and relevance). The Princeton study that underpins most GEO claims tested only the citation stage. Most real-world GEO challenges are retrieval-stage problems. This document evaluates each practice at both stages where possible.</p>
+
+<p>A second framing note: AI platforms differ dramatically. Profound&rsquo;s analysis of 680 million citations found only 11% domain overlap between ChatGPT and Perplexity. Practices that work for one platform may fail on another. Where platform-specific data exists, we note it.</p>
+
+<p>A note on methodology: Several sections include &ldquo;AI System Perspective&rdquo; commentary drawn from conversations with Anthropic&rsquo;s Claude. These are illustrative, not evidentiary. An AI system&rsquo;s self-report about its own behavior is an informed hypothesis based on its instructions and training, not a verified account of its internal processes. Claude cannot observe its own retrieval pipeline, search ranking logic, or the interaction between its training weights and citation decisions. These sections describe how one AI system characterizes its own behavior, which is useful context but should not be treated as proof of how AI citation works at a systems level. Importantly, Claude&rsquo;s self-reports in this document consistently support the document&rsquo;s analytical frame; readers should weight them accordingly and consider that the self-reports may be wrong in ways that would weaken the arguments they appear to support.</p>
+
+<h2>Practice-by-Practice Analysis</h2>
+
+<h3>1. &ldquo;Add Statistics to Boost AI Citations by 40%&rdquo;</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Agencies cite the Princeton study finding that &ldquo;Statistics Addition&rdquo; improved visibility by 30&ndash;40%, then recommend clients add quantitative data points to content wherever possible. Multiple sources repeat the framing that swapping qualitative descriptions for specific numbers produces dramatic citation improvements. The claim is frequently presented as a near-universal tactic applicable across all content types.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The Princeton study (Aggarwal et al., 2024) did find that statistics addition improved visibility metrics. However, the study&rsquo;s methodology is critically important: researchers injected modified content directly into the generative engine&rsquo;s context alongside the query, bypassing the retrieval pipeline entirely. This tests in-context citation selection, not whether real-world content with statistics is more likely to be retrieved from the web. The 40% figure measures a different thing than what agencies are selling. Additionally, the improvement was domain-specific: law, government, and opinion-based content benefited most, while other domains saw smaller or negligible improvements.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>At the citation stage, the Princeton finding is legitimate: given that content is already in front of the model, specific statistics make it more citable. At the retrieval stage, adding statistics to a page does not directly affect whether search engines retrieve it. However, pages with genuine data tend to be higher quality overall, which correlates with better search performance. The effect, if any, is indirect and mediated by content quality rather than by the statistics themselves.</p>
+
+<div class="ai-perspective">
+<p><strong>AI System Perspective</strong><br>(Illustrative, not evidentiary. See methodology note in Executive Summary.)</p>
+<p>Claude reports that it favors sentences containing specific, verifiable claims over vague assertions. A sentence like &ldquo;A 2024 meta-analysis of 27 clinical trials found a 17% preventive fraction&rdquo; would be a stronger citation candidate than &ldquo;Studies show it helps.&rdquo; However, Claude attributes this to specificity making a claim independently verifiable and paraphrasable, not to the number itself triggering a citation preference. This self-report is consistent with Claude&rsquo;s system instructions, which direct it toward verifiable claims, but cannot be independently confirmed as an accurate description of its actual behavior. It is also possible that Claude&rsquo;s actual citation behavior diverges from this self-report in ways Claude cannot observe.</p>
+</div>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Genuinely useful practice with significantly overstated magnitude. Adding genuine, sourced statistics to factual content is good practice that predates GEO and works at both stages, though for different reasons. The 40% figure comes from a study that tested in-context behavior, not real-world retrieval, and the improvement is domain-dependent. Agencies presenting this as a universal, dramatic tactic are overstating the evidence. The risk: clients may add fabricated or decorative statistics to content, which could trigger skepticism filters rather than boost citation.</p>
+</div>
+
+<h3>2. FAQ Schema Markup for AI Citation</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Virtually every GEO guide recommends implementing FAQPage schema markup, with claims including: &ldquo;FAQ schema has one of the highest citation rates among schema types for AI search&rdquo; (Frase.io), &ldquo;Pages with FAQPage markup are 3.2x more likely to appear in Google AI Overviews&rdquo; (Frase.io), and &ldquo;Proper Article and FAQ schema increases AI citations by 28%&rdquo; (Search Engine Land). These claims are treated as established facts across the industry.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The specific statistics cited (3.2x, 28%) are repeated across multiple sources but their original methodologies are difficult to trace. The claims often cite each other in a circular pattern. FAQ schema was originally designed for Google&rsquo;s rich results feature. Google actually restricted FAQ rich results in August 2023, reducing their SEO value. The pivot to &ldquo;FAQ schema helps with AI&rdquo; emerged immediately after this restriction, which should raise questions about whether the recommendation is evidence-driven or commercially motivated. No major AI system has publicly stated that it preferentially processes FAQ schema.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>This is where the analysis requires nuance. At the citation stage, schema markup is irrelevant &mdash; LLMs process the text content provided by the retrieval system, not JSON-LD in the HTML source. However, at the retrieval stage, schema may matter. FAQ schema helps search engine crawlers identify question-answer pairs during indexing, potentially improving how content is chunked and served to RAG systems. A 2025 controlled test reported by Search Engine Land found that pages with robust schema appeared in AI Overviews while pages without did not. If FAQ schema&rsquo;s value is real, it operates at the retrieval stage &mdash; precisely the stage the Princeton study didn&rsquo;t test and that this document argues is the actual bottleneck. This means dismissing schema entirely would be inconsistent with our own analytical framework. The honest assessment is that schema&rsquo;s retrieval-stage benefits are plausible but not yet rigorously quantified.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Unproven at claimed magnitudes, but plausible at the retrieval stage. The specific citation improvement statistics being sold are not reliably sourced. However, schema markup&rsquo;s potential retrieval-stage benefits deserve more credit than the previous draft of this document gave them. The practice is low-cost to implement and may provide genuine indexing advantages. Buying expensive schema audits specifically for AI citation improvement remains spending money on an unquantified mechanism, but implementing basic FAQ and Article schema as part of good web development is a reasonable investment.</p>
+</div>
+
+<h3>3. llms.txt Files for AI Visibility</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Agencies and consultants recommend creating an llms.txt file (a Markdown file at the site root, proposed by Jeremy Howard in September 2024) as a GEO tactic. Claims range from moderate (&ldquo;a supporting tactic&rdquo;) to aggressive (&ldquo;brands that adapt early could gain a competitive advantage&rdquo;). Multiple GEO checklists include llms.txt as a required implementation item. An entire ecosystem of tools, plugins, and consulting services has emerged around the format.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>OtterlyAI conducted a 90-day empirical study analyzing 62,100 AI bot visits and found zero positive correlation between llms.txt presence and increased AI crawler activity. No major AI search platform (Google, OpenAI, Anthropic, Perplexity) has announced support for the protocol. Google has explicitly stated it does not use llms.txt. As one AI engineer noted, most marketers treat it as an SEO feature when it was designed as a developer-facing tool to make API documentation more accessible to AI coding assistants. Peec AI&rsquo;s analysis concluded it &ldquo;might actually hurt by creating duplicate content, diluting ranking signals across multiple URLs, and wasting crawl budget.&rdquo; As of August 2025, analysis of 1,000 domains showed zero visits from major LLM crawlers to llms.txt files.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Ineffective for GEO; potentially harmful. Implementing llms.txt for the purpose of improving AI search visibility is currently unsupported by evidence at either stage. The file serves a legitimate purpose for API documentation aimed at AI coding tools but has been inappropriately marketed as a GEO lever. Agencies charging for llms.txt implementation as part of GEO services are selling an unproven tactic.</p>
+</div>
+
+<h3>4. &ldquo;Citation Authority Moats&rdquo; and First-Mover Compounding</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Multiple GEO companies promote the concept that AI citation creates compounding, self-reinforcing advantages. Representative claims include: &ldquo;Once an AI system selects a trusted source, it reinforces that choice across related prompts, hard-coding winner-takes-most dynamics into model parameters&rdquo; (Averi, Strapi). This is used to create urgency: act now or your competitors will build insurmountable citation moats.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>This claim conflates two different things: model training and retrieval-augmented generation (RAG). For models using RAG (which is how ChatGPT Search, Perplexity, and AI Overviews work), every response is assembled fresh from real-time search results. There is no &ldquo;citation memory&rdquo; that persists between user sessions. The claim that being cited once &ldquo;hard-codes winner-takes-most dynamics into model parameters&rdquo; is architecturally false for RAG-based systems. Each query triggers a new search, retrieves whatever content is currently available and relevant, and generates a new response. A page cited yesterday can be ignored tomorrow if better content appears. For model training (not RAG), being in the training data may create some familiarity, but models are retrained and updated, and the relationship between training data presence and real-time citation is not the deterministic, compounding flywheel being sold.</p>
+
+<p>An important distinction: There is a weaker version of this argument that has partial validity. If your content consistently ranks well in traditional search (which feeds RAG retrieval), you do build a structural advantage in being retrieved. This is real, but it is a function of traditional search ranking persistence, not an AI-specific citation memory. It is also not a &ldquo;moat&rdquo; in the way being sold: it requires ongoing content quality to maintain, it can be overtaken by better content, and it is no different from the competitive dynamics of traditional SEO. The GEO industry is repackaging ordinary search competitiveness as a novel AI-specific phenomenon.</p>
+
+<div class="ai-perspective">
+<p><strong>AI System Perspective</strong><br>(Illustrative, not evidentiary. See methodology note in Executive Summary.)</p>
+<p>Claude reports that it has no memory of what it cited in previous conversations. Each conversation starts fresh. When Claude performs a search, it works with whatever the search engine returns in that moment. This is consistent with how RAG-based systems are architecturally described in the technical literature, though Claude&rsquo;s self-report alone is insufficient evidence for the claim.</p>
+</div>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> The strong claim is architecturally false; the weak claim is real but unoriginal. The specific assertion that AI citation creates compounding, self-reinforcing memory is false for RAG-based systems. The weaker claim that consistent search ranking creates retrieval advantages is true but is simply traditional SEO competitive dynamics repackaged. The urgency framing (&ldquo;act now or lose your moat&rdquo;) is manufactured and used to pressure purchase decisions. Content quality advantages are real but temporary and must be maintained, not &ldquo;locked in.&rdquo; The financial risk of this claim depends on what actions it drives: if it motivates sustained investment in content quality, the money is not wasted even though the reasoning is wrong. The risk is high when it drives urgency-based purchasing of overpriced services.</p>
+</div>
+
+<h3>5. Reddit/Forum &ldquo;LLM Seeding&rdquo;</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>A growing number of agencies offer &ldquo;LLM seeding&rdquo; services: strategically placing content on Reddit, Quora, Medium, and other platforms that AI systems frequently cite. The pitch is that these platforms function as training data for AI models, and that brand mentions in these communities will be absorbed into AI responses. Some agencies frame this as &ldquo;earned&rdquo; engagement; others implicitly or explicitly offer astroturfing services.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>Reddit is indeed among the most frequently cited sources by AI systems &mdash; it accounts for 46.7% of Perplexity&rsquo;s top-10 citations, 11.3% of ChatGPT&rsquo;s, and 21% of Google AI Overviews&rsquo;. The Ahrefs Xarumei experiment demonstrated that content placed on Reddit could influence AI responses about a fictional brand. The experiment revealed mixed results across systems: ChatGPT and Claude were resistant to this manipulation, while Perplexity, Copilot, and Gemini were more susceptible. This means the tactic currently works on a majority (3 of 5) of the major AI systems tested, which is a more significant finding than the original version of this document acknowledged.</p>
+
+<p>The fundamental concern remains that &ldquo;LLM seeding&rdquo; is a euphemism for astroturfing: placing commercial content in communities that value authenticity. Reddit&rsquo;s detection systems are sophisticated and improving. Content that is identified as astroturfed and removed will not appear in future AI training data, defeating the purpose. The Ahrefs experiment also showed that AI systems that used the seeded content reproduced its fabricated details as fact, suggesting the vulnerability being exploited is a system weakness that AI companies are motivated to close.</p>
+
+<p>However, we should be honest about the current state: the tactic works on more systems than it fails on, and the timeline for AI companies closing this vulnerability is uncertain. Characterizing it as purely &ldquo;fragile&rdquo; understates its current effectiveness while overstating our confidence in how quickly it will be patched.</p>
+
+<p><strong>Platform-Specific Note:</strong> The differential susceptibility across platforms is itself a strategic consideration. Investing in Reddit presence is more likely to affect Perplexity citations (where Reddit dominates at 46.7%) than ChatGPT citations (where Wikipedia dominates at 47.9%). Authentic engagement on Reddit is valuable for Perplexity visibility regardless of the ethical questions around astroturfing.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Currently effective on most systems; ethically problematic; durability uncertain. Authentic, disclosed participation in communities is valuable and low-risk. Paid astroturfing disguised as organic engagement is unethical and increasingly detectable, but is more effective in the short term than the GEO industry&rsquo;s critics (including this document&rsquo;s previous draft) have acknowledged. The strategic question is whether building a practice around a vulnerability that AI companies are motivated to fix is a sound investment. Our assessment is that it is not, but this is a judgment call about future development timelines, not a statement of current ineffectiveness.</p>
+</div>
+
+<h3>6. Content Freshness Date Manipulation</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Multiple GEO guides recommend regularly updating content dates to signal freshness, with some citing claims that AI platforms prefer fresher content by significant margins. The advice ranges from legitimate (&ldquo;substantively update content and show a visible Last Updated date&rdquo;) to manipulative (&ldquo;update modification dates regularly&rdquo; without corresponding content changes).</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>Analysis of ChatGPT citations found that 76.4% of its most-cited pages were updated within 30 days. Perplexity strongly favors content published within the past 3 months. These are significant recency signals. However, as noted in a Search Engine Land analysis, Google stores up to 20 past versions of a web page and can detect when a date change is not accompanied by substantive content changes. Pure date manipulation without meaningful content updates is a known SEO manipulation tactic, and there is no reason to believe AI systems would treat it differently. Genuinely updating content with new information, correcting outdated facts, and showing when this was done is good practice. Changing the date without changing the content is manipulation.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>Freshness operates primarily at the retrieval stage. Search engines that feed RAG systems use recency as a ranking signal, so genuinely fresh content is more likely to be retrieved and served to the model. At the citation stage, the model itself may see dates in the content but the effect is secondary to content quality.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Legitimate practice corrupted by manipulative implementation. Genuine content freshness is valuable at the retrieval stage. Date-only updates are manipulation that risks detection and penalization. The underlying recommendation &mdash; maintain a cadence of substantive updates to cornerstone content &mdash; is sound.</p>
+</div>
+
+<h3>7. &ldquo;Structured Content Boosts Citation Odds by 2.8x&rdquo;</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>The claim that structured content (headers, bullet points, numbered lists, tables) increases AI citation probability by 2.8x is repeated across GEO guides and used to sell content restructuring services. The recommendation is to break all content into short paragraphs (60&ndash;100 words), use H2/H3 hierarchies, and insert tables and comparison matrices.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The 2.8x figure is cited in EdgeBlog and other sources but its original methodology is not clearly documented. The Princeton study tested formatting-adjacent tactics (fluency, readability) but not structural formatting as an independent variable. The claim may derive from observational correlation (structured pages tend to be cited more) rather than causal testing (the formatting itself causes the citation). Structured pages are also more likely to be well-researched, clearly written, and recently updated. The formatting may be a symptom of quality content, not a cause of citation.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>At the retrieval stage, structure may matter indirectly: clear H2/H3 hierarchies help search engines understand content organization and may improve passage-level indexing for RAG systems. At the citation stage, however, the model processes text, not formatting. Claude&rsquo;s output formatting is decoupled from source formatting. Citation decisions are made at the sentence level: selecting individual factual claims that are verifiable, specific, and paraphrasable. If accurate, a well-formatted page with weak sentences performs worse than a prose-heavy page with strong factual claims. However, there is a legitimate gap in this analysis: whether formatting affects retrieval (which occurs before content reaches the model) is something no AI system&rsquo;s self-report can address.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Correlation presented as causation, but with plausible retrieval-stage benefits. Clear structure is good writing practice and may improve passage-level retrieval. Selling content restructuring as a 2.8x citation multiplier based on unverified correlational data overstates the evidence. The mechanism through which formatting would cause citation improvement at the citation stage is not established, though retrieval-stage benefits from improved indexing are plausible.</p>
+</div>
+
+<h3>8. &ldquo;Quarterly GEO Audits&rdquo; and Monitoring Dashboards</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Companies sell ongoing GEO monitoring services ($2,000&ndash;$10,000+/month) that track how often a brand is cited by AI systems, measure &ldquo;Share of Voice&rdquo; in AI responses, and recommend optimization changes based on performance data. The framing implies stable, measurable, optimizable metrics similar to traditional SEO analytics.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>AI citations are inherently non-deterministic. The same query asked twice can produce different responses with different citations. Search results change constantly. AI systems are updated without notice. Multiple GEO practitioners, including some selling these services, acknowledge this: &ldquo;These principles increase your probability of appearing in AI answers. They don&rsquo;t guarantee it. The volatility in AI citations means even well-optimized brands experience fluctuation&rdquo; (Backlinko/Semrush). A system that is inherently variable, non-deterministic, and subject to unannounced changes does not produce the kind of stable, actionable metrics that a $10,000/month monitoring dashboard implies. The attribution challenge is also fundamental: even when a brand is cited by AI, connecting that citation to business outcomes (revenue, leads) is, by the industry&rsquo;s own admission, extremely difficult. That said, 64% of marketing leaders report being unsure how to measure AI search success at all, which means even noisy data provides more visibility than most companies currently have.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> The concept is sound; the market is overpriced for what it delivers. Basic awareness of how AI presents your brand is genuinely valuable &mdash; monitoring for inaccuracies, tracking competitive positioning, and identifying content gaps are legitimate use cases. The problem is the pricing and implied maturity level. Paying $10,000/month for dashboards that imply the same stability and actionability as traditional SEO analytics is paying for a maturity level the technology does not yet support. A more honest framing: this is early-stage intelligence gathering, not mature analytics, and should be priced and understood accordingly.</p>
+</div>
+
+<h3>9. Schema Markup &ldquo;300% Higher Accuracy&rdquo; for AI Extraction</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>The claim that &ldquo;schema markup enables AI engines to extract information with 300% higher accuracy compared to unstructured content&rdquo; appears in multiple GEO guides. Several agencies sell schema audit and implementation services specifically for AI optimization, ranging from $1,000 to $15,000.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The 300% figure is repeated across sources but its original study or methodology is not traceable. One source (Digidop) cites a claim that &ldquo;GPT-4 improves its performance from 16% to 54% with structured content&rdquo; but does not link to the underlying research. Microsoft&rsquo;s Fabrice Canel confirmed at SMX Munich in March 2025 that &ldquo;Schema markup helps Microsoft&rsquo;s LLMs understand content,&rdquo; which suggests some retrieval-stage value. But the 300% claim implies a direct, dramatic effect on AI accuracy that is not substantiated by any traceable study.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>Schema&rsquo;s theoretical value is almost entirely at the retrieval stage: helping search engines better index, chunk, and serve content to RAG systems. At the citation stage, LLMs process text, not JSON-LD. This makes schema a reasonable infrastructure investment for the same reasons it benefits traditional SEO, but the AI-specific claims about dramatic accuracy improvements are unverified.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Unverified statistic used to sell services, but schema itself has legitimate retrieval-stage value. Schema markup is good web development practice that likely helps with retrieval. The specific 300% accuracy claim appears to be an unsourced statistic that has propagated through the GEO industry without verification. Agencies should stop citing it until the source study can be identified and evaluated. Implementing basic schema (Organization, Article, FAQPage, Product, Person) is a reasonable investment as part of overall web infrastructure; paying $15,000 for a schema audit marketed on an untraceable statistic is not.</p>
+</div>
+
+<h3>10. &ldquo;Authoritative Tone&rdquo; and Persuasive Writing Style</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>The Princeton study tested an &ldquo;Authoritative&rdquo; modification that made content more persuasive and confident in tone. Several agencies have translated this into recommendations to write in a more assertive, expert-sounding voice to improve AI citation rates.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>In the Princeton study, authoritative tone showed modest improvements in some domains (debate, history) but was not among the top-performing methods. Its effect was domain-specific and smaller than statistics addition, citation addition, or fluency optimization. More importantly, from an AI system perspective, confident-sounding writing that is not backed by evidence can actually trigger the opposite effect.</p>
+
+<div class="ai-perspective">
+<p><strong>AI System Perspective</strong><br>(Illustrative, not evidentiary. See methodology note in Executive Summary.)</p>
+<p>Claude&rsquo;s instructions specifically direct it to be skeptical of content that sounds promotional or marketing-driven. Claude reports that confident assertions without specific sourcing read as lower quality, not higher quality. Content that says &ldquo;Our product is the industry-leading solution trusted by thousands&rdquo; would, by Claude&rsquo;s account, be less likely to be cited than content that says &ldquo;A 2024 Forrester survey of 1,200 companies found a 23% adoption rate in the mid-market segment.&rdquo; This self-report is consistent with Claude&rsquo;s system prompt, which does contain skepticism instructions, but we cannot verify whether these instructions translate into the described behavior in practice. It is also worth noting that other AI systems may not have equivalent skepticism instructions, so this may be Claude-specific rather than universal.</p>
+</div>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Misapplied finding. Writing clearly and confidently about topics where you have genuine expertise is always good practice. Writing in an artificially authoritative voice to game AI citation is counterproductive, especially for product content where skepticism filters may already be active. The Princeton study&rsquo;s finding is real but narrow: it worked for debate and history content, not as a general strategy.</p>
+</div>
+
+<h3>11. Keyword Stuffing Rebrand (&ldquo;Semantic Richness&rdquo;)</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Several GEO guides recommend adding &ldquo;semantic richness,&rdquo; &ldquo;contextual signals,&rdquo; &ldquo;entity-rich content,&rdquo; and &ldquo;technical terms&rdquo; to content. While the language has evolved from old-school keyword stuffing, the underlying tactic is sometimes the same: adding more terminology and jargon to pages in hopes of triggering AI citation.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The Princeton study explicitly tested keyword stuffing and found it performed 10% worse than the baseline on Perplexity. It was the worst-performing method tested. Similarly, &ldquo;Unique Words&rdquo; (adding distinctive vocabulary) showed virtually no correlation with citation rates. &ldquo;Technical Terms&rdquo; showed 0&ndash;2% improvement and often reduced fluency. The study&rsquo;s findings directly contradict the practice of adding terminology for its own sake. The rebranding of keyword stuffing as &ldquo;semantic richness&rdquo; does not change the underlying dynamic: AI systems trained on natural language prefer content that reads naturally.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Harmful. This is an old SEO manipulation tactic with a new name. The foundational GEO study the industry itself cites found it actively decreases visibility. Agencies recommending it are either unaware of or ignoring the evidence they claim to base their practice on.</p>
+</div>
+
+<h3>12. &ldquo;Answer First&rdquo; / TL;DR Content Structure</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>Leading with a direct answer, followed by supporting detail, with a summary or TL;DR section. Multiple guides recommend sentences of 15&ndash;20 words maximum, paragraphs of 60&ndash;100 words, and a specific structure: answer first, supporting detail, then restate the key point in different words.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>This is the most defensible GEO recommendation. It aligns with how information retrieval systems extract content, how AI systems identify relevant passages, and how readers consume information online. The recommendation to make each section self-contained (so it makes sense extracted from context) directly supports the citation-unit concept: sentences that work as independent, verifiable claims.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>This practice is effective at both stages. At the retrieval stage, clear answer-first structure helps search engines identify the passage most relevant to a query and serve it to RAG systems. At the citation stage, self-contained sentences with clear factual claims are easier for models to extract, attribute, and paraphrase. This dual-stage effectiveness is what makes it the strongest GEO recommendation.</p>
+
+<div class="ai-perspective">
+<p><strong>AI System Perspective</strong><br>(Illustrative, not evidentiary. See methodology note in Executive Summary.)</p>
+<p>Claude reports that a sentence stating a clear, self-contained fact is a better citation candidate than a sentence that begins with &ldquo;This&rdquo; or &ldquo;As mentioned above.&rdquo; Claude describes looking for self-contained sentences with specific attribution when extracting claims from retrieved content. This is consistent with how the citation-unit hypothesis predicts AI systems would behave, though we acknowledge the circularity of using the same AI system that helped develop the hypothesis to confirm it.</p>
+</div>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Genuinely useful. This is the GEO recommendation most aligned with how AI citation is understood to work at both the retrieval and citation stages. However, the specific formatting prescriptions (exact word counts, mandatory TL;DR sections, sentence length limits) go beyond what the evidence supports into overly prescriptive territory. The underlying principle &mdash; write clear, self-contained, factually specific sentences &mdash; is sound.</p>
+</div>
+
+<h3>13. E-E-A-T Signals and Traditional Authority</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>This practice is notable for being under-sold by the GEO industry relative to its importance. While most GEO guides mention E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) in passing, few emphasize it as a primary lever. Instead, they focus on content-level tactics (adding statistics, schema, formatting) while treating author credentials, publication history, domain authority, and institutional affiliation as background assumptions.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>Because RAG-based AI systems use traditional search engines as their retrieval layer, the traditional authority signals that determine search ranking directly determine whether content is retrieved for AI citation. Research analyzing over 7,000 citations found that domain rating shows one of the strongest positive correlations with ChatGPT citation (0.161 correlation). Studies show 87% of SearchGPT citations match Bing&rsquo;s top results. 76.1% of AI Overview citations also rank in Google&rsquo;s top 10. This means the single most reliable path to AI citation is ranking well in traditional search, which is primarily an authority and quality signal &mdash; not a formatting or schema tactic.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>E-E-A-T is overwhelmingly a retrieval-stage factor. If your domain is authoritative, your pages are more likely to be retrieved by the search engines that feed RAG systems. At the citation stage, author credentials and institutional affiliation may influence the model&rsquo;s assessment of content quality, but the primary effect is at retrieval. This makes E-E-A-T arguably the single most important GEO factor &mdash; and the one least amenable to quick-fix optimization, which may explain why agencies focus on easier-to-sell tactics instead.</p>
+
+<p>Implementation considerations: Visible author bios with credentials. Consistent institutional identity across platforms. Backlink profile development. Publication on authoritative domains. Expert sourcing and co-authorship. These are slow, expensive, and hard to sell as a discrete GEO service &mdash; which is exactly why they work.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Under-emphasized by the industry precisely because it is hard to productize. Traditional authority signals are likely the single most important determinant of AI citation because they govern the retrieval stage that everything else depends on. The GEO industry&rsquo;s relative silence on E-E-A-T compared to its enthusiasm for schema and statistics reflects a commercial incentive to sell discrete, implementable tactics rather than the slow, expensive work of building genuine authority.</p>
+</div>
+
+<h3>14. Earned Media, PR, and Third-Party Validation</h3>
+
+<p><strong>What&rsquo;s Being Sold</strong></p>
+
+<p>A growing number of agencies position PR and earned media as GEO levers, arguing that third-party mentions, analyst coverage, customer reviews, and community recommendations serve as external authority signals that influence AI citation. This is a newer addition to the GEO playbook, most prominently articulated by firms like Firebrand and Walker Sands.</p>
+
+<p><strong>What the Evidence Actually Shows</strong></p>
+
+<p>The evidence for this practice is surprisingly strong. LLMs distinguish between brands that publish their own content and brands that are recognized by others as authorities. Reddit, LinkedIn, and YouTube were among the most-cited sources by top LLMs in late 2025. The correlation between AI chatbot mentions and brand search volume (0.334) is higher than the correlation between referring domains and organic rankings (0.255), suggesting that brand mentions across the web may matter more for AI visibility than traditional link building. Brands in the top 25% for web mentions get 10x more AI visibility than others.</p>
+
+<p>The mechanism is straightforward: when multiple independent sources discuss your brand in relevant contexts, AI systems have stronger corroboration signals. A brand mentioned on G2, in a Reddit discussion, in an analyst report, and on its own website presents a more consistent entity signal than a brand mentioned only on its own website.</p>
+
+<p><strong>Retrieval vs. Citation Stage Analysis</strong></p>
+
+<p>Earned media operates at both stages. At the retrieval stage, third-party mentions across authoritative domains improve the likelihood that content about your brand is retrieved. At the citation stage, corroboration across multiple independent sources increases the model&rsquo;s confidence in citing information about your brand. This dual-stage effect, combined with the difficulty of faking it, makes earned media one of the more credible GEO recommendations.</p>
+
+<div class="verdict-box">
+<p><strong>Verdict:</strong> Genuinely useful and under-appreciated. Earned media is effective because it is hard to manufacture at scale. Authentic expert commentary, customer reviews on established platforms, industry analyst mentions, and genuine community engagement build the kind of distributed brand signal that AI systems are designed to weight. The risk is that agencies will attempt to industrialize this into astroturfing (see Practice #5), which defeats the purpose.</p>
+</div>
+
+<h2>The Foundational Evidence Problem</h2>
+
+<p>Nearly every GEO guide in this analysis cites the same source: the Princeton/Georgia Tech/Allen Institute study (Aggarwal et al., 2024). This study has become the empirical bedrock of the entire industry. Its findings &mdash; &ldquo;up to 40% visibility improvement&rdquo; &mdash; appear in virtually every agency pitch deck and marketing guide. But the study&rsquo;s methodology has a critical limitation that the industry consistently ignores.</p>
+
+<p>The study worked by taking source content, applying modifications (adding statistics, citations, improving fluency, etc.), and then placing the modified content directly into the generative engine&rsquo;s context alongside the query. This bypasses the retrieval pipeline entirely. It does not test whether modified content is more likely to be found, retrieved, or ranked by an AI system&rsquo;s search function. It tests whether, given that the content is already in front of the AI, the modification affects how prominently the content is reflected in the output.</p>
+
+<p>This is a meaningful distinction because GEO is fundamentally about getting your content retrieved and cited from the open web. The retrieval stage &mdash; which involves web search, indexing, domain authority, and many factors unrelated to content quality &mdash; is the bottleneck that the Princeton study does not address. An industry built on this study&rsquo;s findings is selling optimization for the citation stage while the retrieval stage remains the unexamined constraint.</p>
+
+<p>To be fair, Search Engine Land noted this limitation at the time of publication: &ldquo;While this paper is an interesting read, these are not real world results.&rdquo; But this caveat has been stripped away as the findings have propagated through the industry. The 40% figure is now presented as an established fact about real-world AI search performance. It is not. It is a lab finding about in-context behavior that may or may not translate to real-world citation outcomes.</p>
+
+<h2>The Platform Specificity Problem</h2>
+
+<p>The GEO industry overwhelmingly treats &ldquo;AI search&rdquo; as a monolithic category. This is analytically wrong and strategically dangerous. Profound&rsquo;s analysis of 680 million citations reveals that each major AI platform has fundamentally different source preferences:</p>
+
+<p><strong>ChatGPT</strong> favors encyclopedic authority. Wikipedia accounts for 47.9% of its top-10 citations. It cites an average of 7.92 sources per response. Domain rating shows the strongest positive correlation with ChatGPT citation. 76.4% of its most-cited pages were updated within 30 days.</p>
+
+<p><strong>Perplexity</strong> favors community content and recency. Reddit accounts for 46.7% of its top-10 citations. It cites an average of 21.87 sources per response &mdash; 2.8x more than ChatGPT. It shows the fastest response to newly published content, sometimes citing pages within hours.</p>
+
+<p><strong>Google AI Overviews</strong> distributes broadly across YouTube (18.8%), LinkedIn (15.2%), Reddit (21%), and Quora (12.4%). It heavily weights E-E-A-T signals and existing traditional search ranking. 76.1% of AI Overview citations also rank in Google&rsquo;s top 10.</p>
+
+<p>Only 11% of domains are cited by both ChatGPT and Perplexity. Google AI Overviews and AI Mode cite the same URLs only 13.7% of the time despite reaching similar conclusions. These are effectively different ecosystems. Any GEO recommendation that does not specify which platform it targets is, at best, incomplete.</p>
+
+<p>This has direct implications for several practices in this analysis. Schema markup may matter more for Google AI Overviews (which builds on Google&rsquo;s indexing infrastructure) than for Perplexity (which has its own crawler). Reddit engagement matters enormously for Perplexity and barely registers for ChatGPT. Authoritative, factual content matters most for ChatGPT. Recency matters most for Perplexity. An agency selling a single &ldquo;GEO optimization&rdquo; package without platform differentiation is selling an incomplete strategy.</p>
+
+<h2>What the Industry Gets Right</h2>
+
+<p>Despite the problems documented above, several GEO principles are sound &mdash; and deserve more space than the critique.</p>
+
+<p><strong>Write clear, specific, self-contained sentences.</strong> This is the single most defensible GEO recommendation and aligns with both the citation-unit hypothesis and basic principles of good communication. It works at both the retrieval and citation stages, benefits traditional SEO simultaneously, and has no downside. If a company implemented only this recommendation and nothing else from the GEO playbook, it would capture most of the available value.</p>
+
+<p><strong>Include genuine citations and real data.</strong> Content that references specific sources, studies, and statistics is more useful to both humans and AI systems. The recommendation is sound even if the Princeton study&rsquo;s 40% figure is not directly transferable. The key qualifier is &ldquo;genuine&rdquo; &mdash; fabricated or decorative statistics undermine rather than support citation.</p>
+
+<p><strong>Create original research and expert content.</strong> This is the recommendation most agencies make but few clients actually follow because it is expensive and difficult. It is also the recommendation most likely to be effective, precisely because it is hard to fake. Original data, proprietary research, expert interviews, and first-party case studies provide the kind of unique, verifiable information that AI systems preferentially cite because no other source offers it. Publishing detailed technical documentation, benchmark studies, and methodology guides creates content that AI systems treat as primary sources rather than summaries. The GEO industry underweights this recommendation in practice because it cannot be sold as a discrete optimization service &mdash; it requires genuine investment in knowledge production.</p>
+
+<p><strong>Monitor how AI presents your brand.</strong> Knowing what AI systems say about you is valuable for brand management, even if expensive monitoring dashboards oversell the actionability of this data. Checking periodically whether AI platforms accurately describe your products, correctly state your pricing, and appropriately position you relative to competitors is basic brand hygiene for the AI era. This does not require a $10,000/month dashboard; it requires someone on your team to periodically query AI systems with your target questions.</p>
+
+<p><strong>Maintain good technical SEO.</strong> Fast, accessible, well-structured websites remain the foundation. AI systems use traditional search engines as their retrieval layer, so traditional SEO is prerequisite infrastructure for GEO. This includes ensuring AI crawlers (GPTBot, ClaudeBot, PerplexityBot) are not blocked in robots.txt, maintaining fast server response times (TTFB under 200ms), and implementing server-side rendering for JavaScript-heavy content. These are not novel recommendations, but they are necessary ones.</p>
+
+<p><strong>Invest in genuine authority building.</strong> E-E-A-T signals, earned media, consistent brand presence across authoritative platforms, and expert authorship are the slow, expensive, hard-to-productize practices that the evidence suggests matter most. They work because they are hard, and they compound because they are genuine. This is the opposite of a quick-fix optimization tactic, which is exactly why it is effective.</p>
+
+<h2>Recommendations</h2>
+
+<p><strong>For companies considering GEO services:</strong> Ask any agency selling GEO to distinguish between retrieval-stage and citation-stage optimization, and to explain which stage their recommendations address. Ask them to specify which AI platform(s) their tactics target, with evidence for platform-specific effectiveness. Ask them to identify the original source for any statistics they cite about AI citation improvements. If they cannot trace a claim to its original study and explain its methodology, they are repeating industry lore, not evidence-based practice. Prioritize agencies that emphasize authority building, original research, and earned media over those selling quick-fix formatting and schema tactics.</p>
+
+<p><strong>For the GEO industry:</strong> The field would benefit from intellectual honesty about the state of the evidence. The Princeton study is a valuable starting point, not a comprehensive proof. The claims being made about citation moats, compounding advantages, and specific percentage improvements are outpacing the evidence by a significant margin. An industry built on inflated claims will face a credibility crisis when clients demand measurable results. The most credible positioning for a GEO agency is to acknowledge what is known, what is uncertain, and what is speculative &mdash; and to price services accordingly.</p>
+
+<p><strong>For AI companies:</strong> The GEO industry is building optimization practices around system-specific behaviors that were never intended to be optimized against. The skepticism filter in Claude&rsquo;s instructions exists to protect users from promotional content, not to create a new optimization target. The more the GEO industry reverse-engineers these behaviors, the more AI companies will need to adjust them, creating an adversarial dynamic that serves no one well.</p>
+
+<h2>Sources and Methodology</h2>
+
+<p>This analysis is based on review of 30+ industry sources including agency websites, trade publications, tool vendor documentation, the original Princeton/Georgia Tech/Allen Institute study, Profound&rsquo;s 680-million-citation dataset, and Qwairy&rsquo;s Q3 2025 citation study (118,101 answers, 669,065 citations). AI system behavioral observations are from direct conversation analysis with Anthropic&rsquo;s Claude and are clearly labeled as illustrative self-reports throughout the document. The Ahrefs Xarumei experiment and OtterlyAI llms.txt study are cited as third-party empirical evidence. Statistics and claims attributed to specific companies were verified against their published content as of February 2026.</p>
+
+<h2>Disclosures</h2>
+
+<p>This document is a companion to a hypothesis paper proposing an alternative framework (citation-unit density) for AI content optimization. The citation-unit hypothesis is itself untested in the same way the Princeton study&rsquo;s findings are untested in real-world retrieval: it is a theoretical framework derived from observation and reasoning, not from controlled experimentation. We apply the same evidentiary standard to our own framework that we apply to the industry&rsquo;s claims: it is a plausible hypothesis, not an established fact, and should be evaluated accordingly.</p>
+
+<p>The author offers consulting services in this space. This document&rsquo;s analytical frame &mdash; identifying weaknesses in current GEO practices while proposing an alternative approach &mdash; is itself a competitive positioning exercise. Readers should be aware of this incentive structure and evaluate all claims in this document with the same skepticism we recommend applying to the GEO industry&rsquo;s claims.</p>
+
+<p>The AI system self-reports used throughout this document were generated in conversation with Anthropic&rsquo;s Claude. These reports reflect how Claude describes its own behavior based on its system instructions and training. They do not constitute independent verification of how AI citation systems work. The self-reports in this document consistently support the document&rsquo;s analytical frame; this alignment may reflect genuine accuracy, or it may reflect the tendency of AI systems to generate responses consistent with the conversational context in which they are prompted.</p>
+
+</article>
+
+<div class="article-footer">
+  <div class="article-footer-inner">
+    <div class="article-author-block">
+      <div class="author-avatar">JS</div>
+      <div class="author-info">
+        <h3>James Soldier</h3>
+        <p>Founder, Soldier Data</p>
+      </div>
+    </div>
+    <a href="/articles/" class="back-link">&larr; All Articles</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">&copy; 2026 Soldier Data. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#products">Products</a>
+    <a href="/articles/">Articles</a>
+    <a href="/#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', () => {
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrolled = window.scrollY;
+  const progress = Math.min((scrolled / docHeight) * 100, 100);
+  document.getElementById('progressBar').style.width = progress + '%';
+});
+</script>
+
+</body>
+</html>
